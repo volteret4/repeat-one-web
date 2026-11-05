@@ -187,38 +187,6 @@ services:
       - "8758:80"
     networks: [repeat_one]
 
-  bot-conciertos:
-    profiles: ["bot_conciertos"]
-    build:
-      context: ./services/bot_conciertos
-      dockerfile: Dockerfile
-    container_name: bot-conciertos
-    restart: unless-stopped
-    env_file:
-      - path: ./services/bot_conciertos/.env
-        required: false
-    volumes:
-      - ./services/bot_conciertos/artist_tracker.db:/app/artist_tracker.db
-      - ./services/bot_conciertos/cache:/app/cache
-    networks: [repeat_one]
-
-  bot-conciertos-web:
-    profiles: ["bot_conciertos"]
-    build:
-      context: ./services/bot_conciertos
-      dockerfile: Dockerfile.web
-    container_name: bot-conciertos-web
-    restart: unless-stopped
-    env_file:
-      - path: ./services/bot_conciertos/.env
-        required: false
-    volumes:
-      - ./services/bot_conciertos/.env:/app/.env
-      - ./services/bot_conciertos/artist_tracker.db:/app/artist_tracker.db
-    ports:
-      - "8747:8747"
-    networks: [repeat_one]
-
   # Tareas diarias. Necesita el socket de Docker: elígelo solo si confías en lo que corre en esta máquina.
   ofelia:
     profiles: ["scheduler"]

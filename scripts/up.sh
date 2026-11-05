@@ -9,12 +9,12 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-ORDER=(dieta_sonora bandcamp freshrss charts_sellos charts_artistas escuchowsky encarta sellos_discograficos bot_conciertos scheduler)
+ORDER=(dieta_sonora bandcamp freshrss charts_sellos charts_artistas escuchowsky encarta sellos_discograficos scheduler)
 
 declare -A REPO=(
   [dieta_sonora]=dieta-sonora [bandcamp]=bancamp_imap [freshrss]=freshrss_embeeds
   [charts_sellos]=charts_sellos [charts_artistas]=charts_artistas [escuchowsky]=escuchowsky
-  [encarta]=encarta [sellos_discograficos]=sellos-discograficos [bot_conciertos]=bot_conciertos
+  [encarta]=encarta [sellos_discograficos]=sellos-discograficos
 )
 declare -A DESC=(
   [dieta_sonora]="lanzamientos de Muspy, con descargas desde tu NAS de música compartida"
@@ -25,7 +25,6 @@ declare -A DESC=(
   [escuchowsky]="escuchowsky, musthear y tumtumpa-discover (necesita must_hear.db)"
   [encarta]="enciclopedia de consulta (necesita encarta.db)"
   [sellos_discograficos]="tu colección por sello y productor (necesita musica_local.sqlite)"
-  [bot_conciertos]="bot de Telegram de conciertos y su web"
   [scheduler]="tareas diarias con Ofelia (usa el socket de Docker)"
 )
 declare -A VARS=(
@@ -37,17 +36,15 @@ declare -A VARS=(
   [escuchowsky]="LASTFM_API_KEY YOUTUBE_API_KEY"
   [encarta]=""
   [sellos_discograficos]="DISCOGS_TOKEN LASTFM_API_KEY"
-  [bot_conciertos]="TELEGRAM_BOT_TOKEN TICKETMASTER_API_KEY LASTFM_API_KEY"
   [scheduler]=""
 )
 declare -A URLS=(
   [dieta_sonora]="5010" [bandcamp]="8765" [freshrss]="8766" [charts_sellos]="8792" [charts_artistas]="8793"
-  [escuchowsky]="8751 8752 8753" [encarta]="8777" [sellos_discograficos]="8758" [bot_conciertos]="8747"
+  [escuchowsky]="8751 8752 8753" [encarta]="8777" [sellos_discograficos]="8758"
 )
 # Ficheros y carpetas que Docker montaría como directorio si no existen.
 declare -A TOUCH=(
   [sellos_discograficos]="musica_local.sqlite"
-  [bot_conciertos]="artist_tracker.db"
 )
 declare -A MKDIR=(
   [dieta_sonora]="data data/watch_torrents"
@@ -56,7 +53,6 @@ declare -A MKDIR=(
   [escuchowsky]="db"
   [encarta]="data"
   [sellos_discograficos]="covers"
-  [bot_conciertos]="cache"
 )
 
 ASSUME_YES=0

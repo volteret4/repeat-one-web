@@ -19,7 +19,6 @@ Herramientas para encontrar, ordenar y escuchar música. Cada una es un repo ind
 | `escuchowsky` | Escuchowsky, Musthear y Tumtumpa Discover | [escuchowsky](https://github.com/volteret4/escuchowsky) | 8751, 8752, 8753 |
 | `encarta` | Enciclopedia musical de consulta | [encarta](https://github.com/volteret4/encarta) | 8777 |
 | `sellos_discograficos` | Tu colección por sello y productor | [sellos-discograficos](https://github.com/volteret4/sellos-discograficos) | 8758 |
-| `bot_conciertos` | Bot de Telegram de conciertos y su web | [bot_conciertos](https://github.com/volteret4/bot_conciertos) | 8747 |
 | `scheduler` | Tareas diarias con Ofelia | | |
 
 Los módulos que el índice muestra solo como simulación y sin repo no están publicados, así que no se pueden instalar.
