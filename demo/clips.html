@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>YT Clips (simulación)</title>
+<link rel="stylesheet" href="sim.css">
+<style>
+:root{--bg:#0d1430;--surface:#172048;--border:#2a3566;--accent:#2fbf8f;--on:#04261b;--max:1100px}
+.g{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:.8rem}.g img{width:100%;height:130px;object-fit:cover}.f{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:.5rem}.f label{font-size:12px;color:var(--muted)}.f input{width:100%}@media(max-width:640px){.f{grid-template-columns:1fr}}</style>
+<script src="sim.js"></script>
+</head>
+<body data-mod="clips">
+<div class="sim-wrap">
+<h1>YT Clips</h1><div class="row" style="margin-bottom:.7rem"><button data-ui="1" class="on">Extraer</button><button>Montaje</button></div><form class="card" onsubmit="event.preventDefault();add()" style="margin-bottom:.8rem"><div class="f"><label>URL de YouTube<input value="https://www.youtube.com/watch?v=ejemplo" readonly></label><label>Inicio<input id="i" value="1:23"></label><label>Fin<input id="e" value="1:45"></label><label>Etiqueta<input id="l" placeholder="mejor momento"></label></div><p><button data-ui="1" class="primary">Extraer clip</button></p></form><div class="g" id="g"></div>
+</div>
+<script>
+const cl=[['el solo','Sala Verde en directo',47],['la subida','Sesión Nave Nueve',76],['final','Turno de Noche, ensayo',43]];function add(){cl.unshift([document.getElementById('l').value||'clip nuevo',`De ${document.getElementById('i').value} a ${document.getElementById('e').value}`,22]);r();SIM.toast('Simulación: el clip solo existe hasta que recargues.')}function del(i){cl.splice(i,1);r()}
+function r(){document.getElementById('g').innerHTML=cl.map((c,i)=>`<div class="card">${SIM.cover(c[0],250)}<b>${SIM.esc(c[0])}</b><div class="muted small">${SIM.esc(c[1])}</div><div class="row" style="justify-content:space-between;margin-top:.4rem"><span class="small muted">${c[2]}.0 s</span><button data-ui="1" onclick="del(${i})">Borrar</button></div></div>`).join('')}r();
+</script>
+</body>
+</html>

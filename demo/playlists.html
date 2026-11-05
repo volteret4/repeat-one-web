@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>YT Playlists (simulación)</title>
+<link rel="stylesheet" href="sim.css">
+<style>
+:root{--bg:#0d1430;--surface:#172048;--border:#2a3566;--accent:#2fbf8f;--on:#04261b;--max:1000px}
+.f{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-bottom:.8rem}.f form{display:flex;gap:.5rem}.f input{flex:1}details{margin-bottom:.4rem}summary{cursor:pointer;display:flex;justify-content:space-between;font-weight:600}li{padding:.15rem 0}.ok{color:#2fbf8f}@media(max-width:640px){.f{grid-template-columns:1fr}}</style>
+<script src="sim.js"></script>
+</head>
+<body data-mod="playlists">
+<div class="sim-wrap">
+<h1>YT Playlists</h1><div class="f"><form class="card" onsubmit="event.preventDefault();add()"><input id="u" placeholder="@canal" aria-label="Canal"><button data-ui="1" class="primary">+ Usuario</button></form><form class="card" onsubmit="event.preventDefault();SIM.toast()"><input placeholder="URL de una lista" aria-label="Lista"><button data-ui="1" class="primary">+ Playlist</button></form></div><div id="l"></div>
+</div>
+<script>
+const cs=['Radio Faro','Sala Verde TV','Nave Nueve Sessions'];function add(){const u=document.getElementById('u');if(u.value){cs.push(u.value);u.value='';r();SIM.toast('Simulación: el canal solo existe hasta que recargues.')}}function r(){document.getElementById('l').innerHTML=cs.map((c,i)=>`<details class="card"><summary><span>${SIM.esc(c)}</span><span class="small muted">${i+2} playlists</span></summary><ul>${SIM.albums.slice(i,i+5).map((a,j)=>`<li class="${j%2?'':'ok'}">${j%2?'·':'✓'} ${SIM.esc(a.artist)} — ${SIM.esc(a.title)} ${j%2?'':'<span class="small">(ya la tienes)</span>'}</li>`).join('')}</ul></details>`).join('')}r();
+</script>
+</body>
+</html>

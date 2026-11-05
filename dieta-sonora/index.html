@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data: https://coverartarchive.org https://archive.org https://*.archive.org https://*.scdn.co https://lastfm.freetls.fastly.net https://*.ytimg.com; connect-src https://ws.audioscrobbler.com https://www.googleapis.com; frame-src https://www.youtube-nocookie.com; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<title>Dieta Sonora</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="layout">
+<div class="main">
+<header class="head">
+<div>
+<a class="back" href="../">← REPEAT-ONE</a>
+<h1>💿 Dieta Sonora</h1>
+<p class="sub">Tus lanzamientos de Muspy, guardados solo en este navegador.</p>
+</div>
+<div class="head-actions">
+<button type="button" id="b-muspy" class="primary">Añadir Muspy</button>
+<button type="button" id="b-settings">Ajustes y datos</button>
+</div>
+</header>
+<nav class="tabs" aria-label="Estado de los discos">
+<button type="button" class="tab active" data-state="pending" aria-pressed="true">🎯 Pendientes <span id="c-pending">0</span></button>
+<button type="button" class="tab" data-state="owned" aria-pressed="false">💾 Ya los tengo <span id="c-owned">0</span></button>
+<button type="button" class="tab" data-state="listened" aria-pressed="false">🎧 Escuchados <span id="c-listened">0</span></button>
+<button type="button" class="tab" data-state="dismissed" aria-pressed="false">🗑 Descartados <span id="c-dismissed">0</span></button>
+</nav>
+<div class="filters">
+<input id="f-q" type="search" placeholder="Buscar artista o disco" aria-label="Buscar artista o disco">
+<select id="f-type" aria-label="Tipo de disco"><option value="">Todos los tipos</option></select>
+<label class="check"><input id="f-year" type="checkbox"> Solo de <span id="this-year"></span></label>
+</div>
+<p id="status" class="status" role="status" hidden></p>
+<div id="grid" class="grid"></div>
+<div id="empty" class="empty" hidden></div>
+</div>
+<aside id="sidebar" class="sidebar" aria-label="Detalle del disco" tabindex="-1">
+<p class="placeholder">Selecciona un disco para ver los detalles y dónde escucharlo.</p>
+</aside>
+</div>
+
+<dialog id="d-muspy">
+<button type="button" class="x" data-close aria-label="Cerrar">×</button>
+<h2>Añadir Muspy</h2>
+<p>Muspy no permite que otras webs lean sus datos, así que hay dos formas de traerlos. Ninguna pide tu contraseña.</p>
+<h3>1. Con un marcador (recomendado)</h3>
+<ol>
+<li>Arrastra este botón a tu barra de marcadores: <a id="bookmarklet" class="bm" href="#">Dieta Sonora ← Muspy</a></li>
+<li>Abre <a href="https://muspy.com/releases" target="_blank" rel="noopener">muspy.com/releases ↗</a> con tu sesión iniciada y pulsa el marcador.</li>
+<li>Se abrirá esta página con tus discos. Vuelve a pulsarlo cuando quieras actualizar.</li>
+</ol>
+<details>
+<summary>Qué hace el marcador</summary>
+<p>Corre dentro de muspy.com con tu sesión, busca tu ID en la propia página, pide tus lanzamientos a Muspy y los envía solo a esta página. No envía nada a ningún otro sitio.</p>
+</details>
+<h3>2. Importando un archivo</h3>
+<label>Tu ID de Muspy (30 caracteres, opcional)
+<input id="m-id" autocomplete="off" spellcheck="false" placeholder="sale en el enlace del feed: /feed?id=…">
+</label>
+<p id="m-links" class="small" hidden>Abre <a id="m-json" target="_blank" rel="noopener">tu lista de lanzamientos ↗</a> y guárdala como archivo. Si tienes más de 100, repite con <a id="m-json2" target="_blank" rel="noopener">la página siguiente ↗</a>.</p>
+<p><label class="file">Elegir archivo JSON o feed Atom <input id="m-file" type="file" accept=".json,.xml,.atom,application/json,application/xml" multiple></label></p>
+<h3>¿Sin cuenta de Muspy?</h3>
+<p><button type="button" id="m-sample">Cargar discos de ejemplo</button> <span class="small">Son inventados; se pueden borrar después.</span></p>
+</dialog>
+
+<dialog id="d-settings">
+<button type="button" class="x" data-close aria-label="Cerrar">×</button>
+<h2>Ajustes y datos</h2>
+<p class="small">Las claves son opcionales y se guardan en este navegador. Todas las páginas de <code>volteret4.github.io</code> comparten este almacenamiento: usa claves propias y restríngelas.</p>
+<label>Clave de la API de YouTube, para buscar vídeos al pulsar un disco
+<input id="s-yt" type="password" autocomplete="off">
+</label>
+<label>Clave de la API de Last.fm, para datos de artista y disco
+<input id="s-lfm" type="password" autocomplete="off">
+</label>
+<p><button type="button" id="s-save" class="primary">Guardar claves</button></p>
+<h3>Tus datos</h3>
+<p>
+<button type="button" id="s-export">Exportar copia</button>
+<label class="file">Restaurar copia <input id="s-import" type="file" accept=".json,application/json"></label>
+<button type="button" id="s-wipe" class="danger">Borrar todo</button>
+</p>
+</dialog>
+<script type="module" src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Tracklist ID (simulación)</title>
+<link rel="stylesheet" href="sim.css">
+<style>
+:root{--bg:#10141b;--surface:#1a1f29;--border:#2c3340;--accent:#5c8df6;--on:#fff;--max:700px}
+ol{padding-left:1.5rem}ol li{padding:.3rem 0;border-bottom:1px solid var(--border)}</style>
+<script src="sim.js"></script>
+</head>
+<body data-mod="tracklist">
+<div class="sim-wrap">
+<h1>Tracklist ID</h1><p class="muted">Pega un enlace de YouTube y lo analiza por tramos, buscando además cada tema encontrado.</p><form class="row" onsubmit="event.preventDefault();an()"><input value="https://www.youtube.com/watch?v=ejemplo" style="flex:1" aria-label="URL"><button data-ui="1" class="primary">Analizar</button></form><p id="s" class="small muted"></p><ol id="o"></ol><h2 style="font-size:1rem">Historial</h2><div id="h"></div>
+</div>
+<script>
+function an(){const s=document.getElementById('s'),o=document.getElementById('o');o.innerHTML='';let i=0;s.textContent='Analizando tramos (simulado)…';const iv=setInterval(()=>{const a=SIM.albums[i];o.innerHTML+=`<li><span class="muted small">${String(i*6).padStart(2,'0')}:00</span> ${SIM.esc(a.artist)} — ${SIM.esc(a.title)}</li>`;if(++i>=7){clearInterval(iv);s.textContent='7 temas identificados (datos inventados).'}},260)}
+document.getElementById('h').innerHTML=['Sesión de Nave Nueve · 27 temas','Turno de Noche en directo · 9 temas','Marea Baja, aniversario · 16 temas'].map(t=>`<div class="card row" style="justify-content:space-between;margin-bottom:.4rem"><span>${t}</span><button>Borrar</button></div>`).join('');
+</script>
+</body>
+</html>

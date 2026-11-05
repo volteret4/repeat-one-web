@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Discografía Gaps (simulación)</title>
+<link rel="stylesheet" href="sim.css">
+<style>
+:root{--bg:#0a0d10;--surface:#10151a;--border:#1d2730;--accent:#21d4ee;--on:#02181c;--text:#c9d3da;--muted:#667582;--max:900px}
+body{font-family:ui-monospace,monospace}.t{letter-spacing:.2em;color:var(--accent);font-size:1rem}details{border:1px solid var(--border);margin-bottom:.35rem;border-radius:3px;background:var(--surface)}summary{display:flex;gap:.6rem;align-items:center;padding:.5rem .7rem;cursor:pointer}summary b{flex:1;font-weight:400}.n{color:#f2a53b;font-weight:700}.tag{font-size:10px;color:var(--muted);border:1px solid var(--border);padding:0 .3rem}li{margin-bottom:.2rem}.ok{color:#6fcf97}</style>
+<script src="sim.js"></script>
+</head>
+<body data-mod="gaps">
+<div class="sim-wrap">
+<div class="row"><h1 class="t" style="margin:0">DISCOGRAFIA-GAPS</h1><button class="primary">Sincronizar</button><span class="muted small">última sync: hace 2 h</span></div><p class="row"><input id="q" placeholder="Buscar artista…"><label class="small"><input id="only" type="checkbox" checked> Solo con discos pendientes</label></p><div id="l"></div>
+</div>
+<script>
+const data=SIM.albums.map((a,i)=>({...a,tot:6+i%7,have:(6+i%7)-(i%4)}));function r(){const q=document.getElementById('q').value.toLowerCase(),only=document.getElementById('only').checked;
+document.getElementById('l').innerHTML=data.filter(d=>d.artist.toLowerCase().includes(q)&&(!only||d.tot>d.have)).map(d=>`<details><summary><b>${SIM.esc(d.artist)}</b><span class="tag">AIRSONIC</span><span class="tag">MUSPY</span><span class="n">${d.have}/${d.tot}</span></summary><ul>${Array.from({length:d.tot},(_,i)=>`<li class="${i<d.have?'ok':''}">${i<d.have?'✓':'·'} ${d.year-i} — ${SIM.esc(d.title)}${i?' '+(i+1):''}${i<d.have?'':' <button>¿Dónde está?</button>'}</li>`).join('')}</ul></details>`).join('')}
+document.getElementById('q').oninput=r;document.getElementById('only').onchange=r;r();
+</script>
+</body>
+</html>

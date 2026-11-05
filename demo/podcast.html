@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Podcast TTS (simulación)</title>
+<link rel="stylesheet" href="sim.css">
+<style>
+:root{--bg:#14171d;--surface:#1d2129;--border:#30353f;--accent:#6ea8ff;--on:#07162c;--max:820px}
+.a{display:flex;gap:.6rem;align-items:flex-start;padding:.5rem 0;border-bottom:1px solid var(--border)}progress{width:100%}</style>
+<script src="sim.js"></script>
+</head>
+<body data-mod="podcast">
+<div class="sim-wrap">
+<h1>Podcast TTS</h1><p class="muted">Elige artículos y conviértelos en episodios para tu app de podcasts.</p><div id="l" class="card"></div><p class="row" style="margin-top:.7rem"><button data-ui="1" class="primary" onclick="go()">Convertir selección</button><span class="small muted">Feed: <code>/podcast.xml</code></span></p><div id="p" hidden class="card"><div id="pt" class="small"></div><progress id="pb" max="100"></progress></div>
+</div>
+<script>
+const art=['La escena techno de los polígonos','Entrevista a Radio Faro','Cómo se graba una cinta','Historia del dub de sótano','Diez discos para trenes nocturnos'];document.getElementById('l').innerHTML=art.map((t,i)=>`<label class="a"><input type="checkbox" ${i<2?'checked':''}><span>${t}<div class="small muted">Revista inventada · ${6+i*3} min estimados</div></span></label>`).join('');
+function go(){const b=document.getElementById('pb'),p=document.getElementById('p'),t=document.getElementById('pt');p.hidden=false;let v=0;const iv=setInterval(()=>{v+=10;b.value=v;t.textContent=v<100?'Convirtiendo (simulado)… '+v+'%':'Simulación terminada: aquí no se ha creado ningún audio.';if(v>=100)clearInterval(iv)},180)}
+</script>
+</body>
+</html>

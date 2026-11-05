@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Bot Conciertos (simulación)</title>
+<link rel="stylesheet" href="sim.css">
+<style>
+:root{--bg:#090c20;--surface:#141837;--border:#2a2f5e;--accent:#8c5cf5;--on:#fff;--max:900px}
+.logo{font-size:1.3rem;font-weight:800}.logo i{color:var(--accent);font-style:normal}.e{display:grid;grid-template-columns:64px 1fr auto;gap:.8rem;align-items:center;margin-bottom:.5rem}.d{text-align:center;font-weight:700}.d small{display:block;color:var(--muted);font-weight:400}</style>
+<script src="sim.js"></script>
+</head>
+<body data-mod="conciertos">
+<div class="sim-wrap">
+<div class="row" style="margin-bottom:.9rem"><span class="logo">tum<i>tum</i>pá</span><select aria-label="Usuario"><option>usuario de ejemplo</option></select><span style="margin-left:auto" class="row"><button data-ui="1" class="on">Agenda</button><button>Calendario</button></span></div><div id="l"></div>
+</div>
+<script>
+const cs=['Sala Faro, Madrid','La Nave, Valencia','Club Polvo, Barcelona','Teatro del Puerto, Bilbao'];document.getElementById('l').innerHTML=SIM.albums.slice(0,7).map((a,i)=>`<div class="card e"><div class="d">${i*4+6}<small>${['nov','dic','ene'][i%3]}</small></div><div><b>${SIM.esc(a.artist)}</b><div class="muted small">${cs[i%4]}</div></div><button>Avisarme</button></div>`).join('');
+</script>
+</body>
+</html>

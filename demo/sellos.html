@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Sellos & Productores (simulación)</title>
+<link rel="stylesheet" href="sim.css">
+<style>
+:root{--bg:#121317;--surface:#1a1c22;--border:#2a2d35;--accent:#e8e6e3;--on:#111;--max:1400px}
+.c3{display:grid;grid-template-columns:240px 240px 1fr;border:1px solid var(--border);min-height:60vh}.c3>div{border-right:1px solid var(--border);overflow:hidden}.c3 h2{margin:0;padding:.5rem .7rem;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}.i{padding:.5rem .7rem;border-top:1px solid var(--border);cursor:pointer}.i:hover,.i.on{background:var(--surface)}.i small{display:block;color:var(--muted)}@media(max-width:760px){.c3{grid-template-columns:1fr}}</style>
+<script src="sim.js"></script>
+</head>
+<body data-mod="sellos">
+<div class="sim-wrap">
+<div class="row" style="margin-bottom:.7rem"><h1 style="margin:0">Sellos &amp; Productores</h1><button data-ui="1" class="on">Sellos</button><button>Productores</button><button>Masters</button></div><div class="c3"><div><h2>Sellos</h2><div id="a"></div></div><div><h2>Artistas</h2><div id="b"></div></div><div><h2>Discos</h2><div id="d"></div></div></div>
+</div>
+<script>
+let l=0,x=null;function r(){const ar=SIM.albums.filter(a=>a.label==SIM.labels[l]);x=x&&ar.find(a=>a.artist==x)?x:ar[0].artist;
+document.getElementById('a').innerHTML=SIM.labels.map((n,i)=>`<div class="i ${i==l?'on':''}" onclick="l=${i};x=null;r()">${n}<small>${SIM.albums.filter(a=>a.label==n).length} artistas</small></div>`).join('');
+document.getElementById('b').innerHTML=ar.map(a=>`<div class="i ${a.artist==x?'on':''}" onclick="x='${a.artist}';r()">${SIM.esc(a.artist)}<small>1 disco</small></div>`).join('');
+document.getElementById('d').innerHTML=ar.filter(a=>a.artist==x).map(a=>`<div class="i row">${SIM.cover(a.title,56)}<div>${SIM.esc(a.title)}<small>${a.year} · ${SIM.esc(a.label)} · ${a.genre}</small></div></div>`).join('')}r();
+</script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Discos Pendientes (simulación)</title>
+<link rel="stylesheet" href="sim.css">
+<style>
+:root{--bg:#0d1430;--surface:#172048;--border:#2a3566;--accent:#2fbf8f;--on:#04261b;--max:1100px}
+.ok{color:#2fbf8f}</style>
+<script src="sim.js"></script>
+</head>
+<body data-mod="pendientes">
+<div class="sim-wrap">
+<h1>Discos Pendientes</h1><div class="row" id="tabs" style="margin-bottom:.7rem"></div><div class="card row" style="margin-bottom:.7rem"><input id="q" placeholder="Artista"><select id="d"><option value="">Descargado: todos</option><option>sí</option><option>no</option></select><button>Actualizar calendario</button><button>Comprobar descargas</button></div><p class="muted small" id="n"></p><div class="scroll card"><table><thead><tr><th>Artista</th><th>Álbum</th><th>Fecha</th><th>Descargado</th></tr></thead><tbody id="t"></tbody></table></div>
+</div>
+<script>
+let tab='Pendientes';const ta=['Pendientes','Catálogo','Artistas','Sin escuchas'];const rows=SIM.albums.map((a,i)=>({...a,f:`${(i%27)+1}/11/2026`,dl:i%3!=0}));function r(){document.getElementById('tabs').innerHTML=ta.map(x=>`<button data-ui="1" class="${x==tab?'on':''}" onclick="tab='${x}';r()">${x}</button>`).join('');const q=document.getElementById('q').value.toLowerCase(),d=document.getElementById('d').value;const l=rows.filter(x=>x.artist.toLowerCase().includes(q)&&(!d||(d=='sí')==x.dl));document.getElementById('n').textContent=l.length+' tareas encontradas en '+tab;document.getElementById('t').innerHTML=l.map(x=>`<tr><td>${SIM.esc(x.artist)}</td><td>${SIM.esc(x.title)}</td><td>${x.f}</td><td class="ok">${x.dl?'✓':''}</td></tr>`).join('')}
+document.getElementById('q').oninput=r;document.getElementById('d').onchange=r;r();
+</script>
+</body>
+</html>

@@ -1,0 +1,235 @@
+# Cada servicio se activa con un perfil. Usa scripts/up.sh: clona los módulos elegidos y prepara su .env.
+services:
+  dieta-sonora:
+    profiles: ["dieta_sonora"]
+    build: ./services/dieta-sonora
+    container_name: dieta-sonora
+    user: "${PUID:-1000}:${PGID:-1000}"
+    restart: unless-stopped
+    env_file:
+      - path: ./services/dieta-sonora/.env
+        required: false
+    volumes:
+      - ./services/dieta-sonora/data:/data
+      - ${WATCH_TORRENTS_HOST_PATH:-./services/dieta-sonora/data/watch_torrents}:/watch_torrents
+      - ./services/dieta-sonora/.env:/app/.env
+    ports:
+      - "5010:5001"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks: [repeat_one]
+    labels:
+      ofelia.enabled: "true"
+      ofelia.job-exec.dieta-sonora-daily.schedule: "0 0 1 * * *"
+      ofelia.job-exec.dieta-sonora-daily.command: "bash main.sh"
+
+  bandcamp:
+    profiles: ["bandcamp"]
+    build: ./services/bancamp_imap
+    container_name: bandcamp
+    user: "${PUID:-1000}:${PGID:-1000}"
+    restart: unless-stopped
+    env_file:
+      - path: ./services/bancamp_imap/.env
+        required: false
+    volumes:
+      - ./services/bancamp_imap:/app
+    ports:
+      - "8765:8765"
+    networks: [repeat_one]
+    labels:
+      ofelia.enabled: "true"
+      ofelia.job-exec.bandcamp-update.schedule: "0 45 5 * * *"
+      ofelia.job-exec.bandcamp-update.command: "bash update.sh"
+
+  freshrss:
+    profiles: ["freshrss"]
+    build: ./services/freshrss_embeeds
+    container_name: freshrss_embeeds
+    user: "${PUID:-1000}:${PGID:-1000}"
+    restart: unless-stopped
+    env_file:
+      - path: ./services/freshrss_embeeds/.env
+        required: false
+    volumes:
+      - ./services/freshrss_embeeds:/app
+    ports:
+      - "8766:8765"
+    networks: [repeat_one]
+
+  charts-sellos:
+    profiles: ["charts_sellos"]
+    build: ./services/charts_sellos
+    container_name: charts-sellos
+    restart: unless-stopped
+    env_file:
+      - path: ./services/charts_sellos/.env
+        required: false
+    environment:
+      - CHARTS_DATA_DIR=/app/data
+    volumes:
+      - ./services/charts_sellos/.env:/app/.env
+      - ./services/charts_sellos/data:/app/data
+    ports:
+      - "8792:8792"
+    networks: [repeat_one]
+
+  charts-artistas:
+    profiles: ["charts_artistas"]
+    build: ./services/charts_artistas
+    container_name: charts-artistas
+    restart: unless-stopped
+    env_file:
+      - path: ./services/charts_artistas/.env
+        required: false
+    environment:
+      - CHARTS_DATA_DIR=/app/data
+    volumes:
+      - ./services/charts_artistas/.env:/app/.env
+      - ./services/charts_artistas/data:/app/data
+    ports:
+      - "8793:8793"
+    networks: [repeat_one]
+
+  escuchowsky:
+    profiles: ["escuchowsky"]
+    build:
+      context: ./services/escuchowsky
+      dockerfile: Dockerfile.escuchowsky
+    container_name: escuchowsky
+    restart: unless-stopped
+    env_file:
+      - path: ./services/escuchowsky/.env
+        required: false
+    environment:
+      - DB_PATH=/app/db/must_hear.db
+      - HOME=/tmp
+    volumes:
+      - ./services/escuchowsky/db:/app/db
+      - ./logs/escuchowsky:/app/logs
+    ports:
+      - "8751:5001"
+    networks: [repeat_one]
+
+  musthear:
+    profiles: ["escuchowsky"]
+    build:
+      context: ./services/escuchowsky
+      dockerfile: Dockerfile.musthear
+    container_name: musthear
+    restart: unless-stopped
+    env_file:
+      - path: ./services/escuchowsky/.env
+        required: false
+    environment:
+      - DB_PATH=/app/db/must_hear.db
+      - HOME=/tmp
+    volumes:
+      - ./services/escuchowsky/db:/app/db
+      - ./logs/musthear:/app/logs
+    ports:
+      - "8752:5002"
+    networks: [repeat_one]
+
+  tumtumpa-discover:
+    profiles: ["escuchowsky"]
+    build:
+      context: ./services/escuchowsky
+      dockerfile: Dockerfile.tumtumpa
+    container_name: tumtumpa-discover
+    restart: unless-stopped
+    env_file:
+      - path: ./services/escuchowsky/.env
+        required: false
+    environment:
+      - HOME=/tmp
+    volumes:
+      - ./logs/tumtumpa:/app/logs
+    ports:
+      - "8753:5001"
+    networks: [repeat_one]
+
+  encarta:
+    profiles: ["encarta"]
+    build: ./services/encarta
+    container_name: encarta
+    user: "${PUID:-1000}:${PGID:-1000}"
+    restart: unless-stopped
+    volumes:
+      - ./services/encarta/data:/data
+    ports:
+      - "8777:8765"
+    networks: [repeat_one]
+
+  sellos-discograficos:
+    profiles: ["sellos_discograficos"]
+    build: ./services/sellos-discograficos
+    container_name: sellos-discograficos
+    restart: unless-stopped
+    env_file:
+      - path: ./services/sellos-discograficos/.env
+        required: false
+    volumes:
+      - ./services/sellos-discograficos/musica_local.sqlite:/app/musica_local.sqlite:ro
+      - ./services/sellos-discograficos/covers:/app/covers
+    ports:
+      - "8757:8000"
+    networks: [repeat_one]
+
+  sellos-discograficos-web:
+    profiles: ["sellos_discograficos"]
+    build: ./services/sellos-discograficos/web
+    container_name: sellos-discograficos-web
+    restart: unless-stopped
+    depends_on:
+      - sellos-discograficos
+    ports:
+      - "8758:80"
+    networks: [repeat_one]
+
+  bot-conciertos:
+    profiles: ["bot_conciertos"]
+    build:
+      context: ./services/bot_conciertos
+      dockerfile: Dockerfile
+    container_name: bot-conciertos
+    restart: unless-stopped
+    env_file:
+      - path: ./services/bot_conciertos/.env
+        required: false
+    volumes:
+      - ./services/bot_conciertos/artist_tracker.db:/app/artist_tracker.db
+      - ./services/bot_conciertos/cache:/app/cache
+    networks: [repeat_one]
+
+  bot-conciertos-web:
+    profiles: ["bot_conciertos"]
+    build:
+      context: ./services/bot_conciertos
+      dockerfile: Dockerfile.web
+    container_name: bot-conciertos-web
+    restart: unless-stopped
+    env_file:
+      - path: ./services/bot_conciertos/.env
+        required: false
+    volumes:
+      - ./services/bot_conciertos/.env:/app/.env
+      - ./services/bot_conciertos/artist_tracker.db:/app/artist_tracker.db
+    ports:
+      - "8747:8747"
+    networks: [repeat_one]
+
+  # Tareas diarias. Necesita el socket de Docker: elígelo solo si confías en lo que corre en esta máquina.
+  ofelia:
+    profiles: ["scheduler"]
+    image: mcuadros/ofelia:latest
+    container_name: ofelia
+    restart: unless-stopped
+    command: daemon --docker
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks: [repeat_one]
+
+networks:
+  repeat_one:
+    driver: bridge

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Flujo Musical (simulación)</title>
+<link rel="stylesheet" href="sim.css">
+<style>
+:root{--bg:#121418;--surface:#1b1e24;--border:#2d313a;--accent:#6fcf97;--on:#04180c;--max:820px}
+.st{position:relative;padding:0 0 1.5rem 1.6rem;border-left:2px solid var(--border)}.st:before{content:"";position:absolute;left:-7px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--accent)}.st h2{margin:0;font-size:1.15rem}.t{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:.5rem;margin-top:.6rem}.t b{display:block}.ep{color:var(--accent);font:12px ui-monospace,monospace}</style>
+<script src="sim.js"></script>
+</head>
+<body data-mod="flujo">
+<div class="sim-wrap">
+<h1>Flujo de descubrimiento</h1><p class="muted" style="margin-bottom:1.5rem">De radar a favorito: por dónde pasa cada artista, con las herramientas de cada fase.</p><div id="s"></div>
+</div>
+<script>
+const F=[['01 · SCAN','Búsqueda','Dónde aparecen artistas nuevos.',[['FreshRSS','Blogs y revistas'],['Bandcamp','Avisos por género'],['Musthear','Listas imprescindibles']]],['02 · RADAR','Seguir','Se sigue al artista para no perderse nada.',[['Muspy','Avisos de lanzamientos'],['Artist Sync','Cruza tus servicios']]],['03 · ESCUCHA','Primera escucha','Se escucha lo nuevo y se decide.',[['Dieta Sonora','Pendientes'],['Discos Pendientes','Qué falta escuchar']]],['04 · COLECCIÓN','Se queda','Lo que pasa el filtro se guarda y se ordena.',[['Trasvase','Copia a la colección'],['Sellos & Productores','Navegar lo guardado']]]];document.getElementById('s').innerHTML=F.map(f=>`<div class="st"><div class="ep">${f[0]}</div><h2>${f[1]}</h2><p class="muted" style="margin:.2rem 0">${f[2]}</p><div class="t">${f[3].map(x=>`<div class="card"><b>${x[0]}</b><span class="small muted">${x[1]}</span></div>`).join('')}</div></div>`).join('');
+</script>
+</body>
+</html>

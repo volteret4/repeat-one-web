@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Trasvase (simulación)</title>
+<link rel="stylesheet" href="sim.css">
+<style>
+:root{--bg:#060a08;--surface:#0d1410;--border:#1a2a20;--accent:#2ee676;--on:#02130a;--text:#cfe8d8;--muted:#64806f;--max:1200px}
+body{font-family:ui-monospace,monospace}.t{letter-spacing:.2em;color:var(--accent);font-size:1rem}.ct b{color:var(--accent)}td.al{color:var(--accent)}</style>
+<script src="sim.js"></script>
+</head>
+<body data-mod="trasvase">
+<div class="sim-wrap">
+<div class="row"><h1 class="t" style="margin:0">TRASVASE // col manager</h1><button class="primary" style="margin-left:auto">Actualizar</button></div><p class="ct small muted">COLECCIÓN 1 <b>4 235</b> · COLECCIÓN 2 <b>6 302</b> · FALTAN EN C1 <b style="color:#f2a53b">12</b></p><div class="row" style="margin-bottom:.6rem"><input id="q" placeholder="Artista, álbum, género…"><button data-ui="1" onclick="document.querySelectorAll('input[type=checkbox]').forEach(c=>c.checked=true);c()">Sel. todo</button><button data-ui="1" onclick="document.querySelectorAll('input[type=checkbox]').forEach(c=>c.checked=false);c()">Limpiar</button><button class="primary" id="cp" style="margin-left:auto">Copiar (0)</button></div><div class="scroll"><table><thead><tr><th></th><th></th><th>Artista</th><th>Álbum</th><th>Año</th><th>Género</th><th>Sello</th></tr></thead><tbody id="t"></tbody></table></div>
+</div>
+<script>
+function c(){document.getElementById('cp').textContent='Copiar ('+document.querySelectorAll('tbody input:checked').length+')'}function r(){const q=document.getElementById('q').value.toLowerCase();document.getElementById('t').innerHTML=SIM.albums.filter(a=>JSON.stringify(a).toLowerCase().includes(q)).map(a=>`<tr><td><input type="checkbox" onchange="c()" aria-label="Elegir"></td><td>${SIM.cover(a.title,28)}</td><td>${SIM.esc(a.artist)}</td><td class="al">${SIM.esc(a.title)}</td><td>${a.year}</td><td>${a.genre}</td><td>${SIM.esc(a.label)}</td></tr>`).join('');c()}document.getElementById('q').oninput=r;r();
+</script>
+</body>
+</html>

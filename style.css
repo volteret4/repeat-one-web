@@ -1,0 +1,49 @@
+:root{--bg:#14161a;--surface:#1c1f26;--surface-2:#252933;--border:#2f3440;--text:#ebe8e2;--muted:#9299a3;--accent:#e8b04b;--public:#6fcf97;--sim:#e8b04b;--danger:#e07070}
+*{box-sizing:border-box}
+html{color-scheme:dark}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:1040px;margin:0 auto;padding:clamp(1.5rem,5vw,3.5rem) clamp(1rem,4vw,2rem) 2rem}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible,.panel:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.top{display:flex;gap:1rem;align-items:flex-start;margin-bottom:1.5rem}
+.glyph{width:56px;height:56px;color:var(--accent);flex:none}
+h1{margin:0;font-size:clamp(1.8rem,5vw,2.6rem);line-height:1.1;letter-spacing:.06em;font-weight:700}
+.lead{margin:.4rem 0 0;color:var(--muted);max-width:60ch}
+.filters{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.5rem}
+.chip{display:inline-flex;align-items:center;gap:.4rem;min-height:36px;padding:.25rem .8rem;border:1px solid var(--border);border-radius:99px;background:transparent;color:var(--muted);font:inherit;font-size:.85rem;cursor:pointer}
+.chip:hover{color:var(--text)}
+.chip.active{background:var(--surface-2);border-color:var(--accent);color:var(--text)}
+.dot{width:9px;height:9px;border-radius:50%;flex:none;display:inline-block}
+.dot.public{background:var(--public)}
+.dot.sim{border:2px dashed var(--sim)}
+.group{margin-top:2rem}
+.group h2{margin:0 0 .6rem;font-size:.75rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.7rem}
+.card{display:block;width:100%;padding:.85rem 1rem;text-align:left;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);font:inherit;cursor:pointer;transition:border-color .12s,transform .12s}
+.card:hover{border-color:var(--accent);transform:translateY(-1px)}
+.card[aria-expanded=true]{border-color:var(--accent);background:var(--surface-2)}
+.card.sim{border-style:dashed}
+.card-head{display:flex;align-items:center;gap:.5rem;font-weight:600}
+.card small{display:block;margin-top:.3rem;color:var(--muted);font-size:.8rem;line-height:1.35}
+footer{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--border);color:var(--muted);font-size:.85rem}
+footer p{margin:.3rem 0}
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:10}
+.panel{position:fixed;top:0;right:0;bottom:0;width:min(440px,100vw);overflow-y:auto;background:var(--surface);border-left:1px solid var(--border);padding:1.5rem;z-index:11;box-shadow:-12px 0 32px rgba(0,0,0,.4);animation:in .16s ease-out}
+.panel[hidden],.scrim[hidden]{display:none}
+@keyframes in{from{transform:translateX(24px);opacity:0}to{transform:none;opacity:1}}
+.close{position:absolute;top:.6rem;right:.6rem;width:40px;height:40px;background:transparent;border:0;border-radius:6px;color:var(--muted);font-size:1.6rem;line-height:1;cursor:pointer}
+.close:hover{color:var(--text);background:var(--surface-2)}
+.badge{display:inline-flex;align-items:center;gap:.4rem;font-size:.75rem;color:var(--muted);margin-bottom:.4rem}
+.panel h2{margin:0 2rem .7rem 0;font-size:1.5rem;line-height:1.2}
+.panel h3{margin:1.5rem 0 .5rem;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.panel p{margin:0 0 .7rem}
+.detail{color:var(--muted);font-size:.92rem}
+.warn{padding:.6rem .8rem;border:1px dashed var(--sim);border-radius:6px;font-size:.88rem}
+.btn{display:block;padding:.65rem .9rem;margin-bottom:.45rem;border-radius:6px;background:var(--accent);color:#17140c;font-weight:600;text-decoration:none}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent;border:1px solid var(--border);color:var(--text);font-weight:500}
+.btn.ghost:hover{border-color:var(--accent);filter:none}
+.empty{color:var(--muted);font-size:.9rem}
+code{font:.88em ui-monospace,monospace;padding:.08em .3em;background:var(--surface-2);border-radius:3px}
+@media (prefers-reduced-motion:reduce){.panel{animation:none}.card{transition:none}.card:hover{transform:none}}
+@media (max-width:480px){.glyph{width:44px;height:44px}.grid{grid-template-columns:1fr}.panel{padding:1.25rem}}

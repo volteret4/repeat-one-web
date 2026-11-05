@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Artist Sync (simulación)</title>
+<link rel="stylesheet" href="sim.css">
+<style>
+:root{--bg:#07090c;--surface:#0f1419;--border:#1c2530;--accent:#21d4ee;--on:#02181c;--text:#c9d3da;--muted:#667582;--max:1100px}
+body{font-family:ui-monospace,monospace}.t{letter-spacing:.2em;color:var(--accent);font-size:1rem}.y{color:#c79bff}.n{color:#6fcf97}</style>
+<script src="sim.js"></script>
+</head>
+<body data-mod="sync">
+<div class="sim-wrap">
+<div class="row"><h1 class="t" style="margin:0">ARTIST-SYNC</h1><button class="primary">Sincronizar</button></div><p class="small muted">TOTAL <b style="color:#fff">12</b> · MUSPY <b class="y">7</b> · AIRSONIC <b>8</b> · QBITTORRENT <b class="n">9</b> · LAST.FM <b style="color:#f66">5</b></p><input id="q" placeholder="Buscar artista…" style="margin-bottom:.5rem"><div class="scroll"><table><thead><tr><th>Artista</th><th>Muspy</th><th>Airsonic</th><th>qBittorrent</th><th>Last.fm</th><th></th></tr></thead><tbody id="t"></tbody></table></div>
+</div>
+<script>
+const d=SIM.artists.map((a,i)=>({a,m:i%3!=1,s:(i*3)%7,q:(i*5)%11,l:i%2?i*31:0}));function tog(i){d[i].m=!d[i].m;r();SIM.toast('Simulación: no se ha cambiado nada en Muspy.')}function r(){const q=document.getElementById('q').value.toLowerCase();document.getElementById('t').innerHTML=d.map((x,i)=>({x,i})).filter(({x})=>x.a.toLowerCase().includes(q)).map(({x,i})=>`<tr><td>${SIM.esc(x.a)}</td><td class="y">${x.m?'✓':'·'}</td><td>${x.s||'·'}</td><td class="n">${x.q||'·'}</td><td>${x.l||'·'}</td><td><button data-ui="1" onclick="tog(${i})">${x.m?'− Muspy':'+ Muspy'}</button></td></tr>`).join('')}document.getElementById('q').oninput=r;r();
+</script>
+</body>
+</html>

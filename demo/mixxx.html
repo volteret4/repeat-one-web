@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Mixxx Info (simulación)</title>
+<link rel="stylesheet" href="sim.css">
+<style>
+:root{--bg:#121317;--surface:#1b1d23;--border:#2c2f38;--accent:#7a5cf0;--on:#fff;--max:1400px}
+.l{display:grid;grid-template-columns:200px 1fr;gap:1rem}.fl label{display:block;padding:.15rem 0;font-size:13px}@media(max-width:700px){.l{grid-template-columns:1fr}}</style>
+<script src="sim.js"></script>
+</head>
+<body data-mod="mixxx">
+<div class="sim-wrap">
+<div class="row" style="margin-bottom:.7rem"><input id="q" placeholder="Artista, título, sello…" style="flex:1"><label class="small">BPM mín. <input id="b" type="number" value="0" style="width:70px"></label><button>Portadas</button><button class="primary">Playlist Wizard</button></div><div class="l"><div class="fl card" id="f"></div><div class="scroll"><table><thead><tr><th></th><th>Artista</th><th>Título</th><th>BPM</th><th>Tono</th><th>Sello</th></tr></thead><tbody id="t"></tbody></table></div></div>
+</div>
+<script>
+document.getElementById('f').innerHTML='<b class="small muted">GÉNERO / CARPETA</b>'+SIM.genres.map(g=>`<label><input type="checkbox" value="${g}" onchange="r()"> ${g}</label>`).join('');function r(){const q=document.getElementById('q').value.toLowerCase(),b=+document.getElementById('b').value,gs=[...document.querySelectorAll('#f input:checked')].map(x=>x.value);document.getElementById('t').innerHTML=SIM.albums.filter(a=>JSON.stringify(a).toLowerCase().includes(q)&&a.bpm>=b&&(!gs.length||gs.includes(a.genre))).map(a=>`<tr><td>${SIM.cover(a.title,30)}</td><td>${SIM.esc(a.artist)}</td><td>${SIM.esc(a.title)}</td><td>${a.bpm}.0</td><td>${a.key}</td><td>${SIM.esc(a.label)}</td></tr>`).join('')}document.getElementById('q').oninput=r;document.getElementById('b').oninput=r;r();
+</script>
+</body>
+</html>

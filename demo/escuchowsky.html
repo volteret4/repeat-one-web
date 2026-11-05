@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Escuchowsky (simulación)</title>
+<link rel="stylesheet" href="sim.css">
+<style>
+:root{--bg:#111214;--surface:#1a1b1f;--border:#2a2b31;--accent:#c9a227;--max:1100px}
+.lay{display:grid;grid-template-columns:210px 1fr;gap:1rem}.g div{display:flex;justify-content:space-between;padding:.35rem .5rem;cursor:pointer;border-radius:3px}.g div.on,.g div:hover{background:var(--surface)}.logo{font:italic 700 1.3rem Georgia,serif;color:var(--accent)}.c{display:grid;grid-template-columns:44px 1fr auto auto;gap:.6rem;align-items:center;padding:.35rem 0;border-bottom:1px solid var(--border)}@media(max-width:640px){.lay{grid-template-columns:1fr}}</style>
+<script src="sim.js"></script>
+</head>
+<body data-mod="escuchowsky">
+<div class="sim-wrap">
+<p class="logo">mustlisten</p><div class="row" style="margin-bottom:.8rem"><select aria-label="Usuario A"><option>usuario_uno</option></select><span class="muted">frente a</span><select aria-label="Usuario B"><option>usuario_dos</option></select><button class="primary">Comparar</button></div><div class="lay"><div class="g" id="g"></div><div id="c"></div></div>
+</div>
+<script>
+let g=0;function r(){document.getElementById('g').innerHTML=SIM.genres.map((x,i)=>`<div data-ui="1" class="${i==g?'on':''}" onclick="g=${i};r()">${x}<span class="muted small">${40+i*13}</span></div>`).join('');
+document.getElementById('c').innerHTML='<p class="muted small">Discos de '+SIM.genres[g]+' que escucha usuario_dos y usuario_uno no conoce</p>'+SIM.albums.slice(g).concat(SIM.albums.slice(0,g)).slice(0,8).map((a,i)=>`<div class="c">${SIM.cover(a.title,40)}<div>${SIM.esc(a.artist)}<div class="muted small">${SIM.esc(a.title)}</div></div><span class="muted small">${300-i*31} escuchas</span><button>Escuchar</button></div>`).join('')}r();
+</script>
+</body>
+</html>

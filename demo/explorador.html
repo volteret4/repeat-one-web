@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Explorador de Escuchas (simulación)</title>
+<link rel="stylesheet" href="sim.css">
+<style>
+:root{--bg:#0d1430;--surface:#172048;--border:#2a3566;--accent:#2fbf8f;--on:#04261b;--max:1100px}
+.chart{display:flex;align-items:flex-end;gap:2px;height:150px}.chart div{flex:1;background:var(--accent);min-width:2px}.tops{grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin-top:.8rem}.tr{display:grid;grid-template-columns:110px 1fr;gap:.4rem;align-items:center;font-size:12px;margin-bottom:.2rem}.tr span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}</style>
+<script src="sim.js"></script>
+</head>
+<body data-mod="explorador">
+<div class="sim-wrap">
+<h1>Explorador de Escuchas</h1><div class="card row" style="margin-bottom:.7rem"><input id="a" placeholder="Artista"><input placeholder="Disco"><input placeholder="Género"><button class="primary">Buscar</button></div><p class="small muted" id="n"></p><div class="card"><div class="small muted">ESCUCHAS EN EL TIEMPO</div><div class="chart" id="c" role="img" aria-label="Escuchas por mes, datos inventados"></div></div><div class="cols tops" id="t"></div>
+</div>
+<script>
+let h=3;document.getElementById('c').innerHTML=Array.from({length:72},(_,i)=>{h=(h*73+11)%97;return `<div style="height:${12+h*(.5+i/120)}%"></div>`}).join('');const topList=(n,l)=>`<div class="card"><div class="small muted">${n}</div>${l.map((x,i)=>`<div class="tr"><span>${SIM.esc(x)}</span><div class="bar" style="width:${100-i*14}%"></div></div>`).join('')}</div>`;function r(){const q=document.getElementById('a').value.toLowerCase();const ar=SIM.artists.filter(x=>x.toLowerCase().includes(q)).slice(0,5);document.getElementById('n').textContent=(ar.length*4217).toLocaleString('es')+' escuchas encontradas (inventadas)';document.getElementById('t').innerHTML=topList('TOP ARTISTAS',ar)+topList('TOP GÉNEROS',SIM.genres.slice(0,5))+topList('TOP SELLOS',SIM.labels.slice(0,5))}document.getElementById('a').oninput=r;r();
+</script>
+</body>
+</html>

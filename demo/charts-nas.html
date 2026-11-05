@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Charts del NAS (simulación)</title>
+<link rel="stylesheet" href="sim.css">
+<style>
+:root{--bg:#0b0b0d;--surface:#17171a;--border:#2a2a2e;--accent:#d02b2b;--on:#fff;--text:#ddd;--muted:#85858a;--max:1300px}
+.lay{display:grid;grid-template-columns:230px 1fr;gap:1rem}.side div{padding:.4rem .5rem;border-bottom:1px solid var(--border);cursor:pointer}.side div:hover,.side div.on{background:var(--surface)}
+.side small{display:block;color:var(--muted);font-size:11px}.mos{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:.6rem}.mos figure{margin:0;cursor:pointer}.mos img{width:100%;height:auto}.mos figcaption{font-size:12px;margin-top:.2rem}.own{color:#6fcf97}
+h1{letter-spacing:.14em;font-size:1rem;text-transform:uppercase}@media(max-width:640px){.lay{grid-template-columns:1fr}}</style>
+<script src="sim.js"></script>
+</head>
+<body data-mod="charts-nas">
+<div class="sim-wrap">
+<h1>Chart Viewer</h1><div class="lay"><div class="side" id="side"></div><div><div class="row" style="margin-bottom:.7rem"><input placeholder="URL de la colección o búsqueda" style="flex:1"><button class="primary">Obtener</button></div><div class="mos" id="mos"></div></div></div>
+</div>
+<script>
+const groups=['Techno de almacén','Dub de sótano','Post-punk ibérico','Ambient para trenes'];
+function show(g){document.querySelectorAll('#side div').forEach(d=>d.classList.toggle('on',d.dataset.g==g));document.getElementById('mos').innerHTML=SIM.albums.slice(g,g+9).concat(SIM.albums.slice(0,g)).map((a,i)=>`<figure onclick="SIM.toast('Simulación: aquí se abriría el vídeo del disco.')">${SIM.cover(a.title,160)}<figcaption>${SIM.esc(a.artist)}<br><span class="muted">${SIM.esc(a.title)}</span> ${i%3==0?'<span class="own">✓ lo tienes</span>':''}</figcaption></figure>`).join('')}
+document.getElementById('side').innerHTML=groups.map((g,i)=>`<div data-g="${i}" onclick="show(${i})">${g}<small>${9+i*7} álb. · ${3+i} EP</small></div>`).join('');show(0);
+</script>
+</body>
+</html>

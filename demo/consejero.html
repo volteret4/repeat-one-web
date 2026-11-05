@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Consejero Mix (simulación)</title>
+<link rel="stylesheet" href="sim.css">
+<style>
+:root{--bg:#17181c;--surface:#1f2127;--border:#2e3038;--accent:#e8b04b;--max:760px}
+.rec{display:grid;grid-template-columns:150px 1fr;gap:.8rem;margin-bottom:.7rem}.rec img{width:100%;height:auto}.tags a{font-size:12px;color:#b8a1ff;margin-right:.6rem}.rec input{width:100%;margin-top:.4rem}@media(max-width:560px){.rec{grid-template-columns:1fr}}</style>
+<script src="sim.js"></script>
+</head>
+<body data-mod="consejero">
+<div class="sim-wrap">
+<h1>Consejero Mix</h1><p class="muted small" id="sum"></p><div class="row" id="fil" style="margin-bottom:.8rem"></div><div id="list"></div>
+</div>
+<script>
+const recs=SIM.albums.slice(0,7).map((a,i)=>({...a,why:['Encaja con tus últimas sesiones de techno de almacén.','El mismo productor que tu tema mejor valorado.','Muy pinchado en sesiones parecidas a las tuyas.'][i%3],v:i==1?'👍':i==3?'👎':null}));
+let f='pendientes';const fil=document.getElementById('fil');function rf(){fil.innerHTML=['pendientes','todas','👍','🤷','👎'].map(x=>`<button data-ui="1" class="${x==f?'on':''}" onclick="f='${x}';r()">${x}</button>`).join('')}
+function vote(i,v){recs[i].v=recs[i].v==v?null:v;r()}
+function r(){rf();document.getElementById('sum').textContent=`${recs.length} recomendaciones · ${recs.filter(x=>!x.v).length} pendientes · ${recs.filter(x=>x.v=='👍').length} 👍`;
+document.getElementById('list').innerHTML=recs.map((a,i)=>({a,i})).filter(({a})=>f=='todas'||(f=='pendientes'?!a.v:a.v==f)).map(({a,i})=>`<div class="card rec">${SIM.cover(a.title,150)}<div><div class="row" style="justify-content:space-between"><b>${SIM.esc(a.artist)} — ${SIM.esc(a.title)}</b><span class="row">${['👍','🤷','👎'].map(v=>`<button data-ui="1" class="${a.v==v?'on':''}" onclick="vote(${i},'${v}')" aria-label="${v}">${v}</button>`).join('')}</span></div><div class="muted small">${SIM.esc(a.label)} · ${a.year}</div><p style="margin:.4rem 0">${a.why}</p><div class="tags"><a>YouTube</a><a>Bandcamp</a><a>Beatport</a><a>Discogs</a></div><input placeholder="nota (opcional): por qué sí o por qué no"></div></div>`).join('')||'<p class="muted">Nada con este filtro.</p>'}r();
+</script>
+</body>
+</html>

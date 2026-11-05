@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Dieta Sonora: estadísticas (simulación)</title>
+<link rel="stylesheet" href="sim.css">
+<style>
+:root{--bg:#0f0e0b;--surface:#16140f;--border:#2c2820;--accent:#d8b45a;--on:#191306;--text:#e6e1d3;--muted:#8a8473;--max:1050px}
+h1{font:400 2rem Georgia,serif}h1 i{color:var(--accent)}.k{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);margin:.8rem 0}.k div{background:var(--bg);padding:1rem}.k b{font:400 2.2rem Georgia,serif;color:var(--accent);display:block}.ch{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}.h{display:grid;grid-template-columns:150px 1fr 60px;gap:.5rem;align-items:center;font-size:12px;margin-bottom:.35rem}</style>
+<script src="sim.js"></script>
+</head>
+<body data-mod="stats">
+<div class="sim-wrap">
+<h1>Music <i>Stats</i></h1><select id="g" aria-label="Filtrar por género"><option value="">Todos los géneros</option></select><div class="k"><div><b id="k1"></b><span class="small muted">ÁLBUMES TOTALES</span></div><div><b id="k2"></b><span class="small muted">ESCUCHADOS</span></div><div><b id="k3"></b><span class="small muted">DÍAS HASTA ESCUCHAR</span></div></div><div class="card" id="c"></div>
+</div>
+<script>
+document.getElementById('g').innerHTML+=SIM.genres.map(g=>`<option>${g}</option>`).join('');function r(){const g=document.getElementById('g').value;const l=SIM.albums.filter(a=>!g||a.genre==g);document.getElementById('k1').textContent=l.length;const es=Math.ceil(l.length*.6);document.getElementById('k2').textContent=es;const dias=l.map((a,i)=>30+(a.title.length*37+i*53)%600);document.getElementById('k3').textContent=Math.round(dias.reduce((x,y)=>x+y,0)/l.length)+' d';const mx=Math.max(...dias);document.getElementById('c').innerHTML='<div class="small muted" style="margin-bottom:.5rem">POR ARTISTA · días entre el lanzamiento y la escucha</div>'+l.map((a,i)=>`<div class="h"><span>${SIM.esc(a.artist)}</span><div class="bar" style="width:${dias[i]/mx*100}%"></div><span class="muted">${dias[i]} d</span></div>`).join('')}document.getElementById('g').onchange=r;r();
+</script>
+</body>
+</html>
