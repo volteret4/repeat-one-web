@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Instalador REPEAT-ONE</title>
+<style>
+:root {
+  --bg: #f6f5f2; --panel: #ffffff; --ink: #1d1c1a; --muted: #6b6862; --line: #e2dfd8;
+  --accent: #2f5fd0; --accent-ink: #ffffff; --ok: #1f7a4a; --bad: #b3261e; --warn: #9a6400;
+  --code: #f0eee9; --chip: #efece6;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #161615; --panel: #1f1f1d; --ink: #ecebe7; --muted: #a19e97; --line: #33322f;
+    --accent: #7ea2ff; --accent-ink: #10131a; --ok: #5cc58d; --bad: #ff8a80; --warn: #e6b450;
+    --code: #2a2a27; --chip: #2b2b28;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink);
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+main { max-width: 960px; margin: 0 auto; padding: 24px 16px 80px; }
+h1 { font-size: 24px; margin: 0 0 4px; }
+h2 { font-size: 17px; margin: 0 0 12px; display: flex; gap: 10px; align-items: center; }
+h2 .n { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%;
+  background: var(--accent); color: var(--accent-ink); font-size: 13px; }
+h3 { font-size: 14px; margin: 18px 0 8px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+p.lead { color: var(--muted); margin: 0 0 24px; }
+section { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 18px; margin-bottom: 18px; }
+section[hidden] { display: none; }
+.req { display: grid; grid-template-columns: 20px 1fr; gap: 2px 10px; padding: 6px 0; border-top: 1px solid var(--line); }
+.req:first-child { border-top: 0; }
+.req .mark { font-weight: 700; }
+.req .ok { color: var(--ok); } .req .bad { color: var(--bad); } .req .opt { color: var(--muted); }
+.req small { color: var(--muted); grid-column: 2; }
+.req .fix { grid-column: 2; font-size: 13px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+.mod { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; cursor: pointer; display: flex; gap: 10px; align-items: flex-start; }
+.mod:hover { border-color: var(--accent); }
+.mod.sel { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.mod input { margin-top: 4px; }
+.mod .t { font-weight: 600; }
+.mod .d { color: var(--muted); font-size: 13px; }
+.chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.chip { background: var(--chip); border-radius: 4px; padding: 0 6px; font-size: 12px; color: var(--muted); }
+.chip.warn { color: var(--warn); } .chip.bad { color: var(--bad); }
+details.note { font-size: 13px; color: var(--muted); margin-top: 4px; }
+details.note summary { cursor: pointer; }
+.toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; }
+input[type=text], input[type=password], input[type=search], select {
+  width: 100%; padding: 7px 9px; border: 1px solid var(--line); border-radius: 6px;
+  background: var(--bg); color: var(--ink); font: inherit; }
+input:focus, select:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+.toolbar input[type=search] { max-width: 280px; }
+button { font: inherit; border: 1px solid var(--line); background: var(--panel); color: var(--ink);
+  padding: 7px 14px; border-radius: 6px; cursor: pointer; }
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+button:disabled { opacity: .5; cursor: default; }
+button.small { padding: 3px 9px; font-size: 13px; }
+.field { padding: 10px 0; border-top: 1px solid var(--line); }
+.field:first-of-type { border-top: 0; }
+.field label { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; margin-bottom: 4px; }
+.field code.k { font-weight: 600; }
+.field .help { color: var(--muted); font-size: 13px; margin: 0 0 6px; }
+.field .row { display: flex; gap: 6px; }
+.field .row > :first-child { flex: 1; }
+.status { font-size: 12px; }
+.status.ok { color: var(--ok); } .status.bad { color: var(--bad); } .status.warn { color: var(--warn); }
+.picker { margin-top: 8px; border: 1px dashed var(--line); border-radius: 6px; padding: 8px; max-height: 260px; overflow: auto; font-size: 14px; }
+.picker label { display: flex; gap: 8px; align-items: center; margin: 2px 0; }
+.picker input[type=text] { max-width: 200px; padding: 3px 6px; }
+pre { background: var(--code); border-radius: 6px; padding: 10px 12px; overflow-x: auto; margin: 6px 0; white-space: pre-wrap; word-break: break-all; font-size: 13px; }
+code { font-family: ui-monospace, "SFMono-Regular", Menlo, monospace; font-size: 13px; }
+.cmd { display: flex; gap: 8px; align-items: flex-start; }
+.cmd pre { flex: 1; }
+.radio { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+.radio label { display: flex; gap: 8px; align-items: baseline; }
+.sub { padding-left: 24px; }
+.msg { padding: 8px 12px; border-radius: 6px; background: var(--code); margin: 8px 0; font-size: 14px; }
+.msg.bad { color: var(--bad); } .msg.warn { color: var(--warn); }
+.actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 12px; flex-wrap: wrap; }
+.sticky { position: sticky; bottom: 0; background: var(--panel); padding-top: 10px; border-top: 1px solid var(--line); }
+a { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Instalador REPEAT-ONE</h1>
+  <p class="lead">Elige los módulos y rellena lo que piden. Esta página escribe los <code>.env</code>;
+    los contenedores los levantas tú con el comando del final, así no necesita el socket de Docker.</p>
+
+  <section id="s-req">
+    <h2><span class="n">1</span> Requisitos</h2>
+    <div id="req-list">Comprobando…</div>
+    <div class="actions"><button id="req-again" class="small">Volver a comprobar</button></div>
+  </section>
+
+  <section id="s-mod">
+    <h2><span class="n">2</span> Módulos</h2>
+    <div class="toolbar">
+      <input type="search" id="filter" placeholder="Filtrar módulos…" aria-label="Filtrar módulos">
+      <span id="sel-count" class="status"></span>
+    </div>
+    <div id="mod-list">Cargando…</div>
+    <div class="actions sticky"><button class="primary" id="go-vars" disabled>Continuar</button></div>
+  </section>
+
+  <section id="s-vars" hidden>
+    <h2><span class="n">3</span> Credenciales y rutas</h2>
+    <div id="prep-log"></div>
+    <div id="vars-list"></div>
+    <div class="actions"><button class="primary" id="save">Guardar configuración</button></div>
+  </section>
+
+
+  <section id="s-done" hidden>
+    <h2><span class="n">4</span> Levantar</h2>
+    <div id="done"></div>
+  </section>
+</main>
+<script>
+const $ = (s, el = document) => el.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const md = s => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>").replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>");
+
+async function api(path, body) {
+  const opt = body === undefined ? {} : {method: "POST", body: JSON.stringify(body),
+    headers: {"Content-Type": "application/json", "X-Instalador": "1"}};
+  const r = await fetch(path, opt);
+  const data = await r.json().catch(() => ({error: "respuesta no válida"}));
+  if (!r.ok) throw new Error(data.error || r.statusText);
+  return data;
+}
+
+let MODULES = [], GROUPS = [], selected = new Set(), VALUES = null;
+try { selected = new Set(JSON.parse(localStorage.getItem("instalador.sel") || "[]")); } catch {}
+const keepSel = () => { try { localStorage.setItem("instalador.sel", JSON.stringify([...selected])); } catch {} };
+
+// ── 1. requisitos
+async function loadReq() {
+  const box = $("#req-list");
+  box.textContent = "Comprobando…";
+  try {
+    const {checks} = await api("/api/requirements");
+    box.innerHTML = checks.map(c => {
+      const cls = c.ok ? "ok" : (c.required ? "bad" : "opt");
+      const mark = c.ok ? "✓" : (c.required ? "✗" : "·");
+      let extra = "";
+      if (!c.ok) {
+        if (c.fix) extra += `<div class="fix"><code>${esc(c.fix)}</code></div>`;
+        if (c.guide) extra += `<div class="fix">Guía de instalación: <a href="${esc(c.guide)}" target="_blank" rel="noopener">${esc(c.guide)}</a></div>`;
+      }
+      return `<div class="req"><span class="mark ${cls}">${mark}</span><span>${esc(c.name)}${c.required ? "" : " <span class='chip'>opcional</span>"}</span><small>${esc(c.detail)}</small>${extra}</div>`;
+    }).join("");
+  } catch (e) { box.innerHTML = `<div class="msg bad">${esc(e.message)}</div>`; }
+}
+$("#req-again").onclick = loadReq;
+
+// ── 2. módulos
+async function loadModules() {
+  const data = await api("/api/modules");
+  MODULES = data.modules; GROUPS = data.groups;
+  selected = new Set([...selected].filter(id => MODULES.some(m => m.id === id)));
+  renderModules();
+}
+function renderModules() {
+  const q = $("#filter").value.trim().toLowerCase();
+  const html = GROUPS.map(g => {
+    const mods = MODULES.filter(m => m.group === g && (!q || (m.id + m.label + m.desc).toLowerCase().includes(q)));
+    if (!mods.length) return "";
+    return `<h3>${esc(g)}</h3><div class="grid">` + mods.map(m => {
+      const chips = [];
+      if (m.ports.length) chips.push(`<span class="chip">:${m.ports.map(esc).join(" :")}</span>`);
+      if (!m.present) chips.push(`<span class="chip warn">se descargará</span>`);
+      if (m.sock) chips.push(`<span class="chip bad">monta docker.sock</span>`);
+      if (m.vars.length) chips.push(`<span class="chip">${m.vars.length} variables</span>`);
+      const note = m.notes ? `<details class="note" onclick="event.stopPropagation()"><summary>Antes de levantar</summary>${md(m.notes)}</details>` : "";
+      return `<label class="mod ${selected.has(m.id) ? "sel" : ""}"><input type="checkbox" data-id="${esc(m.id)}" ${selected.has(m.id) ? "checked" : ""}>
+        <span><span class="t">${esc(m.label)}</span> <code class="d">${esc(m.id)}</code><div class="d">${esc(m.desc)}</div><div class="chips">${chips.join("")}</div>${note}</span></label>`;
+    }).join("") + "</div>";
+  }).join("");
+  $("#mod-list").innerHTML = html || "<p>No hay módulos con ese nombre.</p>";
+  $("#sel-count").textContent = selected.size ? `${selected.size} elegidos` : "";
+  $("#go-vars").disabled = !selected.size;
+}
+$("#mod-list").addEventListener("change", e => {
+  const id = e.target.dataset.id; if (!id) return;
+  e.target.checked ? selected.add(id) : selected.delete(id);
+  keepSel(); renderModules();
+  $("#s-vars").hidden = $("#s-done").hidden = true;
+});
+$("#filter").addEventListener("input", renderModules);
+
+// ── 3. variables
+$("#go-vars").onclick = async () => {
+  const btn = $("#go-vars"); btn.disabled = true;
+  $("#s-vars").hidden = false; $("#s-done").hidden = true;
+  const needsClone = MODULES.filter(m => selected.has(m.id) && !m.present);
+  $("#prep-log").innerHTML = needsClone.length ? `<div class="msg">Descargando ${needsClone.map(m => esc(m.repo)).join(", ")}…</div>` : "";
+  $("#vars-list").innerHTML = "";
+  try {
+    const res = await api("/api/prepare", {profiles: [...selected]});
+    $("#prep-log").innerHTML = res.log.length ? `<pre>${esc(res.log.join("\n"))}</pre>` : "";
+    await loadModules();
+    VALUES = res.values;
+    renderVars();
+    $("#s-vars").scrollIntoView({behavior: "smooth"});
+  } catch (e) { $("#prep-log").innerHTML = `<div class="msg bad">${esc(e.message)}</div>`; }
+  btn.disabled = false;
+};
+
+function fieldHtml(v) {
+  const label = id => MODULES.find(m => m.id === id)?.label || id;
+  const users = v.used_by.length > 1 ? `<span class="chip">${v.used_by.map(label).map(esc).join(", ")}</span>` : "";
+  const state = v.kind === "secret"
+    ? (v.set && !v.empty ? `<span class="status ok">guardado</span>` : `<span class="status warn">sin valor</span>`)
+    : (v.set ? "" : `<span class="status warn">nuevo</span>`);
+  const placeholder = v.kind === "secret" && v.set && !v.empty ? "•••••• déjalo vacío para conservarlo" : (v.default ? `por defecto: ${v.default}` : "");
+  const type = v.kind === "secret" ? "password" : "text";
+  const val = v.kind === "secret" ? "" : (v.value ?? "");
+  let extra = "";
+  if (v.kind === "path") extra = `<button class="small" data-check="${esc(v.name)}">Comprobar</button>`;
+  return `<div class="field" data-name="${esc(v.name)}">
+    <label><code class="k">${esc(v.name)}</code> ${state} ${users}</label>
+    ${v.help ? `<p class="help">${esc(v.help)}</p>` : ""}
+    <div class="row"><input type="${type}" name="${esc(v.name)}" value="${esc(val)}" placeholder="${esc(placeholder)}" autocomplete="off" spellcheck="false">${extra}</div>
+    <div class="out"></div></div>`;
+}
+function renderVars() {
+  const vars = VALUES.vars;
+  if (!vars.length) { $("#vars-list").innerHTML = "<p>Los módulos elegidos no piden ninguna variable.</p>"; return; }
+  const shared = vars.filter(v => v.used_by.length > 1);
+  const own = id => vars.filter(v => v.used_by.length === 1 && v.used_by[0] === id);
+  let html = "";
+  if (shared.length) html += `<h3>Compartidas</h3>` + shared.map(fieldHtml).join("");
+  for (const id of selected) {
+    const list = own(id); if (!list.length) continue;
+    const m = MODULES.find(x => x.id === id);
+    html += `<h3>${esc(m.label)}</h3>` + list.map(fieldHtml).join("");
+  }
+  $("#vars-list").innerHTML = html;
+  vars.filter(v => v.kind === "path" && v.value).forEach(v => checkPath(v.name));
+}
+async function checkPath(name) {
+  const f = $(`.field[data-name="${name}"]`); if (!f) return;
+  const out = $(".out", f), path = $("input", f).value.trim();
+  const r = await api("/api/check-path", {path});
+  const txt = {
+    empty: ["warn", "vacía"],
+    dir: [r.writable ? "ok" : "warn", `carpeta existente${r.writable ? "" : " (sin permiso de escritura)"}`],
+    file: [r.writable ? "ok" : "warn", `fichero existente${r.writable ? "" : " (sin permiso de escritura)"}`],
+    missing: ["warn", r.parent_exists ? "no existe todavía (si es una carpeta de datos montada, revisa la ruta)" : "no existe ni su carpeta padre"],
+  }[r.state];
+  out.innerHTML = `<span class="status ${txt[0]}">${esc(txt[1])}${r.path && r.path !== path ? ` · ${esc(r.path)}` : ""}</span>`;
+}
+$("#vars-list").addEventListener("click", e => {
+  const b = e.target.closest("button[data-check]");
+  if (b) checkPath(b.dataset.check);
+});
+
+// ── 4. guardar
+const copyBtn = t => `<button class="small" data-copy="${esc(t)}">Copiar</button>`;
+const cmd = (title, t) => `<p>${title}</p><div class="cmd"><pre>${esc(t)}</pre>${copyBtn(t)}</div>`;
+$("#save").onclick = async () => {
+  const values = {};
+  $("#vars-list").querySelectorAll(".field > .row > input").forEach(i => values[i.name] = i.value);
+  const btn = $("#save"); btn.disabled = true;
+  try {
+    const r = await api("/api/save", {profiles: [...selected], values});
+    const c = r.commands;
+    let html = "";
+    html += `<div class="msg">Guardado en <code>.env</code>: ${r.root_written.length} variables${r.backup ? ` (copia anterior en <code>${esc(r.backup)}</code>)` : ""}.`;
+    if (r.module_files.length) html += ` También en ${r.module_files.map(f => `<code>${esc(f)}</code>`).join(", ")}.`;
+    html += `</div>`;
+    if (r.pending.length) html += `<div class="msg warn">Sin valor: ${r.pending.map(n => `<code>${esc(n)}</code>`).join(", ")}. Algunos módulos funcionan sin ellas, con menos datos; mira sus notas.</div>`;
+    if (r.skipped.length) html += `<div class="msg warn">Sin descargar todavía: ${r.skipped.map(esc).join(", ")}. up.sh los clonará y copiará lo guardado en el .env raíz.</div>`;
+    html += cmd("Ejecuta esto en la terminal del servidor para construir y levantar los módulos:", c.up);
+    if (MODULES.some(m => selected.has(m.id) && m.sock)) html += `<div class="msg warn">El módulo scheduler (ofelia) monta <code>/var/run/docker.sock</code> para lanzar sus tareas: quítalo de la lista si no lo quieres.</div>`;
+    html += `<h3>Después</h3>` + cmd("Estado:", c.ps) + cmd("Logs:", c.logs) + cmd("Parar:", c.down);
+    $("#done").innerHTML = html;
+    $("#s-done").hidden = false;
+    $("#s-done").scrollIntoView({behavior: "smooth"});
+    VALUES = await api("/api/values", {profiles: [...selected]});
+    renderVars();
+  } catch (e) {
+    $("#done").innerHTML = `<div class="msg bad">${esc(e.message)}</div>`; $("#s-done").hidden = false;
+  }
+  btn.disabled = false;
+};
+document.addEventListener("click", async e => {
+  const b = e.target.closest("[data-copy]"); if (!b) return;
+  try { await navigator.clipboard.writeText(b.dataset.copy); b.textContent = "Copiado"; }
+  catch { const r = document.createRange(); r.selectNodeContents(b.previousElementSibling); getSelection().removeAllRanges(); getSelection().addRange(r); b.textContent = "Selecciónalo y copia"; }
+  setTimeout(() => b.textContent = "Copiar", 1500);
+});
+
+loadReq();
+loadModules().catch(e => $("#mod-list").innerHTML = `<div class="msg bad">${esc(e.message)}</div>`);
+</script>
+</body>
+</html>

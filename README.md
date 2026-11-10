@@ -61,6 +61,18 @@ scripts/up.sh --profile dieta_sonora logs -f
 scripts/up.sh --profile dieta_sonora down
 ```
 
+### Instalador web
+
+Si prefieres una página a las preguntas de la terminal:
+
+```bash
+scripts/instalar.sh
+```
+
+Comprueba los requisitos y, si falta algo, te da el enlace a su guía de instalación. Luego abre una web en `127.0.0.1` (primer puerto libre desde el 8799, con un token en el enlace). En un servidor sin navegador, ábrela con el túnel `ssh -L` que muestra la terminal.
+
+En la web eliges módulos, se clonan los que falten y rellenas sus variables. Se guardan en el `.env` raíz, con copia en `.env.bak-instalador-*`, y en el `.env` de cada módulo. Las claves nunca vuelven al navegador. La web no toca Docker ni su socket: al final te da el comando `scripts/up.sh --yes --profile …` para que lo ejecutes tú.
+
 ### Antes de arrancar cada módulo
 
 - **dieta_sonora**: basta con `MUSPY_USERID`. Con `NAS_URL` y `NAS_API_KEY` añade las descargas desde tu NAS de música compartida. Define `WATCH_TORRENTS_HOST_PATH` en el `.env` raíz con la carpeta que vigila tu cliente de torrents. Para poblarlo sin esperar a la tarea diaria: `docker exec dieta-sonora bash main.sh`.
