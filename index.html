@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self' https://cloud.umami.is; img-src 'self' data:; base-uri 'none'; form-action 'none'; connect-src 'self' https://cloud.umami.is https://api-gateway.umami.dev">
 <meta name="referrer" content="no-referrer">
 <title>REPEAT-ONE: herramientas para escuchar música con calma</title>
 <meta name="description" content="Índice público de REPEAT-ONE: prueba cada módulo y aprende a instalarlo en tu propio servidor.">
@@ -20,10 +20,12 @@
 <p class="lead">Herramientas para encontrar, ordenar y escuchar música. Pulsa un módulo para saber qué hace, probarlo e instalarlo en tu servidor.</p>
 </div>
 </header>
-<div class="filters" role="group" aria-label="Filtrar módulos">
-<button type="button" class="chip active" data-filter="all" aria-pressed="true">Todos <span id="n-all"></span></button>
-<button type="button" class="chip" data-filter="public" aria-pressed="false"><span class="dot public"></span>Versión pública <span id="n-public"></span></button>
-<button type="button" class="chip" data-filter="sim" aria-pressed="false"><span class="dot sim"></span>Simulación <span id="n-sim"></span></button>
+<div class="filters" id="f-tags" role="group" aria-label="Filtrar por uso"></div>
+<div class="filters" id="f-kind" role="group" aria-label="Filtrar por tipo">
+<button type="button" class="chip active" data-kind="all" aria-pressed="true">Todos <span id="n-all"></span></button>
+<button type="button" class="chip" data-kind="public" aria-pressed="false"><span class="dot public"></span>Versión pública <span id="n-public"></span></button>
+<button type="button" class="chip" data-kind="sim" aria-pressed="false"><span class="dot sim"></span>Simulación <span id="n-sim"></span></button>
+<button type="button" class="chip" data-kind="blog" aria-pressed="false"><span class="dot blog"></span>Blogs <span id="n-blog"></span></button>
 </div>
 <main id="groups"></main>
 <footer>

@@ -1,5 +1,5 @@
 // Índice: rejilla por grupos y panel lateral. Los textos se insertan siempre como texto.
-import {GROUPS, MODULES, README} from './modules.js';
+import {GROUPS, MODULES, README, TAGS} from './modules.js';
 
 const $ = id => document.getElementById(id);
 const panel = $('panel'), scrim = $('scrim');
@@ -18,33 +18,45 @@ function el(tag, attrs = {}, ...kids) {
 const external = url => /^https?:/.test(url) ? {target: '_blank', rel: 'noopener'} : {};
 const link = (label, url, cls) => el('a', {class: cls, href: url, ...external(url)}, label + (/^https?:/.test(url) ? ' ↗' : ''));
 
-function renderGrid(filter) {
+const KIND_LABEL = {public: 'Versión pública', sim: 'Simulación', blog: 'Blog'};
+const filters = {kind: 'all', tag: null};
+const matches = m => (filters.kind === 'all' || m.kind === filters.kind) && (!filters.tag || m.tags.includes(filters.tag));
+
+function renderGrid() {
   const box = $('groups');
   box.replaceChildren();
+  let shown = 0;
   for (const g of GROUPS) {
-    const items = MODULES.filter(m => m.group === g && (filter === 'all' || m.kind === filter));
+    const items = MODULES.filter(m => m.group === g && matches(m));
+    shown += items.length;
     if (!items.length) continue;
     const grid = el('div', {class: 'grid'});
     for (const m of items) {
       const card = el('button', {type: 'button', class: 'card ' + m.kind, 'data-id': m.id, 'aria-haspopup': 'dialog', 'aria-expanded': 'false'},
-        el('span', {class: 'card-head'}, el('span', {class: 'dot ' + m.kind, title: m.kind === 'public' ? 'Versión pública' : 'Simulación'}), m.label),
+        el('span', {class: 'card-head'}, el('span', {class: 'dot ' + m.kind, title: KIND_LABEL[m.kind]}), m.label),
         el('small', {}, m.short));
       card.addEventListener('click', () => { location.hash = m.id; });
       grid.append(card);
     }
     box.append(el('section', {class: 'group'}, el('h2', {}, g), grid));
   }
+  if (!shown) box.append(el('p', {class: 'empty'}, 'Ningún módulo cumple los dos filtros.'));
   markOpen();
 }
 
 function panelBody(m) {
   const body = [
-    el('div', {class: 'badge'}, el('span', {class: 'dot ' + m.kind}), m.kind === 'public' ? 'Versión pública disponible' : 'Solo despliegue local'),
+    el('div', {class: 'badge'}, el('span', {class: 'dot ' + m.kind}), {public: 'Versión pública disponible', sim: 'Solo despliegue local', blog: 'Blog'}[m.kind]),
     el('h2', {id: 'p-title'}, m.label),
     el('h3', {}, 'Qué hace'),
     el('p', {}, m.what),
     m.detail ? el('p', {class: 'detail'}, m.detail) : null,
   ];
+  if (m.kind === 'blog') {
+    body.push(el('h3', {}, 'Leer'), ...m.try.map(t => link(t.label, t.url, 'btn')),
+      el('h3', {}, 'Código'), ...m.repos.map(r => link(`Repositorio ${r.label}`, r.url, 'btn ghost')));
+    return body;
+  }
   if (m.kind === 'public') {
     body.push(el('h3', {}, 'Versión pública de prueba'), ...m.try.map(t => link(t.label, t.url, 'btn')));
   } else {
@@ -107,16 +119,34 @@ document.addEventListener('keydown', e => {
 });
 window.addEventListener('hashchange', route);
 
-document.querySelectorAll('.chip').forEach(chip => chip.addEventListener('click', () => {
-  document.querySelectorAll('.chip').forEach(c => {
+function setPressed(row, chip) {
+  row.querySelectorAll('.chip').forEach(c => {
     c.classList.toggle('active', c === chip);
     c.setAttribute('aria-pressed', String(c === chip));
   });
-  renderGrid(chip.dataset.filter);
+}
+
+// Fila de usos: se pulsa uno para filtrar y otra vez para quitarlo.
+const tagRow = $('f-tags');
+for (const t of TAGS) {
+  const n = MODULES.filter(m => m.tags.includes(t.id)).length;
+  const chip = el('button', {type: 'button', class: 'chip', 'data-tag': t.id, 'aria-pressed': 'false'}, t.label + ' ', el('span', {}, String(n)));
+  chip.addEventListener('click', () => {
+    filters.tag = filters.tag === t.id ? null : t.id;
+    setPressed(tagRow, filters.tag ? chip : null);
+    renderGrid();
+  });
+  tagRow.append(chip);
+}
+
+const kindRow = $('f-kind');
+kindRow.querySelectorAll('.chip').forEach(chip => chip.addEventListener('click', () => {
+  filters.kind = chip.dataset.kind;
+  setPressed(kindRow, chip);
+  renderGrid();
 }));
 
 $('n-all').textContent = MODULES.length;
-$('n-public').textContent = MODULES.filter(m => m.kind === 'public').length;
-$('n-sim').textContent = MODULES.filter(m => m.kind === 'sim').length;
-renderGrid('all');
+for (const k of ['public', 'sim', 'blog']) $('n-' + k).textContent = MODULES.filter(m => m.kind === k).length;
+renderGrid();
 route();
