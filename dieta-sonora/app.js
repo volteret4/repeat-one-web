@@ -37,13 +37,14 @@ function settings() {
 }
 
 let statusTimer;
-function notify(msg, isError = false) {
+// sticky: el aviso se queda hasta el siguiente (para esperas largas, como la importación de Muspy).
+function notify(msg, isError = false, sticky = false) {
   const s = $('status');
   s.textContent = msg;
   s.classList.toggle('error', isError);
   s.hidden = false;
   clearTimeout(statusTimer);
-  if (!isError) statusTimer = setTimeout(() => { s.hidden = true; }, 7000);
+  if (!isError && !sticky) statusTimer = setTimeout(() => { s.hidden = true; }, 7000);
 }
 
 function coverImg(r, size = 250) {
@@ -188,6 +189,10 @@ async function ingest(raw, source) {
 window.addEventListener('message', async e => {
   if (!MUSPY_ORIGINS.includes(e.origin) || !e.data || typeof e.data !== 'object') return;
   if (e.data.type === 'ds-error') { notify(`Muspy: ${String(e.data.message).slice(0, 200)}`, true); return; }
+  if (e.data.type === 'ds-progress') {
+    if (!window.__dsImporting) notify(`Recibiendo tus lanzamientos de Muspy: ${Number(e.data.count) || 0}… No cierres esta página.`, false, true);
+    return;
+  }
   if (e.data.type !== 'ds-muspy' || !Array.isArray(e.data.releases)) return;
   e.source?.postMessage('ds-ack', e.origin);
   // El marcador reenvía hasta recibir respuesta: solo se procesa el primer envío.
@@ -306,4 +311,4 @@ try {
   notify(`Este navegador no permite guardar datos aquí (${err.message}).`, true);
 }
 render();
-if (location.hash === '#muspy') notify('Esperando los discos de Muspy…');
+if (location.hash === '#muspy') notify('Esperando los discos de Muspy… Con muchos artistas tarda un rato: no cierres esta página.', false, true);

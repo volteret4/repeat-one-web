@@ -113,11 +113,12 @@ export function bookmarkletSource(target, targetOrigin) {
       if (!id) id = finds(new DOMParser().parseFromString(await (await fetch('/releases', {credentials: 'same-origin'})).text(), 'text/html'));
       if (!id) throw new Error('No encuentro tu ID: inicia sesión en muspy.com.');
       const releases = [];
-      for (let offset = 0; offset < 5000; offset += 100) {
+      for (let offset = 0; offset < 20000; offset += 100) {
         const r = await fetch('/api/1/releases/' + id + '?limit=100&offset=' + offset, {credentials: 'same-origin'});
         if (!r.ok) throw new Error('Muspy respondió ' + r.status);
         const page = await r.json();
         releases.push(...page);
+        win.postMessage({type: 'ds-progress', count: releases.length}, ORIGIN);
         if (page.length < 100) break;
         await new Promise(res => setTimeout(res, 300));
       }
@@ -133,5 +134,5 @@ export function bookmarkletSource(target, targetOrigin) {
     }
   };
   const code = fn.toString().replaceAll('TARGET', JSON.stringify(target)).replaceAll('ORIGIN', JSON.stringify(targetOrigin));
-  return 'javascript:' + encodeURIComponent(`(${code})()`);
+  return 'javascript:' + encodeURIComponent(`(${code})();void 0`);
 }
