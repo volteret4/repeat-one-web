@@ -129,7 +129,7 @@ async def main(a):
             if k.split('?')[0] not in a.post_ro:
                 return await route.fulfill(status=200, content_type='application/json', body='{"ok":true,"simulated":true}')
             k += '#b' + fnv(req.post_data or '')
-        resp = await route.fetch()
+        resp = await route.fetch(timeout=600_000)  # flujos largos (p. ej. escuchas de Last.fm)
         body = await resp.body()
         if resp.ok and k.split('#')[0].endswith('api/owned'):
             # Se guarda disco a disco: la demo contesta cualquier combinación que pida la página.

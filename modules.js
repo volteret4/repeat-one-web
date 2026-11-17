@@ -51,7 +51,7 @@ export const MODULES = [
   {id: 'escuchowsky', label: 'Escuchowsky', group: 'Ampliando', kind: 'sim', tags: ['imprescindible', 'nuevo'], short: 'Compara las escuchas de varios usuarios',
     what: 'Compara las escuchas de varios usuarios de Last.fm por género y te dice qué disfruta cada uno que el otro no conoce.',
     detail: 'La demo trae las escuchas de un solo usuario cruzadas con seis colecciones. En la versión local cargas los usuarios reales de Last.fm que quieras, tus amigos incluidos.',
-    demo: 'escuchowsky',
+    demo: 'escuchowsky', replay: true,
     repos: [{label: 'escuchowsky', url: GH + 'escuchowsky'}], profile: 'escuchowsky'},
   {id: 'discover', label: 'Tumtumpa Discover', group: 'Ampliando', kind: 'public', tags: ['ampliando'], short: 'Lo que escuchan tus amigos y a ti te falta',
     what: 'Compara tu historial de Last.fm con el de tus amigos y te enseña los discos que ellos escuchan y tú no, con portada y enlaces para escucharlos.',

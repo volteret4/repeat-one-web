@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head><link rel="stylesheet" href="../_replay/replay.css"><script>window.REPLAY = {"mod": "escuchowsky", "root": "", "ports": [8780], "map": {"api/collection?slug=genre_ambient": "data/b96a30238c6e.json", "api/collection?slug=genre_ambient_americana": "data/f10b14881e7e.json", "api/collection?slug=genre_black_ambient": "data/f4a520a2559a.json", "api/collection?slug=genre_dark_ambient": "data/dedc691ed3eb.json", "api/collection?slug=genre_ritual_ambient": "data/c2a49cd19b08.json", "api/collection?slug=genre_tribal_ambient": "data/68a421f6f34f.json", "api/collections": "data/3eadcc962a69.json", "api/genre_tree": "data/f0cdf25cfec7.json", "api/scrobbles?user=paqueradejere": "data/14c65b862909.json", "img/boar.png": "img/boar.png", "p8780/owned-badges.js": "p8780/owned-badges.js", "static/css/genres.css": "static/css/genres.css", "static/css/theme-palettes.css": "static/css/theme-palettes.css", "static/js/genres.js": "static/js/genres.js", "static/js/owned-loader.js": "static/js/owned-loader.js"}, "readOnlyPosts": ["p8780/api/owned"], "search": {}};</script><script src="../_replay/replay.js"></script><script defer src="https://cloud.umami.is/script.js" data-website-id="5d84fd6c-0760-4a0c-a2d0-ffabb82179f5"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>mustlisten</title>
+<link rel="icon" type="image/png" href="./img/boar.png" />
+<!-- Umami Analytics -->
+<script defer src="https://cloud.umami.is/script.js" data-website-id="c8ed5b67-0cf6-4b14-b498-a324fd4371ad"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./static/css/genres.css">
+<link rel="stylesheet" href="./static/css/theme-palettes.css">
+<script src="./static/js/owned-loader.js"></script>
+</head>
+<body>
+
+<!-- ── Header ─────────────────────────────────────────────────────────── -->
+<header style="height:52px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 1.2rem;gap:1rem;flex-shrink:0;position:sticky;top:0;z-index:100;">
+  <div class="logo" style="font-size:1.3rem">must<em>listen</em></div>
+  <div style="flex:1"></div>
+  <div id="badge-inline" style="display:none;align-items:center;gap:0.45rem;cursor:pointer;">
+    <img id="badge-avatar" src="" alt="" style="width:26px;height:26px;border-radius:50%;object-fit:cover;background:var(--bg3);">
+    <span id="badge-name" style="font-family:var(--mono);font-size:0.75rem;color:var(--accent);"></span>
+    <span id="badge-plays" style="font-family:var(--mono);font-size:0.65rem;color:var(--ink3);"></span>
+  </div>
+  <button id="btn-usuario">USUARIO</button>
+</header>
+
+<input type="file" id="inp-session"       accept=".json" style="display:none">
+<input type="file" id="inp-extra-json"    accept=".json" style="display:none">
+
+<!-- ── User modal ──────────────────────────────────────────────────────── -->
+<div id="user-modal-bg">
+  <div id="user-modal">
+    <button class="modal-close">✕</button>
+
+    <!-- Usuario principal -->
+    <div class="um-section">
+      <div class="um-section-title">Usuario principal</div>
+      <div id="um-current-user">
+        <img id="um-avatar" src="" alt="" style="width:32px;height:32px;border-radius:50%;object-fit:cover;background:var(--bg3);flex-shrink:0">
+        <div style="flex:1;min-width:0">
+          <div class="um-user-name" id="um-username"></div>
+          <div class="um-user-meta" id="um-usermeta"></div>
+        </div>
+        <button class="btn-sm" id="btn-sync-session">↻ Sync</button>
+      </div>
+      <div class="um-row">
+        <input id="inp-user" type="text" value="paqueradejere" placeholder="Usuario Last.fm" autocomplete="off" spellcheck="false">
+        <button class="btn" id="btn-go" style="padding:0.4rem 1rem;font-size:0.72rem;">Last.fm</button>
+      </div>
+      <div class="um-progress" id="um-progress"></div>
+      <div class="um-actions">
+        <button class="btn-sm" id="btn-import">↑ Importar JSON</button>
+        <button class="btn-sm" id="btn-save-session" style="display:none">↓ Guardar JSON</button>
+      </div>
+      <div class="um-sep">Sesiones guardadas en este navegador</div>
+      <div id="idb-list"><span class="idb-empty">Sin sesiones guardadas</span></div>
+    </div>
+
+    <!-- Usuarios adicionales (colapsable) -->
+    <div class="um-section collapsed" id="um-sec-extra">
+      <div class="um-section-title" style="display:flex;align-items:center;cursor:pointer">
+        Usuarios secundarios
+        <button class="um-section-toggle" tabindex="-1">▾</button>
+      </div>
+      <div class="um-section-body">
+        <div id="extra-users-list"></div>
+        <div class="um-row" style="margin-top:0.5rem">
+          <input id="inp-extra-user" type="text" placeholder="usuario last.fm" autocomplete="off" spellcheck="false">
+          <button class="btn-sm" id="btn-extra-lfm">Last.fm</button>
+          <button class="btn-sm" id="btn-extra-json">↑ JSON</button>
+        </div>
+        <div class="um-progress" id="um-extra-progress"></div>
+        <div class="um-sep" style="display:flex;align-items:center;justify-content:space-between">
+          Amigos del usuario principal
+          <button class="btn-sm" id="btn-load-friends" style="font-size:0.65rem">Cargar</button>
+        </div>
+        <div id="friends-list"></div>
+        <div id="idb-extra-sep" class="um-sep" style="display:none">Desde sesiones guardadas en este navegador</div>
+        <div id="idb-extra-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- About modal -->
+<div id="about-overlay">
+  <div id="about-modal">
+    <button class="about-close">✕</button>
+    <h2>mustlisten</h2>
+    <p>Cruza tu historial de <b>Last.fm</b> con listas de álbumes imprescindibles para saber qué te falta escuchar.</p>
+
+    <h3>Primeros pasos</h3>
+    <ul>
+      <li>Introduce tu usuario de Last.fm y pulsa <b>Go</b> para descargar tus scrobbles.</li>
+      <li>Selecciona una <b>colección</b> en el panel izquierdo para ver qué álbumes has escuchado (dorado) y cuáles te faltan.</li>
+      <li>Usa los filtros de la barra superior para ver solo los escuchados, los pendientes o los recomendados.</li>
+    </ul>
+
+    <h3>Filtros y ordenación</h3>
+    <ul>
+      <li>Filtra por <b>género</b> o por <b>década</b> en el panel lateral.</li>
+      <li>Ordena por posición en la lista, año o artista.</li>
+    </ul>
+
+    <h3>Panel de detalles</h3>
+    <ul>
+      <li>Haz clic en cualquier portada para ver estadísticas de Last.fm, tags, descripción del álbum y bio del artista.</li>
+      <li>Enlace directo a MusicBrainz y YouTube (o búsqueda si no hay ID guardado).</li>
+    </ul>
+
+    <h3>Usuarios secundarios</h3>
+    <ul>
+      <li>Añade amigos desde el botón <b>Usuario</b> → sección <i>Usuarios secundarios</i>.</li>
+      <li>Los puntos de colores en las portadas indican si ese usuario ha escuchado el álbum.</li>
+      <li>Usa el panel <b>Descubrir</b> para ver qué álbumes recomienda un usuario secundario que tú aún no has escuchado.</li>
+      <li>Puedes cargar la lista de amigos de tu usuario principal para añadirlos rápidamente.</li>
+    </ul>
+
+    <h3>Sesiones</h3>
+    <ul>
+      <li>Los scrobbles se guardan en <b>IndexedDB</b> del navegador: la próxima vez no hace falta re-descargar.</li>
+      <li>Exporta / importa sesiones como JSON o sincroniza incrementalmente con el botón <b>↻ Sync</b>.</li>
+    </ul>
+
+    <h3>Servicios</h3>
+    <div class="about-services">
+      <a class="about-svc lfm" href="https://www.last.fm" target="_blank" rel="noopener">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M10.596 1.9C6.07 2.38 2.38 6.07 1.9 10.596 1.25 16.7 5.918 22 12 22c5.12 0 9.417-3.56 10.578-8.32.07-.29-.08-.58-.36-.67l-2.1-.68c-.27-.09-.56.05-.65.32-.65 1.98-2.47 3.35-4.62 3.35-2.65 0-4.8-2.15-4.8-4.8 0-2.65 2.15-4.8 4.8-4.8 1.8 0 3.36.97 4.2 2.42l-1.7.54c-.28.09-.42.4-.3.67l2.4 5.82c.12.28.43.42.71.3l5.82-2.4c.28-.12.42-.43.3-.71l-.68-1.64c-.12-.28-.43-.42-.71-.3l-1.32.54C14.26 4.12 12.28 1.9 10.596 1.9z"/>
+        </svg>
+        Last.fm
+      </a>
+      <a class="about-svc mb" href="https://musicbrainz.org" target="_blank" rel="noopener">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+        </svg>
+        MusicBrainz
+      </a>
+      <a class="about-svc gh" href="https://github.com/HuanPc/escuchowsky" target="_blank" rel="noopener">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+        </svg>
+        GitHub
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile sidebar overlay + FAB -->
+<div id="sidebar-overlay"></div>
+<button id="sidebar-fab">☰</button>
+
+<!-- ── App shell ───────────────────────────────────────────────────────── -->
+<div class="app-shell">
+
+  <!-- ── Sidebar ─────────────────────────────────────────────────────── -->
+  <aside id="sidebar">
+    <div class="sb-scroll">
+
+      <!-- Géneros (árbol de géneros) -->
+      <div class="sb-panel open" id="panel-colls">
+        <div class="sb-panel-hdr">
+          <span class="sb-panel-title">Géneros</span>
+          <span class="sb-panel-arrow">▶</span>
+        </div>
+        <div class="sb-panel-body" id="colls-body">
+          <div class="sb-empty">Cargando…</div>
+        </div>
+      </div>
+
+      <!-- Géneros (tags de álbumes de la colección) -->
+      <div class="sb-panel" id="panel-genres">
+        <div class="sb-panel-hdr">
+          <span class="sb-panel-title">Géneros</span>
+          <span class="sb-panel-arrow">▶</span>
+        </div>
+        <div class="sb-panel-body">
+          <div class="sb-pills" id="genre-pills">
+            <div class="sb-empty">Selecciona una colección</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fechas -->
+      <div class="sb-panel open" id="panel-dates">
+        <div class="sb-panel-hdr">
+          <span class="sb-panel-title">Fechas</span>
+          <span class="sb-panel-arrow">▶</span>
+        </div>
+        <div class="sb-panel-body">
+          <div class="sb-pills" id="decade-pills">
+            <div class="sb-empty">Selecciona una colección</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- About + Géneros link -->
+      <a class="sb-about-btn" href="./genres" target="_blank" style="text-decoration:none;display:block;text-align:center">Árbol géneros ↗</a>
+      <button class="sb-about-btn">about</button>
+
+    </div><!-- .sb-scroll -->
+
+  </aside>
+
+  <!-- ── Main ──────────────────────────────────────────────────────────── -->
+  <div id="main">
+    <div class="main-inner">
+
+      <!-- Error -->
+      <div id="error-msg"></div>
+
+      <!-- Loading -->
+      <div id="loading">
+        <div class="spinner"></div>
+        <span id="loading-text">Cargando scrobbles...</span>
+      </div>
+
+      <!-- Stats -->
+      <div id="stats-bar">
+        <div class="stat">
+          <div class="stat-val" id="s-total">—</div>
+          <div class="stat-lbl">Total</div>
+        </div>
+        <div class="stat-sep"></div>
+        <div class="stat">
+          <div class="stat-val accent" id="s-heard">—</div>
+          <div class="stat-lbl">Escuchados</div>
+        </div>
+        <div class="stat-sep"></div>
+        <div class="stat">
+          <div class="stat-val" id="s-missing">—</div>
+          <div class="stat-lbl">Pendientes</div>
+        </div>
+        <div class="stat-sep"></div>
+        <div class="stat">
+          <div class="stat-val" id="s-pct">—</div>
+          <div class="stat-lbl">Completado</div>
+        </div>
+        <div class="stat-sep"></div>
+        <div class="prog-wrap">
+          <div class="stat-lbl">Progreso</div>
+          <div class="prog-track"><div class="prog-fill" id="prog-fill"></div></div>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div id="filters">
+        <button class="filter-btn active" data-filter="all">Todos</button>
+        <button class="filter-btn" data-filter="missing">Pendientes</button>
+        <button class="filter-btn" data-filter="heard">Escuchados</button>
+        <div id="filter-extra-users"></div>
+        <div class="filter-sep"></div>
+        <label for="sort-select" style="margin:0">
+          <select id="sort-select">
+            <option value="rank">Orden lista</option>
+            <option value="year_asc">Año ↑</option>
+            <option value="year_desc">Año ↓</option>
+            <option value="artist">Artista A–Z</option>
+          </select>
+        </label>
+      </div>
+
+      <!-- Grid (collection view) -->
+      <div id="grid"></div>
+      <div id="empty"><p>No hay álbumes para mostrar</p></div>
+
+    </div><!-- .main-inner -->
+  </div><!-- #main -->
+
+</div><!-- .app-shell -->
+
+<!-- Detail side panel -->
+<div id="detail-overlay"></div>
+<div id="detail-panel">
+  <button class="dp-close">✕</button>
+  <div class="dp-header">
+    <img class="dp-cover" id="dp-cover" src="" alt="">
+    <div class="dp-meta">
+      <div class="dp-title"  id="dp-title"></div>
+      <div class="dp-artist" id="dp-artist"></div>
+      <div class="dp-year"   id="dp-year"></div>
+      <div class="dp-status" id="dp-status"></div>
+      <div id="dp-extra-status" style="display:none;flex-wrap:wrap;gap:5px;margin-top:5px"></div>
+    </div>
+  </div>
+  <div class="dp-body">
+    <div class="dp-loading" id="dp-loading" style="display:none">Consultando Last.fm…</div>
+    <div class="dp-stats"   id="dp-stats"   style="display:none"></div>
+    <div class="dp-tags"    id="dp-tags"></div>
+    <div class="dp-yt"      id="dp-yt"      style="display:none"></div>
+    <div class="dp-section" id="dp-album-wiki" style="display:none">
+      <div class="dp-section-title">Álbum</div>
+      <div class="dp-text" id="dp-wiki-text"></div>
+    </div>
+    <div class="dp-section" id="dp-artist-bio" style="display:none">
+      <div class="dp-section-title" id="dp-artist-bio-title"></div>
+      <div class="dp-text" id="dp-bio-text"></div>
+    </div>
+    <div class="dp-links" id="dp-links"></div>
+  </div>
+</div>
+
+<script src="./static/js/genres.js"></script>
+
+</body>
+</html>
