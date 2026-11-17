@@ -1,4 +1,4 @@
-:root{--bg:#14161a;--surface:#1c1f26;--surface-2:#252933;--border:#2f3440;--text:#ebe8e2;--muted:#9299a3;--accent:#e8b04b;--public:#6fcf97;--sim:#e8b04b;--blog:#7fa7e0;--script:#c792ea;--app:#9aa5b1;--danger:#e07070}
+:root{--bg:#14161a;--surface:#1c1f26;--surface-2:#252933;--border:#2f3440;--text:#ebe8e2;--muted:#9299a3;--accent:#e8b04b;--public:#6fcf97;--sim:#e8b04b;--blog:#7fa7e0;--script:#c792ea;--app:#9aa5b1;--servicio:#f2994a;--danger:#e07070}
 *{box-sizing:border-box}
 html{color-scheme:dark}
 body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
@@ -19,6 +19,7 @@ h1{margin:0;font-size:clamp(1.8rem,5vw,2.6rem);line-height:1.1;letter-spacing:.0
 .dot.blog{background:var(--blog)}
 .dot.script{background:var(--script)}
 .dot.app{border:2px solid var(--app)}
+.dot.servicio{background:var(--servicio)}
 #f-tags{margin-bottom:.4rem}
 #f-tags .chip.active{border-color:var(--blog)}
 .group{margin-top:2rem}

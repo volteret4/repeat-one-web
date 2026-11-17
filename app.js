@@ -18,7 +18,7 @@ function el(tag, attrs = {}, ...kids) {
 const external = url => /^https?:/.test(url) ? {target: '_blank', rel: 'noopener'} : {};
 const link = (label, url, cls) => el('a', {class: cls, href: url, ...external(url)}, label + (/^https?:/.test(url) ? ' ↗' : ''));
 
-const KIND_LABEL = {public: 'Versión pública', sim: 'Simulación o demo', blog: 'Blog', script: 'Script', app: 'App de terceros'};
+const KIND_LABEL = {public: 'Versión pública', sim: 'Simulación o demo', blog: 'Blog', script: 'Script', app: 'App de terceros', servicio: 'Servicio'};
 const filters = {kind: 'all', tag: null};
 const matches = m => (filters.kind === 'all' || m.kind === filters.kind) && (!filters.tag || m.tags.includes(filters.tag));
 
@@ -46,7 +46,7 @@ function renderGrid() {
 
 function panelBody(m) {
   const body = [
-    el('div', {class: 'badge'}, el('span', {class: 'dot ' + m.kind}), {public: 'Versión pública disponible', sim: 'Solo despliegue local', blog: 'Blog', script: 'Script (sin web)', app: 'App de terceros'}[m.kind]),
+    el('div', {class: 'badge'}, el('span', {class: 'dot ' + m.kind}), {public: 'Versión pública disponible', sim: 'Solo despliegue local', blog: 'Blog', script: 'Script (sin web)', app: 'App de terceros', servicio: 'Servicio sin web propia: lo usan otros módulos'}[m.kind]),
     el('h2', {id: 'p-title'}, m.label),
     el('h3', {}, 'Qué hace'),
     el('p', {}, m.what),
@@ -59,7 +59,7 @@ function panelBody(m) {
   }
   if (m.kind === 'public') {
     body.push(el('h3', {}, 'Versión pública de prueba'), ...m.try.map(t => link(t.label, t.url, 'btn')));
-  } else {
+  } else if (m.kind === 'sim') {
     body.push(el('h3', {}, m.replay ? 'Demo' : 'Simulación'),
       el('p', {class: 'warn'}, m.replay
         ? 'Este módulo no tiene versión pública. La demo es su web local con un extracto de datos reales: puedes navegar, buscar y filtrar, pero lo que cambiaría algo no se guarda.'
@@ -149,6 +149,6 @@ kindRow.querySelectorAll('.chip').forEach(chip => chip.addEventListener('click',
 }));
 
 $('n-all').textContent = MODULES.length;
-for (const k of ['public', 'sim', 'blog', 'script', 'app']) $('n-' + k).textContent = MODULES.filter(m => m.kind === k).length;
+for (const k of ['public', 'sim', 'servicio', 'blog', 'script', 'app']) $('n-' + k).textContent = MODULES.filter(m => m.kind === k).length;
 renderGrid();
 route();

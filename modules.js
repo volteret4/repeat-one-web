@@ -35,7 +35,7 @@ export const MODULES = [
     what: 'Escribes el nombre de un sello, un artista o un productor, ingeniero o masterizador (créditos) y ves todo lo publicado como un mosaico de portadas, con vídeos e información de Last.fm.',
     detail: 'Cruza MusicBrainz y Discogs. La versión pública de sellos y artistas guarda las búsquedas en tu navegador y usa tus propias claves. Los créditos, por ahora, solo en local (hay una demo con datos reales). Las locales son más rápidas porque trabajan desde un servidor con yt-dlp.',
     try: [{label: 'Probar charts de sellos', url: PAGES + 'charts-web/sellos/'}, {label: 'Probar charts de artistas', url: PAGES + 'charts-web/artistas/'}, {label: 'Ver charts de créditos (demo local)', url: './demo/creditos/'}],
-    repos: [{label: 'charts_sellos', url: GH + 'charts_sellos'}, {label: 'charts_artistas', url: GH + 'charts_artistas'}, {label: 'charts-web (versión pública)', url: GH + 'charts-web'}], profile: 'charts_sellos, charts_artistas'},
+    repos: [{label: 'charts_sellos', url: GH + 'charts_sellos'}, {label: 'charts_artistas', url: GH + 'charts_artistas'}, {label: 'charts_creditos', url: GH + 'charts_creditos'}, {label: 'charts-web (versión pública)', url: GH + 'charts-web'}], profile: 'charts_sellos, charts_artistas, charts_creditos'},
   {id: 'calendario', label: 'Discos al calendario', group: 'Adquisición', kind: 'script', tags: ['nuevo'], short: 'Los lanzamientos de Muspy como tareas de Radicale',
     what: 'Lee el feed de Muspy y crea en tu calendario CalDAV (Radicale) una tarea por cada disco nuevo de los artistas que sigues. Otro script las marca como hechas cuando Last.fm dice que ya lo has escuchado.',
     detail: 'Es la fuente de Discos Pendientes y de las estadísticas de Dieta Sonora.',
@@ -69,7 +69,7 @@ export const MODULES = [
   {id: 'gaps', label: 'Discografía Gaps', group: 'Escarbando', kind: 'sim', tags: ['ampliando'], short: 'Los discos que te faltan de tus artistas',
     what: 'Compara la discografía completa de los artistas que sigues con lo que tienes, y te dice qué falta y dónde conseguirlo.', demo: 'gaps', replay: true, repos: [{label: 'discografia-gaps', url: GH + 'discografia-gaps'}], profile: 'discografia_gaps'},
   {id: 'mapa', label: 'Mapa de Discos', group: 'Escarbando', kind: 'sim', tags: ['ampliando'], short: 'Tu colección como un mapa navegable',
-    what: 'Dibuja un grafo desde un artista hasta sus discos y géneros, y de ahí a otros artistas de tu colección. Marca lo que tienes y lo que te falta.', demo: 'mapa', replay: true, repos: []},
+    what: 'Dibuja un grafo desde un artista hasta sus discos y géneros, y de ahí a otros artistas de tu colección. Marca lo que tienes y lo que te falta.', demo: 'mapa', replay: true, repos: [{label: 'mapa_discos', url: GH + 'mapa_discos'}], profile: 'mapa_discos'},
   {id: 'pendientes', label: 'Discos Pendientes', group: 'Escarbando', kind: 'sim', tags: ['ampliando'], short: 'Qué falta por escuchar y qué has descargado',
     what: 'Lleva tus discos pendientes desde el calendario: qué has descargado ya, qué has escuchado y qué te queda del catálogo de cada artista.', demo: 'pendientes', replay: true, repos: [{label: 'discos_pendientes', url: GH + 'discos_pendientes'}], profile: 'discos_pendientes'},
 
@@ -105,6 +105,16 @@ export const MODULES = [
   {id: 'olvidados', label: 'Discos Olvidados', group: 'Herramientas', kind: 'sim', tags: ['herramientas'], short: 'Lo que hace más tiempo que no escuchas',
     what: 'Ordena los discos y artistas de tu colección por cuánto hace que no los escuchas en Last.fm, y te dice si además están guardados en qBittorrent, para decidir qué borrar con más confianza.',
     demo: 'olvidados', replay: true, repos: [{label: 'discos_olvidados', url: GH + 'discos_olvidados'}]},
+  {id: 'ya-lo-tengo', label: 'Ya lo tengo', group: 'Herramientas', kind: 'servicio', tags: ['herramientas'], short: '¿Tienes ese disco? ¿Lo has escuchado?',
+    what: 'Pinta al lado de cada disco, en cualquier web de REPEAT-ONE, si lo tienes en tu servidor de música, si lo estás descargando, cuántas veces lo has escuchado y cuántos temas suyos hay en Mix.',
+    detail: 'Una API pequeña y un script que cada web carga para dibujar los iconos. Cada fuente (Subsonic, qBittorrent, escuchas, Mix) es opcional.',
+    repos: [{label: 'ya_lo_tengo', url: GH + 'ya_lo_tengo'}], profile: 'ya_lo_tengo'},
+  {id: 'generos', label: 'Géneros', group: 'Herramientas', kind: 'servicio', tags: ['herramientas'], short: 'Una sola taxonomía para la etiqueta GENRE',
+    what: 'Defines tus supergéneros y subgéneros, la web te propone géneros para cada disco (Last.fm, Discogs, MusicBrainz) y los escribe en los ficheros con un formato único. Tiene un modo juego para etiquetar por lotes.',
+    repos: [{label: 'generos', url: GH + 'generos'}], profile: 'generos'},
+  {id: 'etiquetador', label: 'Etiquetador', group: 'Herramientas', kind: 'servicio', tags: ['herramientas'], short: 'Sello original, género, ReplayGain y BPM',
+    what: 'Completa las etiquetas que faltan en lo que descargas sin tocar nunca artista, álbum ni título. Sin permiso de escritura solo genera un informe, y cada ejecución se puede deshacer.',
+    repos: [{label: 'etiquetador', url: GH + 'etiquetador'}], profile: 'etiquetador'},
   {id: 'odesli', label: 'Odesli', group: 'Herramientas', kind: 'script', tags: ['herramientas'], short: 'El tema que suena, en todas las plataformas',
     what: 'Toma el tema que suena en DeaDBeeF o Airsonic y saca su enlace de Odesli (song.link) para compartirlo en cualquier servicio. Sin depender de Spotify: busca en MusicBrainz, Deezer y YouTube Music.',
     try: [{label: 'odesli.py', url: SCRIPTS + 'utilities/open_search_links/music_player/odesli.py'}], repos: [], profile: null},
@@ -115,7 +125,11 @@ export const MODULES = [
 
   // ── Estadísticas
   {id: 'stats', label: 'Dieta Sonora — Estadísticas', group: 'Estadísticas', kind: 'sim', tags: ['estadisticas'], short: 'Cuánto tardas en escuchar lo que sale',
-    what: 'Mide el tiempo que pasa desde que sale un disco hasta que lo consigues y lo escuchas, por artista y por género.', demo: 'stats', replay: true, repos: []},
+    what: 'Mide el tiempo que pasa desde que sale un disco hasta que lo consigues y lo escuchas, por artista y por género.', demo: 'stats', replay: true, repos: [{label: 'dieta_sonora', url: GH + 'dieta_sonora'}], profile: 'dieta_sonora_stats'},
+
+  {id: 'lastfm-scrobbles', label: 'Last.fm Scrobbles', group: 'Estadísticas', kind: 'servicio', tags: ['estadisticas'], short: 'Todo tu historial de escuchas en una base',
+    what: 'Descarga cada noche tus escuchas de Last.fm y ListenBrainz, quita los duplicados entre los dos y las guarda en una base que leen las estadísticas, el explorador de escuchas y los iconos de «ya lo tengo».',
+    repos: [{label: 'lastfm_scrobbles', url: GH + 'lastfm_scrobbles'}], profile: 'lastfm_scrobbles'},
 
   // ── Mix
   {id: 'mixxx', label: 'Mixxx Info', group: 'Mix', kind: 'sim', tags: ['mix'], short: 'Ficha de cada tema para pinchar',
@@ -124,7 +138,7 @@ export const MODULES = [
     what: 'Puntúa cada tema en 12 dimensiones, como alegre o melancólica, y busca después por parecido.', demo: 'rater', replay: true, repos: [{label: 'mix_rater', url: GH + 'mix_rater'}], profile: 'mix_rater'},
   {id: 'mover-mix', label: 'Mover a Mix', group: 'Mix', kind: 'script', tags: ['mix'], short: 'Guarda en Mix el tema que está sonando',
     what: 'Con un atajo de teclado, copia el tema que suena (vía playerctl) a la subcarpeta de Mix que elijas, lista para pinchar en Mixxx.',
-    try: [{label: 'mover_mix_playerctl.py', url: SCRIPTS + 'Musica/MoverMusica/mover_mix_playerctl.py'}], repos: [], profile: null},
+    try: [{label: 'mover_mix_playerctl.py', url: SCRIPTS + 'Musica/MoverMusica/mover_mix_playerctl.py'}], repos: [{label: 'mover_mix', url: GH + 'mover_mix'}], profile: 'mover_mix'},
   {id: 'mix-sessions', label: 'Mix Sessions', group: 'Mix', kind: 'public', tags: ['mix'], short: 'Sesiones grabadas, con su lista de temas',
     what: 'Escucha sesiones de mezcla grabadas con Mixxx, con la lista de temas, portadas y el punto exacto en que entra cada uno.',
     try: [{label: 'Escuchar las sesiones', url: PAGES + 'mix_sessions/'}], repos: [{label: 'mix_sessions', url: GH + 'mix_sessions'}], profile: null},
