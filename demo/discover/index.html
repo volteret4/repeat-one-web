@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="es">
+<head><link rel="stylesheet" href="../_replay/replay.css"><script>window.REPLAY = {"mod": "discover", "root": "", "ports": [8780], "map": {"img/little_chicken.png": "img/little_chicken.png", "p8780/owned-badges.js": "p8780/owned-badges.js", "static/css/discover.css": "static/css/discover.css", "static/css/theme-palettes.css": "static/css/theme-palettes.css", "static/js/discover.js": "static/js/discover.js", "static/js/owned-loader.js": "static/js/owned-loader.js", "sw.js": "sw.js"}, "readOnlyPosts": ["p8780/api/owned"], "search": {}, "lastfmKeyPath": "api/config"};</script><script src="../_replay/replay.js"></script><script defer src="https://cloud.umami.is/script.js" data-website-id="5d84fd6c-0760-4a0c-a2d0-ffabb82179f5"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>tumtumpa</title>
+<link rel="icon" type="image/png" href="./img/little_chicken.png" />
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#7c6fff">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-title" content="tumtumpa">
+<meta name="description" content="Descubre qué escuchan tus amigos que tú no has escuchado aún">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="262419b6-9389-4f91-898c-3943726c6dc8"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./static/css/discover.css">
+<link rel="stylesheet" href="./static/css/theme-palettes.css">
+<script src="./static/js/owned-loader.js"></script>
+</head>
+<body>
+
+<!-- ── Welcome screen (shown when no data) ──────────────────────────── -->
+<div id="welcome-screen" style="display:none;position:fixed;inset:0;z-index:200;background:var(--bg);overflow-y:auto;padding:env(safe-area-inset-top,0) env(safe-area-inset-right,0) env(safe-area-inset-bottom,0) env(safe-area-inset-left,0);">
+  <div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1.5rem;gap:2rem;max-width:480px;margin:0 auto">
+    <div style="text-align:center">
+      <div style="font-family:var(--serif);font-size:2.5rem;font-weight:800;letter-spacing:-0.02em;line-height:1.1;margin-bottom:0.5rem">
+        <span style="color:var(--accent)">tumtum</span>pa
+      </div>
+      <div style="font-family:var(--mono);font-size:0.72rem;color:var(--ink3);letter-spacing:.12em;text-transform:uppercase">by volteret4</div>
+    </div>
+
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:1.5rem;display:flex;flex-direction:column;gap:1.2rem;width:100%">
+      <p style="font-size:0.95rem;line-height:1.6;color:var(--ink2)">
+        Compara tu historial de <strong style="color:var(--ink)">Last.fm</strong> con el de tus amigos y descubre qué escuchan ellos que a ti te falta.
+      </p>
+
+      <div style="display:flex;flex-direction:column;gap:0.8rem">
+        <div style="display:flex;gap:0.75rem;align-items:flex-start">
+          <span style="font-family:var(--mono);font-size:0.75rem;color:var(--accent);background:var(--bg3);border:1px solid var(--border2);border-radius:3px;padding:0.15rem 0.5rem;flex-shrink:0;margin-top:0.1rem">01</span>
+          <span style="font-size:0.85rem;color:var(--ink2);line-height:1.5">Carga <strong style="color:var(--ink)">tu usuario</strong> de Last.fm. Descargamos todos tus álbumes escuchados — puede tardar un minuto, pero se guardan en tu navegador para la próxima vez.</span>
+        </div>
+        <div style="display:flex;gap:0.75rem;align-items:flex-start">
+          <span style="font-family:var(--mono);font-size:0.75rem;color:var(--accent);background:var(--bg3);border:1px solid var(--border2);border-radius:3px;padding:0.15rem 0.5rem;flex-shrink:0;margin-top:0.1rem">02</span>
+          <span style="font-size:0.85rem;color:var(--ink2);line-height:1.5">Añade <strong style="color:var(--ink)">usuarios secundarios</strong> — amigos, músicos, críticos — cuyo gusto quieras explorar.</span>
+        </div>
+        <div style="display:flex;gap:0.75rem;align-items:flex-start">
+          <span style="font-family:var(--mono);font-size:0.75rem;color:var(--accent);background:var(--bg3);border:1px solid var(--border2);border-radius:3px;padding:0.15rem 0.5rem;flex-shrink:0;margin-top:0.1rem">03</span>
+          <span style="font-size:0.85rem;color:var(--ink2);line-height:1.5">Pulsa <strong style="color:var(--ink)">Descubrir</strong> junto a cualquier usuario para ver sus álbumes favoritos que tú no has escuchado.</span>
+        </div>
+      </div>
+
+      <button id="btn-start-welcome" style="background:var(--accent);color:#fff;border:none;border-radius:6px;padding:0.85rem 1.5rem;font-family:var(--serif);font-weight:700;font-size:1rem;cursor:pointer;letter-spacing:0.02em;transition:background 0.15s">
+        Comenzar →
+      </button>
+    </div>
+
+    <div style="font-family:var(--mono);font-size:0.65rem;color:var(--ink3);text-align:center;line-height:1.6">
+      Los datos se guardan solo en tu navegador (IndexedDB).<br>Puedes exportar e importar JSON en cualquier momento.
+    </div>
+  </div>
+</div>
+
+<!-- ── Header ─────────────────────────────────────────────────────────── -->
+<header style="height:52px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 1.2rem;gap:1rem;flex-shrink:0;position:sticky;top:0;z-index:100;">
+  <a class="logo" href="./" style="font-family:var(--serif);font-size:1.3rem;font-weight:800;text-decoration:none"><span style="color:var(--accent)">tumtum</span><span style="color:#fff">pa!</span></a>
+  <div style="flex:1"></div>
+  <div id="badge-inline" style="display:none;align-items:center;gap:0.5rem;">
+    <img id="badge-avatar" src="" alt="" style="width:24px;height:24px;border-radius:50%;object-fit:cover;background:var(--bg3);display:none">
+    <span id="badge-name" style="font-family:var(--mono);font-size:0.75rem;color:var(--accent);"></span>
+  </div>
+  <button id="btn-open-users" title="Gestionar usuarios" style="width:34px;height:34px;border-radius:50%;background:var(--bg3);border:1px solid var(--border2);color:var(--ink2);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:border-color .15s,color .15s">👤</button>
+</header>
+
+<input type="file" id="inp-session" accept=".json" style="display:none">
+
+<!-- ── User modal ──────────────────────────────────────────────────────── -->
+<div id="user-modal-bg">
+  <div id="user-modal">
+    <button class="modal-close">✕</button>
+
+    <!-- Buscador universal -->
+    <div class="um-section">
+      <div class="um-section-title" data-i18n="um.search.title">Buscar usuario</div>
+      <div class="um-row">
+        <input id="inp-user" type="text" placeholder="Usuario Last.fm" data-i18n-ph="um.primary.placeholder" autocomplete="off" spellcheck="false">
+        <button class="btn-sm primary" id="btn-go" data-i18n="um.search.btn">Buscar</button>
+        <button class="btn-sm" id="btn-import">↑ JSON</button>
+      </div>
+      <div class="source-radios">
+        <label><input type="radio" name="um-source" id="um-src-lfm" value="lfm" checked> Last.fm</label>
+        <label><input type="radio" name="um-source" id="um-src-lb"  value="lb"> ListenBrainz</label>
+      </div>
+      <div class="um-progress" id="um-progress"></div>
+    </div>
+
+    <!-- Usuarios (principal + secundarios unificados) -->
+    <div class="um-section" id="um-sec-secondary">
+      <div class="um-section-title" data-i18n="um.users.title">Usuarios</div>
+      <div id="secondary-users-list"></div>
+      <div id="sb-cache-notice" style="display:none"></div>
+      <div class="um-progress" id="um-extra-progress"></div>
+    </div>
+
+    <!-- Amigos -->
+    <div class="um-section">
+      <div class="um-section-title" style="display:flex;align-items:center;justify-content:space-between">
+        <span data-i18n="um.friends.title">Amigos del usuario principal</span>
+        <button class="btn-sm" id="btn-load-friends" style="font-size:0.62rem" data-i18n="um.friends.load">Cargar</button>
+      </div>
+      <div id="friends-list" style="max-height:200px;overflow-y:auto;scrollbar-width:thin"></div>
+    </div>
+
+    <!-- Language selector -->
+    <div class="um-lang-row">
+      <span data-i18n="lang.label" style="font-size:0.7rem;color:var(--ink3);font-family:var(--mono)">Idioma</span>
+      <label style="font-size:0.72rem;cursor:pointer;display:flex;align-items:center;gap:0.25rem">
+        <input type="radio" name="ui-lang" value="es"> Español
+      </label>
+      <label style="font-size:0.72rem;cursor:pointer;display:flex;align-items:center;gap:0.25rem">
+        <input type="radio" name="ui-lang" value="en"> English
+      </label>
+    </div>
+  </div>
+</div>
+
+<!-- Hidden file inputs keep their IDs for JS event listeners -->
+<input type="file" id="inp-extra-json" accept=".json" style="display:none">
+
+<!-- About modal -->
+<div id="about-overlay">
+  <div id="about-modal">
+    <button class="about-close">✕</button>
+    <h2>tumtumpa</h2>
+    <p>Cruza tu historial de <b>Last.fm</b> con otros usuarios para saber qué te falta escuchar de su colección.</p>
+
+    <h3>Primeros pasos</h3>
+    <ul>
+      <li>Introduce tu usuario de Last.fm y pulsa <b>Go</b> para descargar tus scrobbles.</li>
+      <li>Selecciona una <b>colección</b> en el panel izquierdo para ver qué álbumes has escuchado (dorado) y cuáles te faltan.</li>
+      <li>Usa los filtros de la barra superior para ver solo los escuchados, los pendientes o los recomendados.</li>
+    </ul>
+
+
+    <h3>Panel de detalles</h3>
+    <ul>
+      <li>Haz clic en cualquier portada para ver estadísticas de Last.fm, tags, descripción del álbum y bio del artista.</li>
+      <li>Enlace directo a MusicBrainz y YouTube (o búsqueda si no hay ID guardado).</li>
+    </ul>
+
+    <h3>Usuarios secundarios</h3>
+    <ul>
+      <li>Añade amigos desde el botón <b>Usuario</b> → sección <i>Usuarios secundarios</i>.</li>
+      <li>Puedes cargar la lista de amigos de tu usuario principal para añadirlos rápidamente.</li>
+      <li>Obtén álbumes y artistas que ellos han escuchado y tu aun no.</li>
+    </ul>
+
+    <h3>Sesiones</h3>
+    <ul>
+      <li>Los scrobbles se guardan en <b>IndexedDB</b> del navegador: la próxima vez no hace falta re-descargar.</li>
+      <li>Exporta / importa sesiones como JSON o sincroniza incrementalmente con el botón <b>↻ Sync</b>.</li>
+    </ul>
+    <h3>Servicios</h3>
+
+    <a class="about-svc lfm" href="https://www.last.fm" target="_blank" rel="noopener">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M10.596 1.9C6.07 2.38 2.38 6.07 1.9 10.596 1.25 16.7 5.918 22 12 22c5.12 0 9.417-3.56 10.578-8.32.07-.29-.08-.58-.36-.67l-2.1-.68c-.27-.09-.56.05-.65.32-.65 1.98-2.47 3.35-4.62 3.35-2.65 0-4.8-2.15-4.8-4.8 0-2.65 2.15-4.8 4.8-4.8 1.8 0 3.36.97 4.2 2.42l-1.7.54c-.28.09-.42.4-.3.67l2.4 5.82c.12.28.43.42.71.3l5.82-2.4c.28-.12.42-.43.3-.71l-.68-1.64c-.12-.28-.43-.42-.71-.3l-1.32.54C14.26 4.12 12.28 1.9 10.596 1.9z"/>
+      </svg>
+      Last.fm
+    </a>
+    <a class="about-svc mb" href="https://musicbrainz.org" target="_blank" rel="noopener">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+      </svg>
+      MusicBrainz
+    </a>
+    <a class="about-svc gh" href="https://github.com/volteret4/escuchowsky" target="_blank" rel="noopener">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+      </svg>
+      GitHub
+    </a>
+
+  </div>
+</div>
+
+<!-- ── App shell ───────────────────────────────────────────────────────── -->
+<div class="app-shell">
+
+  <!-- ── Main ──────────────────────────────────────────────────────────── -->
+  <div id="main">
+
+    <!-- Controles sticky: fuera de .main-inner para pegarse al header sin huecos -->
+    <div id="discover-ctrl-bar" style="display:none">
+      <div id="disc-rel-tabs">
+        <button class="disc-tab active" data-rel="discover" data-i18n="disc.tab.discover">Escucha</button>
+        <button class="disc-tab" data-rel="share" data-i18n="disc.tab.share">Comparte</button>
+        <button class="disc-tab" data-rel="enjoy" data-i18n="disc.tab.enjoy">Disfruta</button>
+      </div>
+      <div id="disc-ctrl-row">
+        <div id="disc-user-indicator"></div>
+        <div class="disc-controls">
+          <input type="number" id="disc-limit-global" min="5" max="100" value="20">
+          <select id="disc-mode-select">
+            <option value="albums" data-i18n="disc.mode.albums">Álbumes</option>
+            <option value="artists" data-i18n="disc.mode.artists">Artistas</option>
+            <option value="songs" data-i18n="disc.mode.songs">Canciones</option>
+          </select>
+          <button id="disc-play-btn" title="Descubrir">▶</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-inner">
+
+      <!-- Error -->
+      <div id="error-msg"></div>
+
+      <!-- Loading -->
+      <div id="loading">
+        <div class="spinner"></div>
+        <span id="loading-text">Cargando scrobbles...</span>
+      </div>
+
+      <!-- Empty state — shown when no discover results yet -->
+      <div id="empty-state">
+        <div id="empty-logo"><span style="color:var(--accent)">tumtum</span><span style="color:var(--ink2)">pa!</span></div>
+        <p id="empty-tagline" data-i18n="empty.tagline">Alégrate el día o mejora el de alguién con una joya musical.</p>
+        <div id="empty-steps">
+          <div class="empty-step"><span class="empty-num">01</span><span data-i18n-html="empty.step.1">Pulsa <b>👤</b> arriba a la derecha y busca tu usuario de <b>Last.fm</b> o <b>Listenbrainz</b>.</span></div>
+          <div class="empty-step"><span class="empty-num">02</span><span data-i18n-html="empty.step.2">Añade <b>usuarios secundarios</b>. Es recomendable descargar el json para futuras sesiones.</span></div>
+          <div class="empty-step"><span class="empty-num">03</span><span data-i18n-html="empty.step.3"><b>Escuchar:</b> ver que han escuchado los demás que tu aun no.</span></div>
+          <div class="empty-step"><span class="empty-num">04</span><span data-i18n-html="empty.step.4"><b>Comparte:</b> permite encontrar alguna de tus joyas para recomendar al resto.</span></div>
+          <div class="empty-step"><span class="empty-num">05</span><span data-i18n-html="empty.step.5"><b>Disfruta:</b> muestra placeres compartidos, permitiendo afinar recomendaciones.</span></div>
+          <div class="empty-step"><span class="empty-num">06</span><span data-i18n-html="empty.step.6">Pulsa <b>uno o varios usuarios</b> para mostrar los <b>artistas</b>, <b>álbumes</b> o <b>canciones</b> que comparten todos.</span></div>
+          <div class="empty-step"><span class="empty-num">07</span><span data-i18n-html="empty.step.7">Pulsa en cada elemento del grid para obtener información y poder escuchar algo del mismo.</span></div>
+        </div>
+        <div id="empty-hint" data-i18n="empty.hint">Los datos se guardan en tu navegador (IndexedDB). Pero se llena rápidamente con varios usuarios, recuerda exportar / importar sesiones como JSON.</div>
+      </div>
+
+      <!-- Discover view (sin ctrl bar — ahora está fuera) -->
+      <div id="discover-view">
+        <div class="discover-filters" id="discover-decade-pills"></div>
+        <div id="discover-grid"></div>
+        <div class="discover-pagination" id="discover-pagination" style="display:none">
+          <button class="btn-sm" id="disc-prev">← Anteriores</button>
+          <span id="disc-page-info" style="font-family:var(--mono);font-size:0.72rem;color:var(--ink3)"></span>
+          <button class="btn-sm" id="disc-next">Siguientes →</button>
+        </div>
+        <div class="discover-footer" id="discover-footer" style="display:none">
+          <span id="discover-progress"></span>
+        </div>
+      </div>
+
+    </div><!-- .main-inner -->
+  </div><!-- #main -->
+
+</div><!-- .app-shell -->
+
+<!-- Detail side panel -->
+<div id="detail-overlay"></div>
+<div id="detail-panel">
+  <button class="dp-close">✕</button>
+  <div class="dp-header">
+    <img class="dp-cover" id="dp-cover" src="" alt="">
+    <div class="dp-meta">
+      <div class="dp-title"  id="dp-title"></div>
+      <div class="dp-artist" id="dp-artist"></div>
+      <div class="dp-year"   id="dp-year"></div>
+      <div class="dp-status" id="dp-status"></div>
+      <div id="dp-extra-status" style="display:none;flex-wrap:wrap;gap:5px;margin-top:5px"></div>
+    </div>
+  </div>
+  <div class="dp-body">
+    <div class="dp-loading" id="dp-loading" style="display:none">Consultando Last.fm…</div>
+    <div class="dp-stats"   id="dp-stats"   style="display:none"></div>
+    <div class="dp-tags"    id="dp-tags"></div>
+    <div class="dp-yt"      id="dp-yt"      style="display:none"></div>
+    <div class="dp-section" id="dp-album-wiki" style="display:none">
+      <div class="dp-section-title">Álbum</div>
+      <div class="dp-text" id="dp-wiki-text"></div>
+    </div>
+    <div class="dp-section" id="dp-artist-bio" style="display:none">
+      <div class="dp-section-title" id="dp-artist-bio-title"></div>
+      <div class="dp-text" id="dp-bio-text"></div>
+    </div>
+    <div class="dp-links" id="dp-links"></div>
+  </div>
+</div>
+
+<script src="./static/js/discover.js"></script>
+
+</body>
+</html>

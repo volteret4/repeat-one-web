@@ -1,0 +1,1220 @@
+<!doctype html>
+<html lang="es">
+    <head><link rel="stylesheet" href="../_replay/replay.css"><script>window.REPLAY = {"mod": "rater", "root": "", "ports": [], "map": {"api/art/5886": "api/art/5886", "api/art/6235": "api/art/6235", "api/next": "data/f608f7f86c88.json", "api/random": "data/3f2b3807cb20.json", "api/sidebar": "data/78074ece5d9f.json", "api/similar/2354": "data/242a3975f234.json", "api/similar/3337": "data/f90a64651f73.json", "api/similar/4181": "data/0a063533c71e.json", "api/similar/4905": "data/64fd051c7dfd.json", "api/similar/5462": "data/ab470649e0b8.json", "api/similar/5886": "data/fdf0bf79f689.json", "api/similar/6235": "data/b2dc6e312b22.json", "api/similar/63": "data/9116641836a0.json", "api/stats": "data/8d8d4871158f.json", "api/track/2354": "data/089e4d419c1e.json", "api/track/4181": "data/bcd9f8660a89.json", "api/track/4905": "data/d55445d93957.json", "api/track/5462": "data/d403abf25e83.json", "api/track/5886": "data/db2855d67e3c.json", "api/track/6235": "data/c289656a7c4c.json", "static/info.js": "static/info.js", "static/settings.js": "static/settings.js"}, "readOnlyPosts": [], "search": {}};</script><script src="../_replay/replay.js"></script><script defer src="https://cloud.umami.is/script.js" data-website-id="5d84fd6c-0760-4a0c-a2d0-ffabb82179f5"></script>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Music Rater</title>
+        <script src="./static/settings.js"></script>
+        <script src="./static/info.js"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            *,
+            *::before,
+            *::after {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+            :root {
+                --bg: #0d0d0d;
+                --surface: #161616;
+                --surface2: #1f1f1f;
+                --border: #2a2a2a;
+                --border-bright: #3d3d3d;
+                --text: #e8e8e8;
+                --text-dim: #666;
+                --text-muted: #444;
+                --accent: #e8ff47;
+                --accent2: #ff6b35;
+                --done: #2a2a2a;
+                --done-text: #3a3a3a;
+            }
+            body {
+                background: var(--bg);
+                color: var(--text);
+                font-family: "IBM Plex Sans", sans-serif;
+                height: 100vh;
+                overflow: hidden;
+                display: flex;
+                flex-direction: column;
+            }
+
+            /* NAV */
+            nav {
+                display: flex;
+                gap: 1px;
+                background: var(--border);
+                border-bottom: 1px solid var(--border);
+                flex-shrink: 0;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            nav a {
+                padding: 12px 20px;
+                background: var(--surface);
+                color: var(--text-dim);
+                text-decoration: none;
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 11px;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                transition: all 0.15s;
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+            nav a:hover,
+            nav a.active {
+                background: var(--surface2);
+                color: var(--accent);
+            }
+
+            /* APP LAYOUT */
+            .app-layout {
+                display: grid;
+                grid-template-columns: 220px 1fr;
+                flex: 1;
+                overflow: hidden;
+                min-width: 0;
+            }
+            @media (max-width: 768px) {
+                .app-layout {
+                    grid-template-columns: 1fr;
+                    grid-template-rows: auto 1fr;
+                }
+                .sidebar {
+                    flex-direction: row;
+                    max-height: 140px;
+                    border-right: none;
+                    border-bottom: 1px solid var(--border);
+                }
+                .sb-section {
+                    flex: 1;
+                    min-width: 140px;
+                    border-bottom: none;
+                    border-right: 1px solid var(--border);
+                    overflow-y: auto;
+                }
+                .sb-section:last-child { border-right: none; }
+                #wizard-panel { left: 0; }
+            }
+
+            /* ======= SIDEBAR ======= */
+            .sidebar {
+                background: var(--surface);
+                border-right: 1px solid var(--border);
+                overflow-y: auto;
+                display: flex;
+                flex-direction: column;
+            }
+            .sb-section {
+                border-bottom: 1px solid var(--border);
+            }
+            .sb-header {
+                padding: 9px 12px;
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 9px;
+                letter-spacing: 0.14em;
+                text-transform: uppercase;
+                color: var(--text-muted);
+                background: var(--bg);
+                border-bottom: 1px solid var(--border);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                position: sticky;
+                top: 0;
+                z-index: 1;
+            }
+            .sb-clear {
+                cursor: pointer;
+                color: var(--accent2);
+                font-size: 9px;
+                letter-spacing: 0.06em;
+                text-transform: lowercase;
+            }
+            .sb-clear:hover { text-decoration: underline; }
+            .sb-item {
+                padding: 6px 12px 6px 14px;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                cursor: pointer;
+                border-left: 2px solid transparent;
+                transition: background 0.1s;
+            }
+            .sb-item:hover { background: var(--surface2); }
+            .sb-item.active {
+                background: #0f1305;
+                border-left-color: var(--accent);
+            }
+            .sb-item.active .sb-name { color: var(--accent); }
+            .sb-item.active .sb-count { color: var(--text-dim); }
+            .sb-name {
+                flex: 1;
+                min-width: 0;
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 10px;
+                color: var(--text-dim);
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .sb-count {
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 9px;
+                color: var(--text-muted);
+                flex-shrink: 0;
+            }
+            .sb-empty {
+                padding: 12px;
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 9px;
+                color: var(--text-muted);
+                font-style: italic;
+            }
+
+            /* ======= MAIN COLUMN ======= */
+            .main-col {
+                overflow-y: auto;
+                padding-bottom: 120px;
+            }
+            .container {
+                max-width: 900px;
+                margin: 0 auto;
+                padding: 24px 24px 0;
+            }
+
+            /* HEADER */
+            .header {
+                display: flex;
+                align-items: flex-start;
+                gap: 14px;
+                margin-bottom: 18px;
+            }
+            #art {
+                width: 88px;
+                height: 88px;
+                object-fit: cover;
+                border: 1px solid var(--border);
+                flex-shrink: 0;
+                display: none;
+            }
+            .track-info { flex: 1; min-width: 0; }
+            .track-info h2 {
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 19px;
+                font-weight: 600;
+                letter-spacing: -0.02em;
+                line-height: 1.2;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .track-meta {
+                font-size: 11px;
+                color: var(--text-dim);
+                margin-top: 4px;
+                font-family: "IBM Plex Mono", monospace;
+                letter-spacing: 0.05em;
+            }
+
+            /* EDITABLE META */
+            .meta-edit {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 6px 14px;
+                margin-top: 9px;
+                align-items: center;
+            }
+            .meta-field { display: flex; align-items: center; gap: 6px; }
+            .meta-lbl {
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 9px;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                color: var(--text-muted);
+                white-space: nowrap;
+            }
+            .meta-input {
+                background: transparent;
+                border: none;
+                border-bottom: 1px solid var(--border);
+                color: var(--text-dim);
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 11px;
+                padding: 2px 4px;
+                outline: none;
+                width: 150px;
+                transition: border-color 0.15s, color 0.15s;
+            }
+            .meta-input:focus {
+                border-bottom-color: var(--accent);
+                color: var(--text);
+            }
+            .meta-input.wide { width: 220px; }
+            .meta-static {
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 11px;
+                color: var(--text-dim);
+            }
+
+            /* HEADER ACTIONS */
+            .header-actions {
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+                flex-shrink: 0;
+            }
+
+            /* COUNT BAR */
+            .count-bar {
+                display: flex;
+                justify-content: flex-end;
+                margin-bottom: 10px;
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 10px;
+                color: var(--text-muted);
+            }
+            .count-bar .hl { color: var(--accent); }
+
+            /* FILTER BADGE */
+            .filter-badge {
+                display: none;
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 9px;
+                letter-spacing: 0.08em;
+                color: var(--accent2);
+                background: #1a0d08;
+                border: 1px solid var(--accent2);
+                padding: 2px 8px;
+                margin-bottom: 10px;
+                align-items: center;
+                gap: 8px;
+            }
+            .filter-badge.visible { display: flex; }
+            .filter-badge-x {
+                cursor: pointer;
+                opacity: 0.7;
+            }
+            .filter-badge-x:hover { opacity: 1; }
+
+            /* PROGRESS BAR */
+            .progress-bar {
+                margin-bottom: 20px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+            .progress-track { flex: 1; height: 2px; background: var(--border); }
+            .progress-fill {
+                height: 100%;
+                background: var(--accent);
+                transition: width 0.3s ease;
+            }
+            .progress-label {
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 11px;
+                color: var(--text-dim);
+                white-space: nowrap;
+            }
+
+            /* BUTTONS */
+            .btn {
+                padding: 10px 20px;
+                border: 1px solid var(--border-bright);
+                background: transparent;
+                color: var(--text);
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 11px;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                cursor: pointer;
+                transition: all 0.15s;
+                white-space: nowrap;
+            }
+            .btn:hover { border-color: var(--accent); color: var(--accent); }
+            .btn-primary {
+                background: var(--accent);
+                color: #0d0d0d;
+                border-color: var(--accent);
+                font-weight: 600;
+            }
+            .btn-primary:hover { background: #d4e83f; border-color: #d4e83f; }
+            .btn-wizard { border-color: var(--accent2); color: var(--accent2); }
+            .btn-wizard:hover, .btn-wizard.active {
+                background: var(--accent2); color: #0d0d0d;
+            }
+
+            /* DIMENSION GRID */
+            .dims-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 1px;
+                background: var(--border);
+                border: 1px solid var(--border);
+            }
+            @media (max-width: 600px) {
+                .dims-grid { grid-template-columns: 1fr; }
+            }
+            @media (max-width: 480px) {
+                .container { padding: 16px 16px 0; }
+                .header { flex-wrap: wrap; }
+                .header-actions { flex-direction: row; width: 100%; }
+                .header-actions .btn { flex: 1; min-height: 44px; }
+                nav a { padding: 12px 14px; }
+                .sb-item { min-height: 44px; }
+                .save-row { flex-wrap: wrap; }
+                .save-row .btn { min-height: 44px; }
+            }
+            .dim-block {
+                background: var(--surface);
+                padding: 14px;
+                min-width: 0;
+                transition: background 0.2s;
+            }
+            .dim-block.rated { background: var(--done); }
+            .dim-block.wizard-current {
+                background: #161a08;
+                outline: 1px solid var(--accent);
+                outline-offset: -1px;
+            }
+            .dim-label {
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 10px;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                color: var(--text-dim);
+                margin-bottom: 10px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .dim-block.rated .dim-label { color: var(--done-text); }
+            .dim-label .dim-ends {
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+                font-size: 9px;
+            }
+            .rated-badge {
+                font-size: 9px;
+                letter-spacing: 0.1em;
+                color: #555;
+                text-transform: uppercase;
+            }
+            .star-btn {
+                background: transparent;
+                border: none;
+                color: var(--text-muted);
+                cursor: pointer;
+                font-size: 14px;
+                padding: 0 0 0 4px;
+                line-height: 1;
+                display: none;
+                transition: color 0.1s;
+            }
+            .star-btn:hover { color: var(--accent); }
+            .star-btn.on { color: var(--accent); }
+
+            /* CHECK CELLS */
+            .check-row {
+                display: flex;
+                gap: 3px;
+                align-items: center;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                padding-bottom: 2px;
+            }
+            .check-cell {
+                position: relative;
+                width: 28px;
+                height: 28px;
+                flex-shrink: 0;
+            }
+            .check-cell input[type="radio"] {
+                position: absolute;
+                opacity: 0;
+                width: 100%;
+                height: 100%;
+                cursor: pointer;
+                z-index: 2;
+                margin: 0;
+            }
+            .check-cell label {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+                height: 100%;
+                border: 1px solid var(--border);
+                background: var(--surface2);
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 9px;
+                color: var(--text-muted);
+                cursor: pointer;
+                transition: all 0.1s;
+                user-select: none;
+            }
+            .check-cell input[type="radio"]:checked + label {
+                background: var(--accent);
+                border-color: var(--accent);
+                color: #0d0d0d;
+                font-weight: 600;
+            }
+            .check-cell:hover label {
+                border-color: var(--border-bright);
+                color: var(--text);
+            }
+            .dim-block.rated .check-cell label {
+                border-color: var(--border);
+                background: var(--done);
+                color: var(--text-muted);
+            }
+            .dim-block.rated .check-cell input[type="radio"]:checked + label {
+                background: #3a3a2a;
+                border-color: #5a5a3a;
+                color: #888844;
+            }
+
+            /* SAVE ROW */
+            .save-row {
+                margin-top: 20px;
+                display: flex;
+                gap: 12px;
+                align-items: center;
+            }
+            .save-note {
+                font-size: 11px;
+                color: var(--text-dim);
+                font-family: "IBM Plex Mono", monospace;
+            }
+
+            /* DONE STATE */
+            .done-state {
+                text-align: center;
+                padding: 60px 0;
+                font-family: "IBM Plex Mono", monospace;
+                color: var(--accent);
+                font-size: 13px;
+                letter-spacing: 0.08em;
+                display: none;
+            }
+
+            /* ======= WIZARD PANEL ======= */
+            #wizard-panel {
+                display: none;
+                position: fixed;
+                bottom: 0;
+                left: 220px; /* clear the sidebar */
+                right: 0;
+                background: #111;
+                border-top: 2px solid var(--accent2);
+                z-index: 100;
+                padding: 14px 24px 16px;
+            }
+            #wizard-panel.active { display: block; }
+            .wiz-header {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                margin-bottom: 12px;
+            }
+            .wiz-badge {
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 10px;
+                letter-spacing: 0.14em;
+                text-transform: uppercase;
+                color: var(--accent2);
+                font-weight: 600;
+            }
+            .wiz-dim-name {
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 13px;
+                font-weight: 600;
+                color: var(--text);
+                flex: 1;
+                letter-spacing: 0.05em;
+            }
+            .wiz-prog {
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 11px;
+                color: var(--text-dim);
+            }
+            .wiz-close {
+                background: transparent;
+                border: 1px solid var(--border-bright);
+                color: var(--text-muted);
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 10px;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                cursor: pointer;
+                padding: 4px 10px;
+            }
+            .wiz-close:hover { border-color: var(--accent2); color: var(--accent2); }
+            .wiz-body {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            .wiz-pole {
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 10px;
+                color: var(--text-muted);
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                white-space: nowrap;
+                min-width: 80px;
+            }
+            .wiz-pole-b { text-align: right; }
+            .wiz-keyrow {
+                display: flex;
+                gap: 4px;
+                flex: 1;
+                justify-content: center;
+            }
+            .wiz-key {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                width: 48px;
+                height: 48px;
+                min-width: 44px;
+                min-height: 44px;
+                border: 1px solid var(--border-bright);
+                background: var(--surface2);
+                flex-shrink: 0;
+                transition: background 0.1s, border-color 0.1s;
+            }
+            .wiz-key.flash { background: var(--accent2); border-color: var(--accent2); }
+            .wiz-key-k {
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 15px;
+                font-weight: 600;
+                color: var(--text);
+                line-height: 1;
+            }
+            .wiz-key.flash .wiz-key-k { color: #0d0d0d; }
+            .wiz-key-v {
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 9px;
+                color: var(--text-muted);
+                margin-top: 2px;
+            }
+            .wiz-key.flash .wiz-key-v { color: #0d0d0d; }
+        </style>
+    </head>
+    <body>
+        <nav>
+            <a href="./" class="active">Rate</a>
+            <a href="./recs/random">Recs Random</a>
+            <a href="./recs/vector">Recs Vector</a>
+            <a href="./stats">Stats</a>
+            <a href="./dominios">Dominios</a>
+        </nav>
+
+        <div class="app-layout">
+
+            <!-- ===== SIDEBAR ===== -->
+            <aside class="sidebar">
+                <div class="sb-section">
+                    <div class="sb-header">
+                        <span>Carpetas</span>
+                        <span class="sb-clear" id="folder-clear" onclick="clearFilter()" style="display:none">× todo</span>
+                    </div>
+                    <div id="folder-list"></div>
+                </div>
+                <div class="sb-section">
+                    <div class="sb-header">
+                        <span>Géneros</span>
+                        <span class="sb-clear" id="genre-clear" onclick="clearFilter()" style="display:none">× todo</span>
+                    </div>
+                    <div id="genre-list"></div>
+                </div>
+            </aside>
+
+            <!-- ===== MAIN COLUMN ===== -->
+            <div class="main-col">
+                <div class="container">
+                    <div class="header">
+                        <img id="art" src="" alt="" />
+                        <div class="track-info">
+                            <h2 id="title">Cargando…</h2>
+                            <div class="track-meta" id="track-meta"></div>
+                            <div class="meta-edit">
+                                <div class="meta-field">
+                                    <span class="meta-lbl">Género</span>
+                                    <input type="text" id="genre-input" class="meta-input"
+                                        placeholder="—" title="Edita para actualizar también el archivo" />
+                                </div>
+                                <div class="meta-field">
+                                    <span class="meta-lbl">Comentario</span>
+                                    <input type="text" id="comment-input" class="meta-input wide"
+                                        placeholder="—" title="Edita para actualizar también el archivo" />
+                                </div>
+                                <div class="meta-field">
+                                    <span class="meta-lbl">Sello</span>
+                                    <span class="meta-static" id="label-val">—</span>
+                                </div>
+                                <div class="meta-field">
+                                    <span class="meta-lbl">BPM</span>
+                                    <span class="meta-static" id="bpm-val">—</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="header-actions">
+                            <button class="btn btn-wizard" id="btn-wizard" onclick="startWizard()">⚡ WIZARD</button>
+                            <button class="btn" onclick="skip()">▶ Siguiente</button>
+                        </div>
+                    </div>
+
+                    <div class="count-bar"><span id="count-info"></span></div>
+
+                    <div class="filter-badge" id="filter-badge">
+                        <span id="filter-badge-text"></span>
+                        <span class="filter-badge-x" onclick="clearFilter()">✕</span>
+                    </div>
+
+                    <div class="progress-bar">
+                        <div class="progress-track">
+                            <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+                        </div>
+                        <span class="progress-label" id="progress-label">0 / 12</span>
+                    </div>
+
+                    <div class="dims-grid" id="dims-grid"></div>
+
+                    <div class="save-row">
+                        <button class="btn btn-primary" onclick="saveAndNext(false)">
+                            💾 Guardar y siguiente
+                        </button>
+                        <span class="save-note" id="save-note"></span>
+                    </div>
+
+                    <div class="done-state" id="done-state">✔ Todas las canciones valoradas</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- WIZARD PANEL (fixed bottom) -->
+        <div id="wizard-panel">
+            <div class="wiz-header">
+                <span class="wiz-badge">⚡ WIZARD</span>
+                <span class="wiz-dim-name" id="wiz-dim-name">—</span>
+                <span class="wiz-prog" id="wiz-prog">1 / 12</span>
+                <button class="wiz-close" onclick="exitWizard()">✕ ESC</button>
+            </div>
+            <div class="wiz-body">
+                <span class="wiz-pole" id="wiz-pole-a"></span>
+                <div class="wiz-keyrow" id="wiz-keyrow"></div>
+                <span class="wiz-pole wiz-pole-b" id="wiz-pole-b"></span>
+            </div>
+        </div>
+
+        <script>
+            const DIMS = [
+                ["alegre_melancolica",     "Alegre",       "Melancólica"],
+                ["relajada_energetica",    "Mental",       "Emotivo"],
+                ["instrumental_cantada",   "Instrumental", "Cantada"],
+                ["lenta_rapida",           "Lenta",        "Rápida"],
+                ["bailable_nobailable",    "Bailable",     "No bailable"],
+                ["comercial_experimental", "Comercial",    "Experimental"],
+                ["luminosa_oscura",        "Luminosa",     "Oscura"],
+                ["fondo_atencion",         "Fondo",        "Atención"],
+                ["fluida_percusiva",       "Fluida",       "Percusiva"],
+                ["estatica_dinamica",      "Estática",     "Dinámica"],
+                ["reflexiva_fisica",       "Reflexiva",    "Física"],
+                ["intima_epica",           "Íntima",       "Épica"],
+            ];
+            const VALUES = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5];
+
+            // Wizard key map: 1→-5 … 9→+3, 0→+5 (skips +4)
+            const WIZ_MAP = {
+                "1": -5, "2": -4, "3": -3, "4": -2, "5": -1,
+                "6": 0,
+                "7": 1, "8": 2, "9": 3, "0": 5,
+            };
+
+            let current = null;
+            let metaDirty = false;
+            let wizardActive = false;
+            let wizardDimIdx = 0;
+            let starredDims = new Set();
+
+            // If URL has ?track=<id>, load that specific track on first call
+            const _urlP = new URLSearchParams(window.location.search).get('track');
+            let forcedTrackId = _urlP ? parseInt(_urlP) : null;
+            if (_urlP) window.history.replaceState({}, '', '/');
+
+            // Filter state — only one active at a time
+            let lockedFolder = null;  // {path, display}
+            let lockedGenre  = null;  // string
+
+            // ---- BUILD GRID ----
+            function buildGrid() {
+                const grid = document.getElementById("dims-grid");
+                grid.innerHTML = "";
+                DIMS.forEach(([key, labelA, labelB]) => {
+                    const block = document.createElement("div");
+                    block.className = "dim-block";
+                    block.id = `block_${key}`;
+                    block.innerHTML = `
+                        <div class="dim-label">
+                            <div class="dim-ends">
+                                <span>${labelA}</span>
+                                <span style="opacity:.4;font-size:9px">${key}</span>
+                                <span>${labelB}</span>
+                            </div>
+                            <span class="rated-badge" id="badge_${key}" style="display:none">✓</span>
+                            <button class="star-btn" id="star_${key}" title="Marcar como representativa">☆</button>
+                        </div>
+                        <div class="check-row" id="row_${key}"></div>
+                    `;
+                    document.getElementById(`star_${key}`)?.addEventListener("click", () => toggleStar(key));
+                    const row = block.querySelector(`#row_${key}`);
+                    VALUES.forEach((v) => {
+                        const cell = document.createElement("div");
+                        cell.className = "check-cell";
+                        const id = `r_${key}_${v < 0 ? "n" + Math.abs(v) : v}`;
+                        cell.innerHTML = `
+                            <input type="radio" name="dim_${key}" id="${id}" value="${v}">
+                            <label for="${id}">${v}</label>
+                        `;
+                        cell.querySelector("input").addEventListener("change", () => {
+                            updateProgress();
+                            updateStarBtn(key);
+                        });
+                        row.appendChild(cell);
+                    });
+                    grid.appendChild(block);
+                });
+            }
+
+            // ---- BUILD WIZARD KEYS ----
+            function buildWizardKeys() {
+                const kr = document.getElementById("wiz-keyrow");
+                kr.innerHTML = "";
+                Object.entries(WIZ_MAP).forEach(([k, v]) => {
+                    const el = document.createElement("div");
+                    el.className = "wiz-key";
+                    el.id = `wkey_${k}`;
+                    el.innerHTML = `
+                        <span class="wiz-key-k">${k}</span>
+                        <span class="wiz-key-v">${v > 0 ? "+" + v : v}</span>
+                    `;
+                    kr.appendChild(el);
+                });
+            }
+
+            // ---- PROGRESS ----
+            function getSelectedValues() {
+                const out = {};
+                DIMS.forEach(([key]) => {
+                    const sel = document.querySelector(`input[name="dim_${key}"]:checked`);
+                    if (sel) out[key] = parseInt(sel.value);
+                });
+                return out;
+            }
+
+            function updateProgress() {
+                const vals = getSelectedValues();
+                const count = Object.keys(vals).length;
+                document.getElementById("progress-fill").style.width =
+                    `${(count / DIMS.length) * 100}%`;
+                document.getElementById("progress-label").innerText =
+                    `${count} / ${DIMS.length}`;
+                DIMS.forEach(([key]) => {
+                    const block = document.getElementById(`block_${key}`);
+                    const badge = document.getElementById(`badge_${key}`);
+                    const sel = document.querySelector(`input[name="dim_${key}"]:checked`);
+                    block.classList.toggle("rated", !!sel);
+                    badge.style.display = sel ? "inline" : "none";
+                });
+            }
+
+            // ---- SIDEBAR ----
+            async function loadSidebar() {
+                const resp = await fetch("./api/sidebar");
+                const data = await resp.json();
+                renderSidebar(data);
+            }
+
+            function renderSidebar({ folders, genres }) {
+                const fl = document.getElementById("folder-list");
+                fl.innerHTML = "";
+                if (!folders.length) {
+                    fl.innerHTML = '<div class="sb-empty">Sin pendientes</div>';
+                } else {
+                    folders.forEach(({ path, display, pending }) => {
+                        const el = document.createElement("div");
+                        el.className = "sb-item" +
+                            (lockedFolder && lockedFolder.path === path ? " active" : "");
+                        el.title = path;
+                        el.innerHTML = `<span class="sb-name">${esc(display)}</span>
+                                        <span class="sb-count">${pending}</span>`;
+                        el.onclick = () => selectFolder({ path, display });
+                        fl.appendChild(el);
+                    });
+                }
+
+                const gl = document.getElementById("genre-list");
+                gl.innerHTML = "";
+                if (!genres.length) {
+                    gl.innerHTML = '<div class="sb-empty">Sin pendientes</div>';
+                } else {
+                    genres.forEach(({ genre, pending }) => {
+                        const el = document.createElement("div");
+                        el.className = "sb-item" +
+                            (lockedGenre === genre ? " active" : "");
+                        el.innerHTML = `<span class="sb-name">${esc(genre)}</span>
+                                        <span class="sb-count">${pending}</span>`;
+                        el.onclick = () => selectGenre(genre);
+                        gl.appendChild(el);
+                    });
+                }
+            }
+
+            function selectFolder(folder) {
+                if (lockedFolder && lockedFolder.path === folder.path) {
+                    clearFilter();
+                    return;
+                }
+                lockedFolder = folder;
+                lockedGenre  = null;
+                document.getElementById("folder-clear").style.display = "inline";
+                document.getElementById("genre-clear").style.display  = "none";
+                updateFilterBadge();
+                load(null);
+            }
+
+            function selectGenre(genre) {
+                if (lockedGenre === genre) {
+                    clearFilter();
+                    return;
+                }
+                lockedGenre  = genre;
+                lockedFolder = null;
+                document.getElementById("genre-clear").style.display  = "inline";
+                document.getElementById("folder-clear").style.display = "none";
+                updateFilterBadge();
+                load(null);
+            }
+
+            function clearFilter() {
+                lockedFolder = null;
+                lockedGenre  = null;
+                document.getElementById("folder-clear").style.display = "none";
+                document.getElementById("genre-clear").style.display  = "none";
+                document.getElementById("done-state").style.display   = "none";
+                document.getElementById("dims-grid").style.display    = "";
+                updateFilterBadge();
+                load(null);
+            }
+
+            function updateFilterBadge() {
+                const badge = document.getElementById("filter-badge");
+                const text  = document.getElementById("filter-badge-text");
+                if (lockedFolder) {
+                    text.textContent = "📁 " + lockedFolder.display;
+                    badge.classList.add("visible");
+                } else if (lockedGenre) {
+                    text.textContent = "🎵 " + lockedGenre;
+                    badge.classList.add("visible");
+                } else {
+                    badge.classList.remove("visible");
+                }
+            }
+
+            // ---- LOAD TRACK ----
+            async function load(lastId = null) {
+                document.getElementById("title").innerText = "…";
+                document.getElementById("track-meta").innerText = "";
+                document.getElementById("save-note").innerText = "";
+                document.getElementById("genre-input").value = "";
+                document.getElementById("comment-input").value = "";
+                document.getElementById("label-val").textContent = "—";
+                document.getElementById("bpm-val").textContent = "—";
+                metaDirty = false;
+
+                const art = document.getElementById("art");
+                art.style.display = "none";
+
+                document.querySelectorAll('input[type="radio"]').forEach((r) => (r.checked = false));
+                DIMS.forEach(([key]) => {
+                    document.getElementById(`block_${key}`).classList.remove("rated", "wizard-current");
+                    document.getElementById(`badge_${key}`).style.display = "none";
+                });
+                updateProgress();
+
+                // Build URL (specific track ID overrides all filters)
+                let url;
+                if (forcedTrackId) {
+                    url = `./api/track/${forcedTrackId}`;
+                    forcedTrackId = null;
+                } else if (lockedFolder) {
+                    url = `./api/next?folder=${encodeURIComponent(lockedFolder.path)}`;
+                } else if (lockedGenre) {
+                    url = `./api/next?genre=${encodeURIComponent(lockedGenre)}`;
+                } else {
+                    url = lastId ? `./api/next?last=${lastId}` : "./api/next";
+                }
+
+                // Fetch track + sidebar in parallel
+                const [trackResp, sidebarResp] = await Promise.all([
+                    fetch(url),
+                    fetch("./api/sidebar"),
+                ]);
+                const data = await trackResp.json();
+                const sidebarData = await sidebarResp.json();
+                renderSidebar(sidebarData);
+
+                if (data.done) {
+                    document.getElementById("dims-grid").style.display = "none";
+                    if (lockedFolder || lockedGenre) {
+                        document.getElementById("title").innerText = "✔ Selección completada";
+                        document.getElementById("track-meta").innerText =
+                            "No quedan canciones pendientes en esta selección.";
+                    } else {
+                        document.getElementById("title").innerText = "";
+                        document.getElementById("done-state").style.display = "block";
+                    }
+                    updateCountBar(data.total, data.rated, 0);
+                    current = null;
+                    exitWizard();
+                    return;
+                }
+
+                current = data;
+                starredDims = new Set(data.starred_dims || []);
+                document.getElementById("dims-grid").style.display = "";
+                document.getElementById("done-state").style.display = "none";
+
+                document.getElementById("title").innerText =
+                    (data.artist || "?") + " — " + (data.title || "?");
+                document.getElementById("track-meta").innerText =
+                    [data.album, data.year, data.key].filter(Boolean).join(" · ");
+
+                document.getElementById("genre-input").value   = data.genre || "";
+                document.getElementById("comment-input").value = data.comments || "";
+                document.getElementById("label-val").textContent =
+                    data.label || "—";
+                document.getElementById("bpm-val").textContent =
+                    data.bpm ? parseFloat(data.bpm).toFixed(1) : "—";
+
+                // Restore existing ratings from DB
+                if (data.ratings) {
+                    Object.entries(data.ratings).forEach(([dim, val]) => {
+                        const r = document.querySelector(`input[name="dim_${dim}"][value="${val}"]`);
+                        if (r) r.checked = true;
+                    });
+                    updateProgress();
+                }
+
+                // Pre-fill lenta_rapida from BPM only if not already rated
+                if (data.bpm && !(data.ratings && "lenta_rapida" in data.ratings)) {
+                    const bv = bpmToValue(parseFloat(data.bpm));
+                    if (bv !== null) {
+                        const r = document.querySelector(
+                            `input[name="dim_lenta_rapida"][value="${bv}"]`
+                        );
+                        if (r) { r.checked = true; updateProgress(); }
+                    }
+                }
+
+                art.onerror = () => { art.style.display = "none"; };
+                art.onload  = () => { art.style.display = "block"; };
+                art.src = "./api/art/" + data.id;
+
+                // Refresh all star buttons after loading track + BPM pre-fill
+                DIMS.forEach(([key]) => updateStarBtn(key));
+
+                updateCountBar(data.total, data.rated, data.pending);
+
+                if (wizardActive) {
+                    wizardDimIdx = 0;
+                    updateWizardUI();
+                }
+            }
+
+            // ---- STARS ----
+            function updateStarBtn(key) {
+                const btn = document.getElementById(`star_${key}`);
+                if (!btn) return;
+                const sel = document.querySelector(`input[name="dim_${key}"]:checked`);
+                const val = sel ? parseInt(sel.value) : null;
+                const isExtreme = val === -5 || val === 5;
+                btn.style.display = isExtreme ? "inline" : "none";
+                const on = starredDims.has(key);
+                btn.classList.toggle("on", on);
+                btn.textContent = on ? "★" : "☆";
+                btn.title = on ? "Quitar estrella de representativa" : "Marcar como representativa";
+            }
+
+            async function toggleStar(key) {
+                if (!current) return;
+                const resp = await fetch("./api/star", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ track_id: current.id, dimension: key }),
+                });
+                const data = await resp.json();
+                if (data.starred) starredDims.add(key);
+                else starredDims.delete(key);
+                updateStarBtn(key);
+            }
+
+            // BPM → lenta_rapida value: ≤80 → -5, ≥150 → +5, linear between
+            function bpmToValue(bpm) {
+                if (!bpm || isNaN(bpm)) return null;
+                if (bpm <= 80)  return -5;
+                if (bpm >= 150) return  5;
+                return Math.round(((bpm - 80) / 70) * 10 - 5);
+            }
+
+            function updateCountBar(total, rated, pending) {
+                document.getElementById("count-info").innerHTML =
+                    `<span class="hl">${rated}</span> valoradas · ${pending} pendientes · ${total} total`;
+            }
+
+            // ---- SKIP ----
+            async function skip() {
+                if (metaDirty) await saveMeta();
+                await load(current ? current.id : null);
+            }
+
+            // ---- META SAVE ----
+            async function saveMeta() {
+                if (!current) return;
+                const genre    = document.getElementById("genre-input").value;
+                const comments = document.getElementById("comment-input").value;
+                await fetch(`./api/meta/${current.id}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ genre, comments }),
+                });
+                metaDirty = false;
+            }
+
+            // ---- SAVE & NEXT ----
+            async function saveAndNext(fromWizard = false) {
+                if (!current) return;
+                const ratings = getSelectedValues();
+                const count = Object.keys(ratings).length;
+
+                if (!fromWizard && count === 0) {
+                    document.getElementById("save-note").innerText =
+                        "Selecciona al menos una dimensión.";
+                    return;
+                }
+
+                if (count > 0) {
+                    await fetch("./api/save", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ id: current.id, ratings }),
+                    });
+                }
+
+                if (metaDirty) await saveMeta();
+
+                document.getElementById("save-note").innerText =
+                    `✔ ${count} dimensiones guardadas`;
+
+                const lastId = current.id;
+                await load(lastId);
+            }
+
+            // ======== WIZARD ========
+            function startWizard() {
+                if (!current) return;
+                wizardActive = true;
+                wizardDimIdx = 0;
+                document.getElementById("wizard-panel").classList.add("active");
+                document.getElementById("btn-wizard").classList.add("active");
+                updateWizardUI();
+            }
+
+            function exitWizard() {
+                wizardActive = false;
+                document.getElementById("wizard-panel").classList.remove("active");
+                document.getElementById("btn-wizard").classList.remove("active");
+                DIMS.forEach(([key]) =>
+                    document.getElementById(`block_${key}`).classList.remove("wizard-current")
+                );
+            }
+
+            function updateWizardUI() {
+                if (wizardDimIdx >= DIMS.length) return;
+                const [key, labelA, labelB] = DIMS[wizardDimIdx];
+                document.getElementById("wiz-dim-name").textContent = `${labelA} / ${labelB}`;
+                document.getElementById("wiz-prog").textContent = `${wizardDimIdx + 1} / ${DIMS.length}`;
+                document.getElementById("wiz-pole-a").textContent = labelA;
+                document.getElementById("wiz-pole-b").textContent = labelB;
+                DIMS.forEach(([k]) =>
+                    document.getElementById(`block_${k}`).classList.remove("wizard-current")
+                );
+                const block = document.getElementById(`block_${key}`);
+                block.classList.add("wizard-current");
+                block.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            }
+
+            function wizardSetValue(val) {
+                if (!wizardActive || !current) return;
+                const [key] = DIMS[wizardDimIdx];
+                const radio = document.querySelector(`input[name="dim_${key}"][value="${val}"]`);
+                if (radio) { radio.checked = true; updateProgress(); updateStarBtn(key); }
+                wizardDimIdx++;
+                if (wizardDimIdx >= DIMS.length) {
+                    document.getElementById("save-note").innerText = "⚡ Guardando…";
+                    saveAndNext(true);
+                } else {
+                    updateWizardUI();
+                }
+            }
+
+            // ---- KEYBOARD ----
+            document.addEventListener("keydown", (e) => {
+                if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
+                if (e.key === "Escape") { exitWizard(); return; }
+                if (!wizardActive || !current) return;
+                if (e.key in WIZ_MAP) {
+                    e.preventDefault();
+                    const keyEl = document.getElementById(`wkey_${e.key}`);
+                    if (keyEl) {
+                        keyEl.classList.add("flash");
+                        setTimeout(() => keyEl.classList.remove("flash"), 180);
+                    }
+                    wizardSetValue(WIZ_MAP[e.key]);
+                }
+            });
+
+            // ---- META DIRTY TRACKING ----
+            document.getElementById("genre-input").addEventListener("input",
+                () => { metaDirty = true; });
+            document.getElementById("comment-input").addEventListener("input",
+                () => { metaDirty = true; });
+            document.getElementById("genre-input").addEventListener("blur",
+                () => { if (metaDirty) saveMeta(); });
+            document.getElementById("comment-input").addEventListener("blur",
+                () => { if (metaDirty) saveMeta(); });
+
+            function esc(s) {
+                if (!s) return "";
+                return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            }
+
+            // ---- INIT ----
+            buildGrid();
+            buildWizardKeys();
+            load();
+        </script>
+    
+</body>
+</html>

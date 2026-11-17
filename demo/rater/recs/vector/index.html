@@ -1,0 +1,497 @@
+<!doctype html>
+<html lang="es">
+    <head><base href="../../"><link rel="stylesheet" href="../_replay/replay.css"><script>window.REPLAY = {"mod": "rater", "root": "", "ports": [], "map": {"api/art/5886": "api/art/5886", "api/art/6235": "api/art/6235", "api/next": "data/f608f7f86c88.json", "api/random": "data/3f2b3807cb20.json", "api/sidebar": "data/78074ece5d9f.json", "api/similar/2354": "data/242a3975f234.json", "api/similar/3337": "data/f90a64651f73.json", "api/similar/4181": "data/0a063533c71e.json", "api/similar/4905": "data/64fd051c7dfd.json", "api/similar/5462": "data/ab470649e0b8.json", "api/similar/5886": "data/fdf0bf79f689.json", "api/similar/6235": "data/b2dc6e312b22.json", "api/similar/63": "data/9116641836a0.json", "api/stats": "data/8d8d4871158f.json", "api/track/2354": "data/089e4d419c1e.json", "api/track/4181": "data/bcd9f8660a89.json", "api/track/4905": "data/d55445d93957.json", "api/track/5462": "data/d403abf25e83.json", "api/track/5886": "data/db2855d67e3c.json", "api/track/6235": "data/c289656a7c4c.json", "static/info.js": "static/info.js", "static/settings.js": "static/settings.js"}, "readOnlyPosts": [], "search": {}};</script><script src="../_replay/replay.js"></script><script defer src="https://cloud.umami.is/script.js" data-website-id="5d84fd6c-0760-4a0c-a2d0-ffabb82179f5"></script>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Recs Vector</title>
+        <script src="./static/settings.js"></script>
+        <script src="./static/info.js"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            *,
+            *::before,
+            *::after {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+            :root {
+                --bg: #0d0d0d;
+                --surface: #161616;
+                --surface2: #1f1f1f;
+                --border: #2a2a2a;
+                --border-bright: #3d3d3d;
+                --text: #e8e8e8;
+                --text-dim: #666;
+                --text-muted: #444;
+                --accent: #e8ff47;
+                --accent2: #ff6b35;
+                --done: #2a2a2a;
+                --done-text: #3a3a3a;
+            }
+            body {
+                background: var(--bg);
+                color: var(--text);
+                font-family: "IBM Plex Sans", sans-serif;
+                min-height: 100vh;
+            }
+            nav {
+                display: flex;
+                gap: 1px;
+                background: var(--border);
+                border-bottom: 1px solid var(--border);
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            nav a {
+                padding: 12px 20px;
+                background: var(--surface);
+                color: var(--text-dim);
+                text-decoration: none;
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 11px;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                transition: all 0.15s;
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+            nav a:hover,
+            nav a.active {
+                background: var(--surface2);
+                color: var(--accent);
+            }
+
+            .layout {
+                display: grid;
+                grid-template-columns: 1fr 340px;
+                min-height: calc(100vh - 43px);
+            }
+            @media (max-width: 780px) {
+                .layout { grid-template-columns: 1fr; }
+            }
+
+            .left {
+                padding: 28px 24px;
+                border-right: 1px solid var(--border);
+                overflow-y: auto;
+            }
+            .right {
+                background: var(--surface);
+                display: flex;
+                flex-direction: column;
+            }
+
+            /* ---- LEFT: DIM SLIDERS ---- */
+
+            .left-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 20px;
+            }
+            h2 {
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 10px;
+                letter-spacing: 0.14em;
+                text-transform: uppercase;
+                color: var(--text-muted);
+            }
+            .reset-link {
+                font-size: 10px;
+                font-family: "IBM Plex Mono", monospace;
+                color: var(--text-muted);
+                cursor: pointer;
+                text-decoration: underline;
+            }
+            .reset-link:hover { color: var(--accent2); }
+
+            .dims-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 1px;
+                background: var(--border);
+                border: 1px solid var(--border);
+                margin-bottom: 20px;
+            }
+            @media (max-width: 600px) {
+                .dims-grid { grid-template-columns: 1fr; }
+            }
+            .dim-block {
+                background: var(--surface);
+                padding: 14px;
+                min-width: 0;
+                transition: background 0.2s;
+            }
+            .dim-block.active  { background: #161a08; }
+            .dim-block.ignored { opacity: 0.35; }
+
+            .dim-label {
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 9px;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                color: var(--text-muted);
+                margin-bottom: 8px;
+                display: flex;
+                justify-content: space-between;
+            }
+            .dim-block.active .dim-label { color: var(--accent); opacity: 0.7; }
+
+            .check-row {
+                display: flex;
+                gap: 2px;
+                align-items: center;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                padding-bottom: 2px;
+            }
+            .check-cell {
+                position: relative;
+                width: 26px;
+                height: 26px;
+                flex-shrink: 0;
+            }
+            .check-cell input[type="radio"] {
+                position: absolute;
+                opacity: 0;
+                width: 100%;
+                height: 100%;
+                cursor: pointer;
+                z-index: 2;
+                margin: 0;
+            }
+            .check-cell label {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+                height: 100%;
+                border: 1px solid var(--border);
+                background: var(--surface2);
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 9px;
+                color: var(--text-muted);
+                cursor: pointer;
+                transition: all 0.1s;
+                user-select: none;
+            }
+            .check-cell input[type="radio"]:checked + label {
+                background: var(--accent);
+                border-color: var(--accent);
+                color: #0d0d0d;
+                font-weight: 600;
+            }
+            .check-cell:hover label {
+                border-color: var(--border-bright);
+                color: var(--text);
+            }
+
+            .dim-toggle {
+                font-size: 9px;
+                font-family: "IBM Plex Mono", monospace;
+                color: var(--text-muted);
+                cursor: pointer;
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+            }
+            .dim-toggle:hover { color: var(--accent2); }
+
+            .btn {
+                padding: 10px 20px;
+                border: 1px solid var(--border-bright);
+                background: transparent;
+                color: var(--text);
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 11px;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                cursor: pointer;
+                transition: all 0.15s;
+            }
+            .btn:hover { border-color: var(--accent); color: var(--accent); }
+            .btn-primary {
+                background: var(--accent);
+                color: #0d0d0d;
+                border-color: var(--accent);
+                font-weight: 600;
+            }
+            .btn-primary:hover { background: #d4e83f; }
+
+            /* ---- RIGHT: RESULTS ---- */
+
+            .right-header {
+                padding: 16px 20px 12px;
+                border-bottom: 1px solid var(--border);
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 10px;
+                letter-spacing: 0.14em;
+                text-transform: uppercase;
+                color: var(--text-muted);
+                flex-shrink: 0;
+            }
+
+            .results-list {
+                flex: 1;
+                overflow-y: auto;
+            }
+
+            .result-item {
+                padding: 12px 20px;
+                border-bottom: 1px solid var(--border);
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                cursor: pointer;
+                transition: background 0.1s;
+            }
+            .result-item:hover { background: var(--surface2); }
+            .result-item:hover .result-play { opacity: 1; }
+
+            .result-play {
+                font-size: 10px;
+                color: var(--accent);
+                opacity: 0;
+                flex-shrink: 0;
+                transition: opacity 0.1s;
+                font-family: "IBM Plex Mono", monospace;
+            }
+            .result-body { flex: 1; min-width: 0; }
+            .result-title {
+                font-size: 13px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .result-artist {
+                font-size: 11px;
+                color: var(--text-dim);
+                font-family: "IBM Plex Mono", monospace;
+                margin-top: 1px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .result-sub {
+                font-size: 10px;
+                color: var(--text-muted);
+                font-family: "IBM Plex Mono", monospace;
+                margin-top: 2px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .result-sim {
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 12px;
+                color: var(--accent);
+                opacity: 0.8;
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+
+            .empty-state {
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 11px;
+                color: var(--text-muted);
+                padding: 32px 20px;
+                text-align: center;
+            }
+            @media (max-width: 768px) {
+                .left { padding: 20px 16px; }
+            }
+            @media (max-width: 480px) {
+                .btn-primary { width: 100%; min-height: 44px; }
+                .result-item { min-height: 44px; }
+                nav a { padding: 12px 14px; }
+            }
+        </style>
+    </head>
+    <body>
+        <nav>
+            <a href="./">Rate</a>
+            <a href="./recs/random">Recs Random</a>
+            <a href="./recs/vector" class="active">Recs Vector</a>
+            <a href="./stats">Stats</a>
+            <a href="./dominios">Dominios</a>
+        </nav>
+
+        <div class="layout">
+            <div class="left">
+                <div class="left-header">
+                    <h2>Vector Search</h2>
+                    <span class="reset-link" onclick="resetAll()">reset</span>
+                </div>
+
+                <div class="dims-grid" id="dims-grid"></div>
+
+                <button class="btn btn-primary" onclick="search()">
+                    Buscar similares
+                </button>
+            </div>
+
+            <div class="right">
+                <div class="right-header">Resultados</div>
+                <div class="results-list" id="results">
+                    <div class="empty-state">Define el vector y busca.</div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            const DIMS = [
+                ["alegre_melancolica",     "Alegre",       "Melancólica"],
+                ["relajada_energetica",    "Mental",       "Emotivo"],
+                ["instrumental_cantada",   "Instrumental", "Cantada"],
+                ["lenta_rapida",           "Lenta",        "Rápida"],
+                ["bailable_nobailable",    "Bailable",     "No bailable"],
+                ["comercial_experimental", "Comercial",    "Experimental"],
+                ["luminosa_oscura",        "Luminosa",     "Oscura"],
+                ["fondo_atencion",         "Fondo",        "Atención"],
+                ["fluida_percusiva",       "Fluida",       "Percusiva"],
+                ["estatica_dinamica",      "Estática",     "Dinámica"],
+                ["reflexiva_fisica",       "Reflexiva",    "Física"],
+                ["intima_epica",           "Íntima",       "Épica"],
+            ];
+            const VALUES = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5];
+            const ignored = new Set();
+
+            function buildGrid() {
+                const grid = document.getElementById("dims-grid");
+                grid.innerHTML = "";
+
+                DIMS.forEach(([key, labelA, labelB]) => {
+                    const block = document.createElement("div");
+                    block.className = "dim-block";
+                    block.id = `block_${key}`;
+
+                    block.innerHTML = `
+                        <div class="dim-label">
+                            <span>${labelA} / ${labelB}</span>
+                            <span class="dim-toggle" onclick="toggleIgnore('${key}')">ignorar</span>
+                        </div>
+                        <div class="check-row" id="row_${key}"></div>
+                    `;
+
+                    const row = block.querySelector(`#row_${key}`);
+                    VALUES.forEach((v) => {
+                        const cell = document.createElement("div");
+                        cell.className = "check-cell";
+                        const id = `rv_${key}_${v < 0 ? "n" + Math.abs(v) : v}`;
+                        cell.innerHTML = `
+                            <input type="radio" name="vec_${key}" id="${id}" value="${v}">
+                            <label for="${id}">${v}</label>
+                        `;
+                        cell.querySelector("input").addEventListener("change", () => {
+                            block.classList.add("active");
+                            if (ignored.has(key)) {
+                                ignored.delete(key);
+                                block.classList.remove("ignored");
+                            }
+                        });
+                        row.appendChild(cell);
+                    });
+
+                    grid.appendChild(block);
+                });
+            }
+
+            function toggleIgnore(key) {
+                const block = document.getElementById(`block_${key}`);
+                if (ignored.has(key)) {
+                    ignored.delete(key);
+                    block.classList.remove("ignored");
+                } else {
+                    ignored.add(key);
+                    block.classList.add("ignored");
+                    block.classList.remove("active");
+                    document
+                        .querySelectorAll(`input[name="vec_${key}"]`)
+                        .forEach((r) => (r.checked = false));
+                }
+            }
+
+            function resetAll() {
+                document
+                    .querySelectorAll('input[type="radio"]')
+                    .forEach((r) => (r.checked = false));
+                ignored.clear();
+                DIMS.forEach(([key]) => {
+                    const block = document.getElementById(`block_${key}`);
+                    block.classList.remove("active", "ignored");
+                });
+                document.getElementById("results").innerHTML =
+                    '<div class="empty-state">Define el vector y busca.</div>';
+            }
+
+            async function search() {
+                const vector = DIMS.map(([key]) => {
+                    if (ignored.has(key)) return 0;
+                    const sel = document.querySelector(
+                        `input[name="vec_${key}"]:checked`
+                    );
+                    return sel ? parseInt(sel.value) : 0;
+                });
+
+                const r = await fetch("./api/search", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ vector }),
+                });
+                const data = await r.json();
+                renderResults(data);
+            }
+
+            function renderResults(data) {
+                const div = document.getElementById("results");
+                div.innerHTML = "";
+
+                if (!data.length) {
+                    div.innerHTML = '<div class="empty-state">Sin resultados.</div>';
+                    return;
+                }
+
+                data.forEach((t) => {
+                    const el = document.createElement("div");
+                    el.className = "result-item";
+                    el.onclick = () => playTrack(t.id);
+
+                    const sub = [
+                        t.album,
+                        t.genre,
+                        t.bpm ? parseFloat(t.bpm).toFixed(0) + " bpm" : null,
+                    ]
+                        .filter(Boolean)
+                        .join(" · ");
+
+                    el.innerHTML = `
+                        <span class="result-play">▶</span>
+                        <div class="result-body">
+                            <div class="result-title">${esc(t.title || "?")}</div>
+                            <div class="result-artist">${esc(t.artist || "?")}</div>
+                            ${sub ? `<div class="result-sub">${esc(sub)}</div>` : ""}
+                        </div>
+                        <span class="result-sim">${(t.sim * 100).toFixed(0)}%</span>
+                    `;
+                    div.appendChild(el);
+                });
+            }
+
+            async function playTrack(id) {
+                await fetch(`./api/play/${id}`);
+            }
+
+            function esc(s) {
+                if (!s) return "";
+                return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            }
+
+            buildGrid();
+        </script>
+    
+</body>
+</html>

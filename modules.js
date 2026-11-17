@@ -1,10 +1,12 @@
 // Catálogo del índice: lo único que hay que tocar para añadir o cambiar un módulo.
-// kind: 'public' = tiene versión pública real; 'sim' = solo se muestra una simulación; 'blog' = blog para leer.
+// kind: 'public' = versión pública real; 'sim' = simulación o demo (replay: con datos reales);
+//       'blog' = blog para leer; 'script' = script sin web; 'app' = aplicación de terceros que usa REPEAT-ONE.
 // tags: etiquetas de los botones de filtro (TAGS). Un módulo puede tener varias.
 const GH = 'https://github.com/volteret4/';
 const PAGES = 'https://volteret4.github.io/';
+const SCRIPTS = 'https://github.com/volteret4/Scripts/blob/main/';
 
-export const GROUPS = ['Adquisición', 'Ampliando', 'Escarbando', 'Info', 'Herramientas', 'Estadísticas', 'Mix', 'Blogs'];
+export const GROUPS = ['Adquisición', 'Ampliando', 'Escarbando', 'Info', 'Herramientas', 'Estadísticas', 'Mix', 'Blogs', 'Apps que usa'];
 
 export const TAGS = [
   {id: 'imprescindible', label: 'Imprescindible'},
@@ -30,12 +32,16 @@ export const MODULES = [
     detail: 'La versión pública muestra los feeds ya procesados. La local se conecta a tu servidor FreshRSS.',
     try: [{label: 'Probar la versión pública', url: PAGES + 'freshrss_embeeds/'}], repos: [{label: 'freshrss_embeeds', url: GH + 'freshrss_embeeds'}], profile: 'freshrss'},
   {id: 'charts', label: 'Sello | Artist Chart', group: 'Adquisición', kind: 'public', tags: ['imprescindible'], short: 'El catálogo de un sello o la discografía de un artista',
-    what: 'Escribes el nombre de un sello o de un artista y ves todo lo publicado como un mosaico de portadas, con vídeos e información de Last.fm.',
-    detail: 'Cruza MusicBrainz y Discogs. La versión pública guarda las búsquedas en tu navegador y usa tus propias claves. Las locales son más rápidas porque trabajan desde un servidor con yt-dlp.',
-    try: [{label: 'Probar charts de sellos', url: PAGES + 'charts-web/sellos/'}, {label: 'Probar charts de artistas', url: PAGES + 'charts-web/artistas/'}],
+    what: 'Escribes el nombre de un sello, un artista o un productor, ingeniero o masterizador (créditos) y ves todo lo publicado como un mosaico de portadas, con vídeos e información de Last.fm.',
+    detail: 'Cruza MusicBrainz y Discogs. La versión pública de sellos y artistas guarda las búsquedas en tu navegador y usa tus propias claves. Los créditos, por ahora, solo en local (hay una demo con datos reales). Las locales son más rápidas porque trabajan desde un servidor con yt-dlp.',
+    try: [{label: 'Probar charts de sellos', url: PAGES + 'charts-web/sellos/'}, {label: 'Probar charts de artistas', url: PAGES + 'charts-web/artistas/'}, {label: 'Ver charts de créditos (demo local)', url: './demo/creditos/'}],
     repos: [{label: 'charts_sellos', url: GH + 'charts_sellos'}, {label: 'charts_artistas', url: GH + 'charts_artistas'}, {label: 'charts-web (versión pública)', url: GH + 'charts-web'}], profile: 'charts_sellos, charts_artistas'},
+  {id: 'calendario', label: 'Discos al calendario', group: 'Adquisición', kind: 'script', tags: ['nuevo'], short: 'Los lanzamientos de Muspy como tareas de Radicale',
+    what: 'Lee el feed de Muspy y crea en tu calendario CalDAV (Radicale) una tarea por cada disco nuevo de los artistas que sigues. Otro script las marca como hechas cuando Last.fm dice que ya lo has escuchado.',
+    detail: 'Es la fuente de Discos Pendientes y de las estadísticas de Dieta Sonora.',
+    try: [{label: 'add_release_calendar.py', url: SCRIPTS + 'Musica/discos-nuevos/add_release_calendar.py'}, {label: 'discos_escuchados_calendario.py', url: SCRIPTS + 'Musica/discos-nuevos/discos_escuchados_calendario.py'}], repos: [], profile: null},
   {id: 'playlists', label: 'YT Playlists', group: 'Adquisición', kind: 'sim', tags: ['nuevo'], short: 'Listas de YouTube enriquecidas',
-    what: 'Sigue canales y listas de YouTube, y marca qué temas tienes ya en tu colección.', demo: 'playlists', repos: []},
+    what: 'Sigue canales y listas de YouTube, y marca qué temas tienes ya en tu colección.', demo: 'playlists', replay: true, repos: []},
 
   // ── Ampliando
   {id: 'musthear', label: 'Musthear', group: 'Ampliando', kind: 'public', tags: ['imprescindible'], short: 'Discos imprescindibles según miles de listas',
@@ -43,23 +49,29 @@ export const MODULES = [
     detail: 'La versión pública solo permite explorar las colecciones.',
     try: [{label: 'Probar la versión pública', url: PAGES + 'must_hear/'}], repos: [{label: 'escuchowsky', url: GH + 'escuchowsky'}], profile: 'escuchowsky'},
   {id: 'escuchowsky', label: 'Escuchowsky', group: 'Ampliando', kind: 'sim', tags: ['imprescindible', 'nuevo'], short: 'Compara las escuchas de varios usuarios',
-    what: 'Compara las escuchas de varios usuarios de Last.fm por género y te dice qué disfruta cada uno que el otro no conoce.', demo: 'escuchowsky',
+    what: 'Compara las escuchas de varios usuarios de Last.fm por género y te dice qué disfruta cada uno que el otro no conoce.',
+    detail: 'La demo trae las escuchas de un solo usuario cruzadas con seis colecciones. En la versión local cargas los usuarios reales de Last.fm que quieras, tus amigos incluidos.',
+    demo: 'escuchowsky',
     repos: [{label: 'escuchowsky', url: GH + 'escuchowsky'}], profile: 'escuchowsky'},
+  {id: 'discover', label: 'Tumtumpa Discover', group: 'Ampliando', kind: 'public', tags: ['ampliando'], short: 'Lo que escuchan tus amigos y a ti te falta',
+    what: 'Compara tu historial de Last.fm con el de tus amigos y te enseña los discos que ellos escuchan y tú no, con portada y enlaces para escucharlos.',
+    detail: 'Funciona entero en tu navegador: necesitas tu propia API key de Last.fm, que se guarda solo ahí. La versión local marca además lo que ya tienes en tu colección.',
+    try: [{label: 'Probar la versión pública', url: './demo/discover/'}], repos: [{label: 'escuchowsky', url: GH + 'escuchowsky'}], profile: 'escuchowsky'},
   {id: 'consejero', label: 'Consejero Mix', group: 'Ampliando', kind: 'sim', tags: ['ampliando'], short: 'Recomendaciones para pinchar, hechas por una IA',
     what: 'Una lista de temas para pinchar, con vídeo y enlaces a tiendas, que se afina con tu opinión: 👍, 🤷 o 👎 y una nota sobre el porqué.',
     detail: 'Las recomendaciones las hace una IA (Claude): parte de tu perfil y de lo que ya pinchas, busca temas parecidos y aprende de lo que valoras en cada tanda.',
-    demo: 'consejero', repos: []},
+    demo: 'consejero', replay: true, repos: []},
 
   // ── Escarbando
   {id: 'sellos', label: 'Sellos & Productores', group: 'Escarbando', kind: 'sim', tags: [], short: 'Tu colección navegada por sello y productor',
-    what: 'Recorre tu colección en tres columnas: sello o productor, artista y disco. Cada elemento abre un panel con su ficha.', demo: 'sellos',
+    what: 'Recorre tu colección en tres columnas: sello o productor, artista y disco. Cada elemento abre un panel con su ficha.', demo: 'sellos', replay: true,
     repos: [{label: 'sellos-discograficos', url: GH + 'sellos-discograficos'}], profile: 'sellos_discograficos'},
   {id: 'gaps', label: 'Discografía Gaps', group: 'Escarbando', kind: 'sim', tags: ['ampliando'], short: 'Los discos que te faltan de tus artistas',
-    what: 'Compara la discografía completa de los artistas que sigues con lo que tienes, y te dice qué falta y dónde conseguirlo.', demo: 'gaps', repos: []},
+    what: 'Compara la discografía completa de los artistas que sigues con lo que tienes, y te dice qué falta y dónde conseguirlo.', demo: 'gaps', replay: true, repos: []},
   {id: 'mapa', label: 'Mapa de Discos', group: 'Escarbando', kind: 'sim', tags: ['ampliando'], short: 'Tu colección como un mapa navegable',
-    what: 'Dibuja un grafo desde un artista hasta sus discos y géneros, y de ahí a otros artistas de tu colección. Marca lo que tienes y lo que te falta.', demo: 'mapa', repos: []},
+    what: 'Dibuja un grafo desde un artista hasta sus discos y géneros, y de ahí a otros artistas de tu colección. Marca lo que tienes y lo que te falta.', demo: 'mapa', replay: true, repos: []},
   {id: 'pendientes', label: 'Discos Pendientes', group: 'Escarbando', kind: 'sim', tags: ['ampliando'], short: 'Qué falta por escuchar y qué has descargado',
-    what: 'Lleva tus discos pendientes desde el calendario: qué has descargado ya, qué has escuchado y qué te queda del catálogo de cada artista.', demo: 'pendientes', repos: []},
+    what: 'Lleva tus discos pendientes desde el calendario: qué has descargado ya, qué has escuchado y qué te queda del catálogo de cada artista.', demo: 'pendientes', replay: true, repos: []},
 
   // ── Info
   {id: 'encarta', label: 'Encarta', group: 'Info', kind: 'public', tags: ['imprescindible'], short: 'Todo lo que sabemos de un artista, disco o sello',
@@ -77,19 +89,25 @@ export const MODULES = [
 
   // ── Herramientas
   {id: 'trasvase', label: 'Trasvase', group: 'Herramientas', kind: 'sim', tags: ['herramientas'], short: 'Copiar discos entre dos colecciones',
-    what: 'Compara dos colecciones de música y copia a la principal los discos que le faltan, con filtros por artista, género o sello.', demo: 'trasvase', repos: []},
+    what: 'Compara dos colecciones de música y copia a la principal los discos que le faltan, con filtros por artista, género o sello.', demo: 'trasvase', replay: true, repos: []},
   {id: 'clips', label: 'YT Clips', group: 'Herramientas', kind: 'sim', tags: ['herramientas'], short: 'Recorta y guarda momentos de vídeos',
-    what: 'Recorta fragmentos de vídeos de YouTube, los guarda con etiqueta y permite montarlos en un único vídeo.', demo: 'clips', repos: []},
+    what: 'Recorta fragmentos de vídeos de YouTube, los guarda con etiqueta y permite montarlos en un único vídeo.', demo: 'clips', replay: true, repos: []},
   {id: 'podcast', label: 'Podcast TTS', group: 'Herramientas', kind: 'sim', tags: ['herramientas'], short: 'Tus artículos convertidos en podcast',
-    what: 'Convierte en audio los artículos que eliges de FreshRSS o Wallabag y los publica en un feed para tu app de podcasts.', demo: 'podcast', repos: []},
+    what: 'Convierte en audio los artículos que eliges de FreshRSS o Wallabag y los publica en un feed para tu app de podcasts.', demo: 'podcast', replay: true, repos: []},
   {id: 'tracklist', label: 'Tracklist ID', group: 'Herramientas', kind: 'sim', tags: ['herramientas', 'nuevo'], short: 'Identifica los temas de una sesión',
-    what: 'Pegas el enlace de una sesión de YouTube y la analiza por tramos para reconstruir la lista de temas.', demo: 'tracklist', repos: []},
+    what: 'Pegas el enlace de una sesión de YouTube y la analiza por tramos para reconstruir la lista de temas.', demo: 'tracklist', replay: true, repos: []},
   {id: 'explorador', label: 'Explorador de Escuchas', group: 'Herramientas', kind: 'sim', tags: ['herramientas'], short: 'Busca en tu historial de escuchas',
-    what: 'Filtra todo tu historial de Last.fm y ListenBrainz por fechas, artista, disco, género o sello, con gráficos del resultado.', demo: 'explorador', repos: []},
+    what: 'Filtra todo tu historial de Last.fm y ListenBrainz por fechas, artista, disco, género o sello, con gráficos del resultado.', demo: 'explorador', replay: true, repos: []},
   {id: 'sync', label: 'Artist Sync', group: 'Herramientas', kind: 'sim', tags: ['herramientas'], short: 'Tus artistas cruzados entre servicios',
-    what: 'Cruza tus artistas entre Muspy, Airsonic, qBittorrent y Last.fm, y te deja seguir en Muspy los que faltan.', demo: 'sync', repos: []},
+    what: 'Cruza tus artistas entre Muspy, Airsonic, qBittorrent y Last.fm, y te deja seguir en Muspy los que faltan.', demo: 'sync', replay: true, repos: []},
   {id: 'conciertos', label: 'Bot Conciertos', group: 'Herramientas', kind: 'sim', tags: ['herramientas'], short: 'Conciertos y lanzamientos de tus artistas',
-    what: 'Un bot de Telegram que avisa de conciertos y lanzamientos de tus artistas. Su web muestra la agenda y el calendario.', demo: 'conciertos', repos: []},
+    what: 'Un bot de Telegram que avisa de conciertos y lanzamientos de tus artistas. Su web muestra la agenda y el calendario.', demo: 'conciertos', replay: true, repos: []},
+  {id: 'olvidados', label: 'Discos Olvidados', group: 'Herramientas', kind: 'sim', tags: ['herramientas'], short: 'Lo que hace más tiempo que no escuchas',
+    what: 'Ordena los discos y artistas de tu colección por cuánto hace que no los escuchas en Last.fm, y te dice si además están guardados en qBittorrent, para decidir qué borrar con más confianza.',
+    demo: 'olvidados', replay: true, repos: []},
+  {id: 'odesli', label: 'Odesli', group: 'Herramientas', kind: 'script', tags: ['herramientas'], short: 'El tema que suena, en todas las plataformas',
+    what: 'Toma el tema que suena en DeaDBeeF o Airsonic y saca su enlace de Odesli (song.link) para compartirlo en cualquier servicio. Sin depender de Spotify: busca en MusicBrainz, Deezer y YouTube Music.',
+    try: [{label: 'odesli.py', url: SCRIPTS + 'utilities/open_search_links/music_player/odesli.py'}], repos: [], profile: null},
   {id: 'muspy-import', label: 'Muspy Import', group: 'Herramientas', kind: 'public', tags: ['herramientas'], short: 'Sigue en Muspy los artistas de Discogs y RYM',
     what: 'Lee tus exportaciones CSV de Discogs o RateYourMusic, busca cada artista en MusicBrainz y lo sigue en Muspy con un marcador, sin pedirte la contraseña.',
     detail: 'Hay también una app de escritorio que saca los artistas de tu carpeta de música.',
@@ -97,13 +115,16 @@ export const MODULES = [
 
   // ── Estadísticas
   {id: 'stats', label: 'Dieta Sonora — Estadísticas', group: 'Estadísticas', kind: 'sim', tags: ['estadisticas'], short: 'Cuánto tardas en escuchar lo que sale',
-    what: 'Mide el tiempo que pasa desde que sale un disco hasta que lo consigues y lo escuchas, por artista y por género.', demo: 'stats', repos: []},
+    what: 'Mide el tiempo que pasa desde que sale un disco hasta que lo consigues y lo escuchas, por artista y por género.', demo: 'stats', replay: true, repos: []},
 
   // ── Mix
   {id: 'mixxx', label: 'Mixxx Info', group: 'Mix', kind: 'sim', tags: ['mix'], short: 'Ficha de cada tema para pinchar',
-    what: 'Una ficha de cada tema de tu carpeta de Mixxx, con BPM, tonalidad y portada, filtros y un asistente de listas.', demo: 'mixxx', repos: []},
+    what: 'Una ficha de cada tema de tu carpeta de Mixxx, con BPM, tonalidad y portada, filtros y un asistente de listas.', demo: 'mixxx', replay: true, repos: []},
   {id: 'rater', label: 'Mix Rater', group: 'Mix', kind: 'sim', tags: ['mix'], short: 'Puntúa temas en 12 dimensiones',
-    what: 'Puntúa cada tema en 12 dimensiones, como alegre o melancólica, y busca después por parecido.', demo: 'rater', repos: []},
+    what: 'Puntúa cada tema en 12 dimensiones, como alegre o melancólica, y busca después por parecido.', demo: 'rater', replay: true, repos: []},
+  {id: 'mover-mix', label: 'Mover a Mix', group: 'Mix', kind: 'script', tags: ['mix'], short: 'Guarda en Mix el tema que está sonando',
+    what: 'Con un atajo de teclado, copia el tema que suena (vía playerctl) a la subcarpeta de Mix que elijas, lista para pinchar en Mixxx.',
+    try: [{label: 'mover_mix_playerctl.py', url: SCRIPTS + 'Musica/MoverMusica/mover_mix_playerctl.py'}], repos: [], profile: null},
   {id: 'mix-sessions', label: 'Mix Sessions', group: 'Mix', kind: 'public', tags: ['mix'], short: 'Sesiones grabadas, con su lista de temas',
     what: 'Escucha sesiones de mezcla grabadas con Mixxx, con la lista de temas, portadas y el punto exacto en que entra cada uno.',
     try: [{label: 'Escuchar las sesiones', url: PAGES + 'mix_sessions/'}], repos: [{label: 'mix_sessions', url: GH + 'mix_sessions'}], profile: null},
@@ -121,9 +142,26 @@ export const MODULES = [
   {id: 'mihitas', label: 'Mihitas', group: 'Blogs', kind: 'blog', tags: [], short: 'Las mismas notas, en formato terminal',
     what: 'Las notas técnicas con otro diseño, de estética de terminal.',
     try: [{label: 'Leer el blog', url: PAGES + 'mihitas/'}], repos: [{label: 'mihitas', url: GH + 'mihitas'}], profile: null},
+  {id: 'post-auto', label: 'Publicar en los blogs', group: 'Blogs', kind: 'script', tags: [], short: 'Posts automáticos en VVMM, Notas y Mihitas',
+    what: 'VVMM: crea el post de un disco con portada, datos de Discogs y MusicBrainz, y lo publica. Notas y Mihitas: convierte notas de Obsidian en posts de Hugo para los dos blogs a la vez.',
+    try: [{label: 'VVMM: main.py', url: SCRIPTS + 'Musica/blog/vvmm/main.py'}, {label: 'Notas y Mihitas: crear_post.py', url: SCRIPTS + 'menus/mihitas/crear_post.py'}], repos: [], profile: null},
   {id: 'doc-scripts', label: 'doc_scripts', group: 'Blogs', kind: 'blog', tags: [], short: 'Documentación de scripts y proyectos',
     what: 'Documentación de los scripts y proyectos personales: qué hace cada uno y cómo se usa.',
     try: [{label: 'Leer la documentación', url: PAGES + 'doc_scripts/'}], repos: [{label: 'doc_scripts', url: GH + 'doc_scripts'}], profile: null},
+
+  // ── Apps que usa
+  {id: 'navidrome', label: 'Navidrome', group: 'Apps que usa', kind: 'app', tags: [], short: 'Servidor de música compatible con Subsonic',
+    what: 'Sirve tu colección por la web y a cualquier app Subsonic. REPEAT-ONE lee su biblioteca y crea playlists en él.',
+    try: [{label: 'Probar su demo', url: 'https://demo.navidrome.org'}, {label: 'navidrome.org', url: 'https://www.navidrome.org'}], repos: [], profile: null},
+  {id: 'dsub', label: 'DSub2000', group: 'Apps que usa', kind: 'app', tags: [], short: 'Cliente Subsonic para Android',
+    what: 'Escucha tu colección desde el móvil, con caché para cuando no hay conexión. Funciona con Navidrome y Airsonic.',
+    try: [{label: 'Repositorio DSub2000', url: 'https://github.com/paroj/DSub2000'}], repos: [], profile: null},
+  {id: 'radicale', label: 'Radicale', group: 'Apps que usa', kind: 'app', tags: [], short: 'Servidor de calendarios y tareas (CalDAV)',
+    what: 'Guarda el calendario de discos pendientes que llenan los scripts de Muspy y Last.fm.',
+    try: [{label: 'radicale.org', url: 'https://radicale.org'}], repos: [], profile: null},
+  {id: 'freshrss-app', label: 'FreshRSS', group: 'Apps que usa', kind: 'app', tags: [], short: 'Lector de feeds autoalojado',
+    what: 'Sigue blogs y revistas de música. El módulo FreshRSS de REPEAT-ONE saca de aquí la música enlazada.',
+    try: [{label: 'Probar su demo', url: 'https://demo.freshrss.org'}, {label: 'freshrss.org', url: 'https://freshrss.org'}], repos: [], profile: null},
 ];
 
 export const README = GH + 'repeat-one-web#instalación';

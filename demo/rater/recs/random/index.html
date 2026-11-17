@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="es">
+    <head><base href="../../"><link rel="stylesheet" href="../_replay/replay.css"><script>window.REPLAY = {"mod": "rater", "root": "", "ports": [], "map": {"api/art/5886": "api/art/5886", "api/art/6235": "api/art/6235", "api/next": "data/f608f7f86c88.json", "api/random": "data/3f2b3807cb20.json", "api/sidebar": "data/78074ece5d9f.json", "api/similar/2354": "data/242a3975f234.json", "api/similar/3337": "data/f90a64651f73.json", "api/similar/4181": "data/0a063533c71e.json", "api/similar/4905": "data/64fd051c7dfd.json", "api/similar/5462": "data/ab470649e0b8.json", "api/similar/5886": "data/fdf0bf79f689.json", "api/similar/6235": "data/b2dc6e312b22.json", "api/similar/63": "data/9116641836a0.json", "api/stats": "data/8d8d4871158f.json", "api/track/2354": "data/089e4d419c1e.json", "api/track/4181": "data/bcd9f8660a89.json", "api/track/4905": "data/d55445d93957.json", "api/track/5462": "data/d403abf25e83.json", "api/track/5886": "data/db2855d67e3c.json", "api/track/6235": "data/c289656a7c4c.json", "static/info.js": "static/info.js", "static/settings.js": "static/settings.js"}, "readOnlyPosts": [], "search": {}};</script><script src="../_replay/replay.js"></script><script defer src="https://cloud.umami.is/script.js" data-website-id="5d84fd6c-0760-4a0c-a2d0-ffabb82179f5"></script>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Recs Random</title>
+        <script src="./static/settings.js"></script>
+        <script src="./static/info.js"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            *,
+            *::before,
+            *::after {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+            :root {
+                --bg: #0d0d0d;
+                --surface: #161616;
+                --surface2: #1f1f1f;
+                --border: #2a2a2a;
+                --border-bright: #3d3d3d;
+                --text: #e8e8e8;
+                --text-dim: #666;
+                --text-muted: #444;
+                --accent: #e8ff47;
+                --accent2: #ff6b35;
+            }
+            body {
+                background: var(--bg);
+                color: var(--text);
+                font-family: "IBM Plex Sans", sans-serif;
+                min-height: 100vh;
+            }
+            nav {
+                display: flex;
+                gap: 1px;
+                background: var(--border);
+                border-bottom: 1px solid var(--border);
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            nav a {
+                padding: 12px 20px;
+                background: var(--surface);
+                color: var(--text-dim);
+                text-decoration: none;
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 11px;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                transition: all 0.15s;
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+            nav a:hover,
+            nav a.active {
+                background: var(--surface2);
+                color: var(--accent);
+            }
+
+            .container {
+                max-width: 760px;
+                margin: 0 auto;
+                padding: 32px 24px;
+            }
+
+            /* SEED BLOCK */
+            .seed-block {
+                border: 1px solid var(--border);
+                padding: 20px;
+                margin-bottom: 28px;
+                display: flex;
+                gap: 16px;
+                align-items: flex-start;
+            }
+            #art {
+                width: 80px;
+                height: 80px;
+                object-fit: cover;
+                border: 1px solid var(--border);
+                flex-shrink: 0;
+                display: none;
+            }
+            .seed-info {
+                flex: 1;
+                min-width: 0;
+            }
+            .seed-label {
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 9px;
+                letter-spacing: 0.12em;
+                color: var(--text-muted);
+                text-transform: uppercase;
+                margin-bottom: 4px;
+            }
+            #seed-title {
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 16px;
+                font-weight: 600;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .seed-meta {
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 11px;
+                color: var(--text-dim);
+                margin-top: 5px;
+            }
+            .seed-tags {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 4px 10px;
+                margin-top: 6px;
+            }
+            .seed-tag {
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 9px;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                color: var(--text-muted);
+            }
+            .seed-tag span {
+                color: var(--text-dim);
+                text-transform: none;
+                letter-spacing: 0;
+            }
+            .seed-comment {
+                font-size: 11px;
+                color: var(--text-muted);
+                margin-top: 6px;
+                font-style: italic;
+            }
+            .seed-actions {
+                flex-shrink: 0;
+            }
+
+            /* BUTTONS */
+            .btn {
+                padding: 10px 20px;
+                border: 1px solid var(--border-bright);
+                background: transparent;
+                color: var(--text);
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 11px;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                cursor: pointer;
+                transition: all 0.15s;
+                white-space: nowrap;
+            }
+            .btn:hover {
+                border-color: var(--accent);
+                color: var(--accent);
+            }
+
+            /* RESULTS */
+            h2 {
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 10px;
+                letter-spacing: 0.14em;
+                text-transform: uppercase;
+                color: var(--text-muted);
+                margin-bottom: 0;
+                padding-bottom: 8px;
+                border-bottom: 1px solid var(--border);
+            }
+            .rec-item {
+                padding: 12px 8px;
+                border-bottom: 1px solid var(--border);
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                cursor: pointer;
+                transition: background 0.1s;
+            }
+            .rec-item:hover {
+                background: var(--surface);
+            }
+            .rec-item:hover .rec-play { opacity: 1; }
+            .rec-play {
+                font-size: 11px;
+                color: var(--accent);
+                opacity: 0;
+                flex-shrink: 0;
+                transition: opacity 0.1s;
+                font-family: "IBM Plex Mono", monospace;
+            }
+            .rec-body { flex: 1; min-width: 0; }
+            .rec-title {
+                font-size: 13px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .rec-artist {
+                font-size: 11px;
+                color: var(--text-dim);
+                font-family: "IBM Plex Mono", monospace;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .rec-sub {
+                font-size: 10px;
+                color: var(--text-muted);
+                font-family: "IBM Plex Mono", monospace;
+                margin-top: 2px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .rec-sim {
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 12px;
+                color: var(--accent);
+                opacity: 0.8;
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+
+            .empty-state {
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 11px;
+                color: var(--text-muted);
+                padding: 24px 0;
+                text-align: center;
+            }
+            @media (max-width: 768px) {
+                .container { padding: 20px 16px; }
+            }
+            @media (max-width: 480px) {
+                .seed-block { flex-wrap: wrap; }
+                #art { width: 64px; height: 64px; }
+                .seed-actions { width: 100%; }
+                .seed-actions .btn { width: 100%; min-height: 44px; }
+                .rec-item { min-height: 44px; padding: 12px 8px; }
+                nav a { padding: 12px 14px; }
+            }
+        </style>
+    </head>
+    <body>
+        <nav>
+            <a href="./">Rate</a>
+            <a href="./recs/random" class="active">Recs Random</a>
+            <a href="./recs/vector">Recs Vector</a>
+            <a href="./stats">Stats</a>
+            <a href="./dominios">Dominios</a>
+        </nav>
+
+        <div class="container">
+            <div class="seed-block">
+                <img id="art" src="" alt="" />
+                <div class="seed-info">
+                    <div class="seed-label">Seed track</div>
+                    <div id="seed-title">Cargando…</div>
+                    <div class="seed-meta" id="seed-meta"></div>
+                    <div class="seed-tags" id="seed-tags"></div>
+                    <div class="seed-comment" id="seed-comment"></div>
+                </div>
+                <div class="seed-actions">
+                    <button class="btn" onclick="load()">Nueva seed</button>
+                </div>
+            </div>
+
+            <h2>Similares</h2>
+            <div id="recs"><div class="empty-state">Cargando…</div></div>
+        </div>
+
+        <script>
+            let current = null;
+
+            function fmtSub(t) {
+                return [t.album, t.genre, t.bpm ? parseFloat(t.bpm).toFixed(0) + " bpm" : null]
+                    .filter(Boolean)
+                    .join(" · ");
+            }
+
+            async function load() {
+                document.getElementById("seed-title").innerText = "…";
+                document.getElementById("seed-meta").innerText = "";
+                document.getElementById("seed-tags").innerHTML = "";
+                document.getElementById("seed-comment").innerText = "";
+                document.getElementById("recs").innerHTML =
+                    '<div class="empty-state">Cargando…</div>';
+
+                const art = document.getElementById("art");
+                art.style.display = "none";
+
+                const r = await fetch("./api/random");
+                current = await r.json();
+
+                document.getElementById("seed-title").innerText =
+                    (current.artist || "?") + " — " + (current.title || "?");
+                document.getElementById("seed-meta").innerText =
+                    [current.album, current.year].filter(Boolean).join(" · ");
+
+                // Tags row
+                const tags = [];
+                if (current.genre) tags.push(["Género", current.genre]);
+                if (current.bpm)   tags.push(["BPM", parseFloat(current.bpm).toFixed(1)]);
+                if (current.label) tags.push(["Sello", current.label]);
+                if (current.key)   tags.push(["Key", current.key]);
+                const tagsEl = document.getElementById("seed-tags");
+                tagsEl.innerHTML = tags
+                    .map(([l, v]) => `<span class="seed-tag">${l} <span>${v}</span></span>`)
+                    .join("");
+
+                if (current.comments) {
+                    document.getElementById("seed-comment").innerText = current.comments;
+                }
+
+                art.onerror = () => { art.style.display = "none"; };
+                art.onload  = () => { art.style.display = "block"; };
+                art.src = "./api/art/" + current.id;
+
+                // Fetch similar
+                const recsResp = await fetch("./api/similar/" + current.id);
+                const data = await recsResp.json();
+                renderRecs(data);
+            }
+
+            function renderRecs(data) {
+                const div = document.getElementById("recs");
+                div.innerHTML = "";
+
+                if (!data.length) {
+                    div.innerHTML = '<div class="empty-state">Sin resultados.</div>';
+                    return;
+                }
+
+                data.forEach((t) => {
+                    const el = document.createElement("div");
+                    el.className = "rec-item";
+                    el.onclick = () => playTrack(t.id);
+
+                    const sub = fmtSub(t);
+                    el.innerHTML = `
+                        <span class="rec-play">▶</span>
+                        <div class="rec-body">
+                            <div class="rec-title">${esc(t.title || "?")}</div>
+                            <div class="rec-artist">${esc(t.artist || "?")}</div>
+                            ${sub ? `<div class="rec-sub">${esc(sub)}</div>` : ""}
+                        </div>
+                        <span class="rec-sim">${(t.sim * 100).toFixed(0)}%</span>
+                    `;
+                    div.appendChild(el);
+                });
+            }
+
+            async function playTrack(id) {
+                await fetch(`./api/play/${id}`);
+            }
+
+            function esc(s) {
+                if (!s) return "";
+                return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            }
+
+            load();
+        </script>
+    
+</body>
+</html>

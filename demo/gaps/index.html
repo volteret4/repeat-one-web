@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="es">
+<head><link rel="stylesheet" href="../_replay/replay.css"><script>window.REPLAY = {"mod": "gaps", "root": "", "ports": [8780], "map": {"api/artists": "data/eb1caf0b2f06.json", "api/artists/1007/albums": "data/07652026fb2e.json", "api/artists/1136/albums": "data/bee09d739c03.json", "api/artists/1147/albums": "data/9c44c52b6db4.json", "api/artists/1168/albums": "data/727be9bf6283.json", "api/artists/1241/albums": "data/50483954b636.json", "api/artists/133/albums": "data/07990976cfd9.json", "api/artists/1334/albums": "data/d506580a3c87.json", "api/artists/1379/albums": "data/1c0a8d8f0ffb.json", "api/artists/1419/albums": "data/89829b086ef7.json", "api/artists/1422/albums": "data/15e9574b938b.json", "api/artists/1425/albums": "data/7f493614ba69.json", "api/artists/1521/albums": "data/1d9a8aab1ade.json", "api/artists/1529/albums": "data/d6baa772f4f2.json", "api/artists/1580/albums": "data/394b00ea0f64.json", "api/artists/1642/albums": "data/62e9ae14269d.json", "api/artists/165/albums": "data/57a4644fc801.json", "api/artists/1683/albums": "data/48d3b2ed89d6.json", "api/artists/1724/albums": "data/afd1e02061cd.json", "api/artists/1749/albums": "data/310940518f5e.json", "api/artists/1805/albums": "data/5eae70e14d7d.json", "api/artists/1928/albums": "data/67f482ec6b2d.json", "api/artists/1946/albums": "data/8aa14db310ba.json", "api/artists/1948/albums": "data/6d1378574dfe.json", "api/artists/2034/albums": "data/f03dc523c442.json", "api/artists/220304/albums": "data/1e0343accab0.json", "api/artists/221136/albums": "data/0f33775686f6.json", "api/artists/221275/albums": "data/f39bba519323.json", "api/artists/221385/albums": "data/a364bf491fe1.json", "api/artists/262/albums": "data/66087b3a9cce.json", "api/artists/276/albums": "data/d5d760ec56f7.json", "api/artists/281421/albums": "data/88e8f9e295cc.json", "api/artists/285376/albums": "data/d704bc0ae9cb.json", "api/artists/286/albums": "data/4d58c4463193.json", "api/artists/286002/albums": "data/d3041f960288.json", "api/artists/2942/albums": "data/38f7f9089fe5.json", "api/artists/296/albums": "data/3f3d771a41c4.json", "api/artists/303/albums": "data/c5e60fec2ff2.json", "api/artists/325/albums": "data/bc18e6b938ea.json", "api/artists/33/albums": "data/112f51d4d08b.json", "api/artists/357/albums": "data/f15a78d5f086.json", "api/artists/387/albums": "data/e4c6a367ac2e.json", "api/artists/403/albums": "data/70b1e653fc19.json", "api/artists/426/albums": "data/5faaa92c66ed.json", "api/artists/489/albums": "data/b02f83b78a09.json", "api/artists/501/albums": "data/bc22626ef63a.json", "api/artists/527/albums": "data/83b884e428ee.json", "api/artists/535/albums": "data/c5f13314fd01.json", "api/artists/557/albums": "data/dded8db0e622.json", "api/artists/632/albums": "data/3b0b3f3a0585.json", "api/artists/638/albums": "data/d09bb6b8ea4c.json", "api/artists/67/albums": "data/5635db54dad2.json", "api/artists/672/albums": "data/724d62f865bd.json", "api/artists/710/albums": "data/952d064b868c.json", "api/artists/763/albums": "data/123747eb3fc9.json", "api/artists/807/albums": "data/018e7fb7f392.json", "api/artists/916/albums": "data/87bffe9200b4.json", "api/artists/919/albums": "data/18178f8f8150.json", "api/artists/936/albums": "data/fa4319544167.json", "api/artists/941/albums": "data/4ecc89f10d39.json", "api/artists/975/albums": "data/868c66beefa6.json", "api/availability/job": "data/b68b7843702e.json", "api/last-sync": "data/752a164b05cb.json", "p8780/owned-badges.js": "p8780/owned-badges.js", "__owned__": "data/owned.json"}, "readOnlyPosts": ["p8780/api/owned"], "search": {}};</script><script src="../_replay/replay.js"></script><script defer src="https://cloud.umami.is/script.js" data-website-id="5d84fd6c-0760-4a0c-a2d0-ffabb82179f5"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>discografia-gaps</title>
+<!-- Iconos Airsonic / qBittorrent / escuchado / Mix (servicio ya-lo-tengo) -->
+<script>(function(){var s=document.createElement('script');s.src='./p8780/owned-badges.js';document.head.appendChild(s);})();</script>
+<style>
+:root{
+  --g:#00d4ff;--gd:#00a8cc;--gk:#001e26;--gg:0 0 8px #00d4ff66;--gg2:0 0 16px #00d4ff88;
+  --bg:#080808;--bg2:#0d0d0d;--bg3:#111;--br:#1a2530;--bh:#00d4ff33;
+  --tx:#b0b0b0;--th:#e8e8e8;--red:#ff3355;--amber:#ffaa00;--green:#7ee787;--greenk:#0e2011;
+  --orph:#ff9d5c;--orphk:#2a1608;--yt:#ff5c5c;--ytk:#2a0f0f;--bc:#66c2ff;--bck:#0a1e2e;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--bg);color:var(--tx);
+  font-family:'JetBrains Mono','Fira Mono',Consolas,monospace;font-size:13px;line-height:1.5}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--gk);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--gd)}
+
+header{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:1.5rem;
+  padding:0 1.5rem;height:52px;background:var(--bg);border-bottom:1px solid var(--bh);
+  box-shadow:0 2px 20px #000a}
+.logo{font-size:1.1rem;font-weight:700;letter-spacing:.15em;color:var(--g);
+  text-shadow:var(--gg2);white-space:nowrap}
+.logo span{color:var(--tx);font-weight:400}
+.spacer{flex:1}
+.sync-info{color:#555;font-size:.72rem}
+
+.toolbar{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;
+  padding:.55rem 1.5rem;background:var(--bg2);border-bottom:1px solid var(--br)}
+.sw{position:relative;flex:0 0 240px}
+.sw input{width:100%}
+input[type=search]{background:var(--bg3);border:1px solid var(--br);color:var(--th);
+  padding:.35rem .7rem;border-radius:3px;outline:none;font-family:inherit;font-size:.82rem;
+  transition:border-color .2s,box-shadow .2s}
+input[type=search]:focus{border-color:var(--gd);box-shadow:var(--gg)}
+label.chk{display:flex;align-items:center;gap:.35rem;color:#666;font-size:.75rem;cursor:pointer;user-select:none}
+
+.btn{display:inline-flex;align-items:center;gap:.35rem;padding:.35rem .8rem;
+  border-radius:3px;border:1px solid;font-family:inherit;font-size:.76rem;font-weight:600;
+  cursor:pointer;letter-spacing:.05em;white-space:nowrap;transition:all .15s;text-transform:uppercase}
+.btn:disabled{opacity:.3;cursor:not-allowed}
+.btn-primary{background:var(--g);border-color:var(--g);color:#000}
+.btn-primary:not(:disabled):hover{background:#fff;border-color:#fff;box-shadow:var(--gg2)}
+.btn-ghost{background:transparent;border-color:var(--gd);color:var(--g)}
+.btn-ghost:not(:disabled):hover{background:var(--gk);box-shadow:var(--gg)}
+.btn-orph{background:transparent;border-color:var(--orph);color:var(--orph)}
+.btn-orph:not(:disabled):hover{background:var(--orphk)}
+.btn-small{padding:.2rem .55rem;font-size:.68rem;text-transform:none;letter-spacing:0}
+
+.list{max-width:980px;margin:1rem auto;padding:0 1.5rem}
+.artist{border:1px solid var(--br);border-radius:6px;margin-bottom:.5rem;background:var(--bg2);overflow:hidden}
+.artist-head{display:flex;align-items:center;gap:.8rem;padding:.6rem .9rem;cursor:pointer;user-select:none}
+.artist-head:hover{background:#0d1418}
+.artist-name{color:var(--th);font-weight:600;flex:1}
+.artist-srcs{display:flex;gap:.3rem}
+.src-badge{font-size:.62rem;padding:.08rem .4rem;border-radius:3px;border:1px solid var(--br);color:#555;text-transform:uppercase}
+.missing-count{font-size:.85rem;font-weight:700;min-width:2.4rem;text-align:right}
+.missing-count.zero{color:#3a3a3a}
+.missing-count.some{color:var(--amber)}
+.caret{color:#444;transition:transform .15s;width:1rem;text-align:center}
+.artist.open .caret{transform:rotate(90deg)}
+
+.albums{display:none;border-top:1px solid var(--br)}
+.artist.open .albums{display:block}
+.album-row{display:flex;align-items:center;gap:.7rem;padding:.4rem .9rem .4rem 2rem;
+  border-bottom:1px solid #131a20;font-size:.8rem}
+.album-row:last-child{border-bottom:none}
+.album-row.have{color:#4a4a4a}
+.album-row.have .album-title{color:#5c5c5c}
+.album-title{flex:1;color:var(--th)}
+.album-type{font-size:.66rem;color:#555;border:1px solid var(--br);border-radius:3px;padding:.05rem .35rem}
+.album-year{font-size:.72rem;color:#555;min-width:3.2rem}
+.have-badge{font-size:.66rem;color:var(--green);background:var(--greenk);border-radius:3px;padding:.08rem .4rem}
+.avail-wrap{width:100%;padding:.4rem 0 .3rem 2rem}
+.avail-row{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;margin-top:.35rem}
+.torrent-chip{display:flex;align-items:center;gap:.4rem;border:1px solid var(--orphk);background:var(--orphk);
+  color:var(--orph);border-radius:3px;padding:.15rem .5rem;font-size:.7rem}
+.link-chip{display:inline-flex;align-items:center;gap:.3rem;border-radius:3px;padding:.15rem .5rem;font-size:.7rem;
+  text-decoration:none}
+.link-chip.yt{border:1px solid var(--ytk);background:var(--ytk);color:var(--yt)}
+.link-chip.bc{border:1px solid var(--bck);background:var(--bck);color:var(--bc)}
+.dim{color:#444;font-size:.7rem}
+
+.empty{text-align:center;color:#444;padding:3rem}
+.pager{max-width:980px;margin:0 auto 1.5rem;padding:0 1.5rem;display:flex;align-items:center;
+  justify-content:center;gap:1rem}
+.pager-label{color:#666;font-size:.75rem}
+.log-box{position:fixed;bottom:.6rem;left:50%;transform:translateX(-50%);z-index:9998;
+  background:var(--bg3);border:1px solid var(--bh);border-radius:5px;padding:.5rem 1rem;
+  font-size:.75rem;color:var(--g);display:none;max-width:80vw;white-space:pre-wrap}
+.artist-tools { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; padding: .5rem 0 .4rem 2rem; }
+.artist-tools .bulk-status { font-size: .78rem; }
+.avail-checked { font-size: .72rem; margin-left: .3rem; }
+.orph-link{color:var(--orph);font-size:.72rem;text-decoration:none;white-space:nowrap;margin-left:.4rem}
+.orph-link:hover{text-decoration:underline}
+.orph-link.search{opacity:.6}
+.yt-embed{width:100%;max-width:560px;aspect-ratio:16/9;border:1px solid var(--br);border-radius:4px;margin-top:.45rem;display:block}
+button.link-chip{cursor:pointer;font:inherit}
+#job-panel{position:fixed;right:.8rem;bottom:3.2rem;width:340px;max-width:calc(100vw - 2rem);z-index:200;
+  background:var(--bg2);border:1px solid var(--bh);border-radius:6px;box-shadow:0 8px 30px #000c;padding:.7rem .85rem;
+  display:flex;flex-direction:column;gap:.4rem}
+#job-panel[hidden]{display:none}
+#job-panel .jp-head{display:flex;justify-content:space-between;align-items:center;color:var(--th);font-size:.78rem}
+#job-panel .jp-close{background:none;border:none;color:#666;cursor:pointer;font-size:1rem;line-height:1}
+#job-panel .jp-bar{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden}
+#job-panel .jp-fill{height:100%;width:0;background:var(--g);box-shadow:var(--gg);transition:width .4s}
+#job-panel.done .jp-fill{background:var(--green)}
+#job-panel .jp-meta{display:flex;justify-content:space-between;font-size:.7rem;color:#777}
+#job-panel .jp-current{font-size:.72rem;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">DISCOGRAFIA<span>-GAPS</span></div>
+  <button class="btn btn-primary" id="sync-btn">↻ Sincronizar</button>
+  <span class="sync-info" id="sync-info"></span>
+  <div class="spacer"></div>
+</header>
+
+<div class="toolbar">
+  <div class="sw"><input type="search" id="search" placeholder="Buscar artista..."></div>
+  <label class="chk"><input type="checkbox" id="only-missing" checked> Solo con discos pendientes</label>
+  <div class="spacer"></div>
+  <span class="sync-info" id="row-count"></span>
+</div>
+
+<div class="list" id="list"></div>
+<div class="pager" id="pager"></div>
+
+<div class="log-box" id="log-box"></div>
+
+<div id="job-panel" hidden>
+  <div class="jp-head"><span class="jp-title"></span><button class="jp-close" title="Ocultar">×</button></div>
+  <div class="jp-bar"><div class="jp-fill"></div></div>
+  <div class="jp-meta"><span class="jp-count"></span><span class="jp-errors"></span></div>
+  <div class="jp-current"></div>
+</div>
+
+<script>
+const PAGE_SIZE = 60;
+let ARTISTS = [];
+let currentPage = 0;
+const albumsCache = {};   // artist_id -> albums[] (cada uno con su availability guardada)
+let bulkPoller = null;
+
+function escAttr(s) {
+  return String(s ?? '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+}
+
+function artistName(artistId) {
+  const a = ARTISTS.find(x => x.id === artistId);
+  return a ? a.name : '';
+}
+
+function orpheusSearchUrl(artist, title) {
+  return 'https://orpheus.network/torrents.php?' + new URLSearchParams({ artistname: artist, groupname: title });
+}
+
+function youtubeId(url) {
+  const m = /[?&]v=([A-Za-z0-9_-]{11})/.exec(url || '');
+  return m ? m[1] : null;
+}
+
+function el(tag, props) { const e = document.createElement(tag); if (props) Object.assign(e, props); return e; }
+
+async function api(path, opts) {
+  const r = await fetch(path, opts);
+  return r.json();
+}
+
+function showLog(text, isError) {
+  const box = document.getElementById('log-box');
+  box.textContent = text;
+  box.style.display = 'block';
+  box.style.color = isError ? 'var(--red)' : 'var(--g)';
+  box.style.borderColor = isError ? 'var(--red)' : 'var(--bh)';
+  clearTimeout(showLog._t);
+  showLog._t = setTimeout(() => { box.style.display = 'none'; }, 6000);
+}
+
+function passesFilters(a) {
+  const q = document.getElementById('search').value.trim().toLowerCase();
+  // Una búsqueda por nombre activa siempre mira TODO el universo de
+  // artistas, no solo el subconjunto que deja pasar "Solo con discos
+  // pendientes" -- si no, con cientos de artistas (la mayoría sin
+  // discografía sincronizada todavía, missing_count=0) casi nada es
+  // encontrable por nombre hasta que termina el sync completo.
+  if (q) return a.name.toLowerCase().includes(q);
+  if (document.getElementById('only-missing').checked && a.missing_count === 0) return false;
+  return true;
+}
+
+function renderPager(totalRows, totalPages) {
+  const pager = document.getElementById('pager');
+  pager.innerHTML = '';
+  if (totalPages <= 1) return;
+  const prev = el('button', { className: 'btn btn-small btn-ghost', textContent: '‹ Anterior' });
+  prev.disabled = currentPage === 0;
+  prev.addEventListener('click', () => { currentPage--; renderList(); window.scrollTo(0, 0); });
+  const label = el('span', { className: 'pager-label', textContent: `Página ${currentPage + 1} / ${totalPages}` });
+  const next = el('button', { className: 'btn btn-small btn-ghost', textContent: 'Siguiente ›' });
+  next.disabled = currentPage >= totalPages - 1;
+  next.addEventListener('click', () => { currentPage++; renderList(); window.scrollTo(0, 0); });
+  pager.appendChild(prev);
+  pager.appendChild(label);
+  pager.appendChild(next);
+}
+
+function renderList() {
+  const list = document.getElementById('list');
+  list.innerHTML = '';
+  const rows = ARTISTS.filter(passesFilters)
+    .sort((a, b) => b.missing_count - a.missing_count || a.name.localeCompare(b.name));
+  document.getElementById('row-count').textContent = `${rows.length} / ${ARTISTS.length} artistas`;
+
+  if (!rows.length) {
+    list.appendChild(el('div', { className: 'empty', textContent: 'Sin resultados — sincroniza o ajusta los filtros' }));
+    document.getElementById('pager').innerHTML = '';
+    return;
+  }
+
+  const totalPages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
+  if (currentPage >= totalPages) currentPage = totalPages - 1;
+  if (currentPage < 0) currentPage = 0;
+  const pageRows = rows.slice(currentPage * PAGE_SIZE, (currentPage + 1) * PAGE_SIZE);
+  renderPager(rows.length, totalPages);
+
+  for (const a of pageRows) {
+    const wrap = el('div', { className: 'artist', id: `artist-${a.id}` });
+    const head = el('div', { className: 'artist-head' });
+    const missingClass = a.missing_count === 0 ? 'zero' : 'some';
+    head.innerHTML = `
+      <span class="caret">▶</span>
+      <span class="artist-name" data-owned-artist="${escAttr(a.name)}">${a.name}</span>
+      <span class="artist-srcs">${a.sources.map(s => `<span class="src-badge">${s}</span>`).join('')}</span>
+      <span class="missing-count ${missingClass}">${a.missing_count}/${a.total_count}</span>
+    `;
+    head.addEventListener('click', () => toggleArtist(wrap, a.id));
+    wrap.appendChild(head);
+    wrap.appendChild(el('div', { className: 'albums' }));
+    list.appendChild(wrap);
+  }
+}
+
+async function toggleArtist(wrap, artistId) {
+  const isOpen = wrap.classList.contains('open');
+  if (isOpen) { wrap.classList.remove('open'); return; }
+  wrap.classList.add('open');
+  const albumsDiv = wrap.querySelector('.albums');
+  if (!albumsCache[artistId]) {
+    albumsDiv.innerHTML = '<div class="dim" style="padding:.6rem 0 .6rem 2rem">Cargando…</div>';
+    const data = await api(`./api/artists/${artistId}/albums`);
+    albumsCache[artistId] = data.albums || [];
+  }
+  renderAlbums(albumsDiv, albumsCache[artistId], artistId);
+  // Si hay una búsqueda masiva en curso (p.ej. tras recargar), seguirla
+  const job = await api('./api/availability/job');
+  if (job.running) pollBulk();
+}
+
+async function reloadArtistAlbums(artistId) {
+  const data = await api(`./api/artists/${artistId}/albums`);
+  albumsCache[artistId] = data.albums || [];
+  const wrap = document.getElementById(`artist-${artistId}`);
+  if (wrap) renderAlbums(wrap.querySelector('.albums'), albumsCache[artistId], artistId);
+}
+
+function renderAlbums(container, albums, artistId) {
+  container.innerHTML = '';
+  if (!albums.length) {
+    container.appendChild(el('div', { className: 'dim', style: 'padding:.6rem 0 .6rem 2rem', textContent: 'Sin discografia sincronizada todavia.' }));
+    return;
+  }
+  const missing = albums.filter(al => !al.have);
+  if (missing.length) {
+    const unchecked = missing.filter(al => !al.availability).length;
+    const tools = el('div', { className: 'artist-tools' });
+    const all = el('button', { className: 'btn btn-small btn-ghost',
+      textContent: `🔍 Buscar disponibilidad de todos (${unchecked} sin comprobar)` });
+    all.disabled = unchecked === 0;
+    all.addEventListener('click', () => startBulk(artistId, false));
+    const refresh = el('button', { className: 'btn btn-small btn-ghost',
+      textContent: `↻ Actualizar todos (${missing.length})` });
+    refresh.addEventListener('click', () => startBulk(artistId, true));
+    tools.appendChild(all);
+    tools.appendChild(refresh);
+    tools.appendChild(el('span', { className: 'bulk-status dim' }));
+    container.appendChild(tools);
+  }
+  const artist = artistName(artistId);
+  for (const al of albums) {
+    const row = el('div', { className: 'album-row' + (al.have ? ' have' : ''), id: `album-${al.id}` });
+    const year = (al.first_release_date || '').slice(0, 4);
+    const orphUrl = al.availability && al.availability.orpheus && al.availability.orpheus.url;
+    row.innerHTML = `
+      <span class="album-title" data-owned-artist="${escAttr(artist)}" data-owned-album="${escAttr(al.title)}">${al.title}</span>
+      <span class="album-type">${al.primary_type || '?'}</span>
+      <span class="album-year">${year}</span>
+      <a class="orph-link${orphUrl ? '' : ' search'}" target="_blank" rel="noopener"
+         href="${escAttr(orphUrl || orpheusSearchUrl(artist, al.title))}"
+         title="${orphUrl ? 'Ver el grupo en Orpheus' : 'Buscar en Orpheus'}">◈ Orpheus</a>
+    `;
+    container.appendChild(row);
+    if (al.have) {
+      row.innerHTML += `<span class="have-badge">${al.have_sources.join(', ')}</span>`;
+    } else {
+      // Con resultado guardado el botón es "↻" (vuelve a consultar todo);
+      // sin él, "buscar" (solo consulta lo que falta).
+      const btn = el('button', { className: 'btn btn-small btn-ghost' });
+      setAvailButton(btn, !!al.availability);
+      btn.addEventListener('click', () => checkAvailability(al, row, btn));
+      row.appendChild(btn);
+      if (al.availability) renderAvailability(row, al.availability);
+    }
+  }
+}
+
+function setAvailButton(btn, checked) {
+  btn.textContent = checked ? '↻' : '🔍 buscar disponibilidad';
+  btn.title = checked ? 'Volver a comprobar la disponibilidad' : '';
+}
+
+async function checkAvailability(al, row, btn) {
+  const refresh = !!al.availability;
+  btn.disabled = true; btn.textContent = 'Buscando…';
+  const data = await api(`./api/availability/${al.id}${refresh ? '?refresh=1' : ''}`, { method: 'POST' });
+  if (data.checked_at) al.availability = data;  // ya está en la BD; también en la caché de la página
+  btn.disabled = false;
+  setAvailButton(btn, !!al.availability);
+  renderAvailability(row, data);
+}
+
+async function startBulk(artistId, refresh) {
+  const r = await fetch(`./api/artists/${artistId}/availability`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ refresh }),
+  });
+  const data = await r.json();
+  if (data.error) { showLog(data.error, true); return; }
+  if (!data.total) { showLog('No hay discos que comprobar', false); return; }
+  jobPanelHidden = false;
+  pollBulk();
+}
+
+// ── Panel de progreso (búsqueda de disponibilidad en segundo plano) ─────
+let jobPanelHidden = false;
+
+document.querySelector('#job-panel .jp-close').addEventListener('click', () => {
+  jobPanelHidden = true;
+  document.getElementById('job-panel').hidden = true;
+});
+
+function renderJobPanel(job) {
+  const panel = document.getElementById('job-panel');
+  if (jobPanelHidden || !job.artist_id) { panel.hidden = true; return; }
+  panel.hidden = false;
+  panel.classList.toggle('done', !job.running);
+  const pct = job.total ? Math.round(job.done / job.total * 100) : 0;
+  panel.querySelector('.jp-title').textContent =
+    (job.running ? '⏳ Buscando disponibilidad: ' : '✓ Disponibilidad comprobada: ') + job.artist_name;
+  panel.querySelector('.jp-fill').style.width = (job.running ? pct : 100) + '%';
+  panel.querySelector('.jp-count').textContent = `${job.done} / ${job.total} discos · ${pct}%`;
+  panel.querySelector('.jp-errors').textContent = job.errors ? `${job.errors} con error en Orpheus` : '';
+  panel.querySelector('.jp-current').textContent = job.running && job.current ? '♪ ' + job.current : '';
+}
+
+function pollBulk() {
+  if (bulkPoller) return;
+  let artistId = null;
+  const tick = async () => {
+    const job = await api('./api/availability/job');
+    artistId = job.artist_id;
+    renderJobPanel(job);
+    document.querySelectorAll('.artist-tools button').forEach(b => b.disabled = job.running);
+    const wrap = artistId && document.getElementById(`artist-${artistId}`);
+    const status = wrap && wrap.querySelector('.bulk-status');
+    if (status) status.textContent = job.running ? `⏳ ${job.done}/${job.total}` : '';
+    if (!job.running) {
+      clearInterval(bulkPoller);
+      bulkPoller = null;
+      if (artistId && albumsCache[artistId]) await reloadArtistAlbums(artistId);
+      showLog(`Disponibilidad comprobada: ${job.done} discos` + (job.errors ? ` (${job.errors} con error en Orpheus)` : ''), job.errors > 0);
+      setTimeout(() => { document.getElementById('job-panel').hidden = true; }, 8000);
+    }
+  };
+  bulkPoller = setInterval(tick, 2000);
+  tick();
+}
+
+function renderAvailability(row, data) {
+  const prev = row.nextElementSibling;
+  if (prev && prev.classList.contains('avail-wrap')) prev.remove();
+
+  const availWrap = el('div', { className: 'avail-wrap' });
+  const rowEl = el('div', { className: 'avail-row' });
+
+  const orph = data.orpheus || {};
+  if (orph.torrents && orph.torrents.length) {
+    orph.torrents.forEach(t => {
+      const sizeMb = t.size ? Math.round(t.size / 1024 / 1024) : '?';
+      const chip = el('span', { className: 'torrent-chip' });
+      chip.innerHTML = `<span>${t.format || '?'} ${t.media || ''} · ${sizeMb}MB · ${t.seeders ?? '?'}↑</span>`;
+      const dl = el('button', { className: 'btn btn-small btn-orph', textContent: 'Descargar' });
+      dl.addEventListener('click', () => downloadTorrent(t.id, dl));
+      chip.appendChild(dl);
+      rowEl.appendChild(chip);
+    });
+  } else if (orph.error) {
+    rowEl.appendChild(el('span', { className: 'dim', textContent: `Orpheus: ${orph.error}` }));
+  } else {
+    rowEl.appendChild(el('span', { className: 'dim', textContent: 'No encontrado en Orpheus' }));
+  }
+
+  let ytBtn = null;
+  if (data.youtube && data.youtube.url) {
+    const vid = youtubeId(data.youtube.url);
+    if (vid) {
+      ytBtn = el('button', { className: 'link-chip yt', textContent: '▶ YouTube', title: 'Mostrar/ocultar el vídeo' });
+      ytBtn.addEventListener('click', () => {
+        const open = availWrap.querySelector('.yt-embed');
+        if (open) { open.remove(); ytBtn.textContent = '▶ YouTube'; return; }
+        const frame = el('iframe', {
+          className: 'yt-embed', src: `https://www.youtube.com/embed/${vid}?rel=0&autoplay=1`,
+          allow: 'autoplay; encrypted-media; picture-in-picture', allowFullscreen: true,
+        });
+        availWrap.appendChild(frame);
+        ytBtn.textContent = '■ Cerrar vídeo';
+      });
+    } else {
+      ytBtn = el('a', { className: 'link-chip yt', href: data.youtube.url, target: '_blank', textContent: '▶ YouTube' });
+    }
+    rowEl.appendChild(ytBtn);
+  }
+  if (data.bandcamp && data.bandcamp.url) {
+    const a = el('a', { className: 'link-chip bc', href: data.bandcamp.url, target: '_blank', textContent: '♪ Bandcamp' });
+    rowEl.appendChild(a);
+  }
+
+  if (data.checked_at) {
+    rowEl.appendChild(el('span', { className: 'dim avail-checked',
+      textContent: 'comprobado ' + new Date(data.checked_at).toLocaleDateString('es-ES') }));
+  }
+
+  availWrap.appendChild(rowEl);
+  row.after(availWrap);
+}
+
+async function downloadTorrent(torrentId, btn) {
+  if (!confirm('¿Descargar este torrent a través de qBittorrent?')) return;
+  btn.disabled = true; btn.textContent = '...';
+  const r = await api('./api/orpheus/download', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ torrent_id: torrentId }),
+  });
+  if (r.error) { showLog(r.error, true); btn.disabled = false; btn.textContent = 'Descargar'; return; }
+  btn.textContent = '✓ Añadido';
+  showLog('Torrent añadido a qBittorrent', false);
+}
+
+async function loadArtists() {
+  ARTISTS = await api('./api/artists');
+  currentPage = 0;
+  renderList();
+}
+
+async function loadLastSync() {
+  const r = await api('./api/last-sync');
+  const info = document.getElementById('sync-info');
+  if (!r.last_sync) { info.textContent = 'nunca sincronizado'; return; }
+  const d = new Date(r.last_sync * 1000);
+  info.textContent = 'última sync: ' + d.toLocaleString();
+}
+
+document.getElementById('sync-btn').addEventListener('click', async () => {
+  const btn = document.getElementById('sync-btn');
+  btn.disabled = true; btn.textContent = 'Sincronizando...';
+  const r = await api('./api/sync', { method: 'POST' });
+  btn.disabled = false; btn.textContent = '↻ Sincronizar';
+  showLog(r.log || (r.error || 'Listo'), !r.success);
+  Object.keys(albumsCache).forEach(k => delete albumsCache[k]);
+  Object.keys(availCache).forEach(k => delete availCache[k]);
+  await loadArtists();
+  await loadLastSync();
+});
+
+document.getElementById('search').addEventListener('input', () => { currentPage = 0; renderList(); });
+document.getElementById('only-missing').addEventListener('change', () => { currentPage = 0; renderList(); });
+
+loadArtists();
+loadLastSync();
+</script>
+
+</body>
+</html>

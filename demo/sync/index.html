@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="es">
+<head><link rel="stylesheet" href="../_replay/replay.css"><script>window.REPLAY = {"mod": "sync", "root": "", "ports": [], "map": {"api/artists": "data/eb1caf0b2f06.json", "api/last-sync": "data/752a164b05cb.json"}, "readOnlyPosts": [], "search": {}};</script><script src="../_replay/replay.js"></script><script defer src="https://cloud.umami.is/script.js" data-website-id="5d84fd6c-0760-4a0c-a2d0-ffabb82179f5"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>artist-sync</title>
+<style>
+:root{
+  --g:#00d4ff;--gd:#00a8cc;--gk:#001e26;--gg:0 0 8px #00d4ff66;--gg2:0 0 16px #00d4ff88;
+  --bg:#080808;--bg2:#0d0d0d;--bg3:#111;--br:#1a2530;--bh:#00d4ff33;
+  --tx:#b0b0b0;--th:#e8e8e8;--red:#ff3355;--amber:#ffaa00;
+  --muspy:#c792ea;--muspyk:#241a2e;
+  --airsonic:#00d4ff;--airsonick:#001e26;
+  --qbit:#7ee787;--qbitk:#0e2011;
+  --lastfm:#ff5c5c;--lastfmk:#2a0f0f;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--bg);color:var(--tx);
+  font-family:'JetBrains Mono','Fira Mono',Consolas,monospace;font-size:13px;line-height:1.5}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--gk);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--gd)}
+
+header{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:1.5rem;
+  padding:0 1.5rem;height:52px;background:var(--bg);border-bottom:1px solid var(--bh);
+  box-shadow:0 2px 20px #000a}
+.logo{font-size:1.1rem;font-weight:700;letter-spacing:.15em;color:var(--g);
+  text-shadow:var(--gg2);white-space:nowrap}
+.logo span{color:var(--tx);font-weight:400}
+.spacer{flex:1}
+.sync-info{color:#555;font-size:.72rem}
+
+.stats-bar{display:flex;gap:1.5rem;flex-wrap:wrap;padding:.55rem 1.5rem;
+  background:var(--bg2);border-bottom:1px solid var(--br)}
+.stat{display:flex;align-items:center;gap:.4rem}
+.stat-label{color:#555;font-size:.72rem;text-transform:uppercase;letter-spacing:.1em}
+.stat-value{font-size:.95rem;font-weight:700}
+.stat-value.muspy{color:var(--muspy)}.stat-value.airsonic{color:var(--airsonic)}
+.stat-value.qbit{color:var(--qbit)}.stat-value.lastfm{color:var(--lastfm)}
+
+.btn{display:inline-flex;align-items:center;gap:.35rem;padding:.35rem .8rem;
+  border-radius:3px;border:1px solid;font-family:inherit;font-size:.76rem;font-weight:600;
+  cursor:pointer;letter-spacing:.05em;white-space:nowrap;transition:all .15s;text-transform:uppercase}
+.btn:disabled{opacity:.3;cursor:not-allowed}
+.btn-primary{background:var(--g);border-color:var(--g);color:#000}
+.btn-primary:not(:disabled):hover{background:#fff;border-color:#fff;box-shadow:var(--gg2)}
+.btn-ghost{background:transparent;border-color:var(--gd);color:var(--g)}
+.btn-ghost:not(:disabled):hover{background:var(--gk);box-shadow:var(--gg)}
+.btn-danger{background:transparent;border-color:var(--red);color:var(--red)}
+.btn-danger:not(:disabled):hover{background:#2a0000}
+.btn-small{padding:.2rem .55rem;font-size:.68rem}
+
+input[type=search],input[type=number]{background:var(--bg3);border:1px solid var(--br);color:var(--th);
+  padding:.35rem .7rem;border-radius:3px;outline:none;font-family:inherit;font-size:.82rem;
+  transition:border-color .2s,box-shadow .2s}
+input[type=search]:focus,input[type=number]:focus{border-color:var(--gd);box-shadow:var(--gg)}
+input[type=range]{accent-color:var(--g)}
+
+.toolbar{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;
+  padding:.55rem 1.5rem;background:var(--bg2);border-bottom:1px solid var(--br)}
+.sw{position:relative;flex:0 0 220px}
+.sw input{width:100%}
+.slider-wrap{display:flex;align-items:center;gap:.5rem;color:#666;font-size:.72rem}
+.slider-wrap input[type=range]{width:120px}
+.slider-val{color:var(--lastfm);font-weight:700;min-width:2ch;text-align:right}
+
+.filter-chip{padding:.3rem .7rem;border-radius:3px;border:1px solid var(--br);
+  background:transparent;color:#666;font-family:inherit;font-size:.72rem;font-weight:600;
+  cursor:pointer;letter-spacing:.05em;text-transform:uppercase;transition:all .15s}
+.filter-chip.include{background:var(--gk);border-color:var(--g);color:var(--g)}
+.filter-chip.exclude{background:#2a0000;border-color:var(--red);color:var(--red)}
+.filter-chip[data-src=muspy].include{background:var(--muspyk);border-color:var(--muspy);color:var(--muspy)}
+.filter-chip[data-src=airsonic].include{background:var(--airsonick);border-color:var(--airsonic);color:var(--airsonic)}
+.filter-chip[data-src=qbittorrent].include{background:var(--qbitk);border-color:var(--qbit);color:var(--qbit)}
+.filter-chip[data-src=lastfm].include{background:var(--lastfmk);border-color:var(--lastfm);color:var(--lastfm)}
+
+.tw{height:calc(100vh - 52px - 40px - 46px);overflow:auto}
+table{width:100%;border-collapse:collapse}
+thead th{position:sticky;top:0;z-index:10;background:#0a0e12;
+  color:var(--gd);font-size:.68rem;text-transform:uppercase;letter-spacing:.12em;
+  font-weight:600;padding:.45rem .65rem;border-bottom:1px solid var(--bh);
+  text-align:left;white-space:nowrap;user-select:none;cursor:pointer}
+thead th.sorted-asc::after{content:' ↑';color:var(--g)}
+thead th.sorted-desc::after{content:' ↓';color:var(--g)}
+thead th.center{text-align:center}
+tbody tr{border-bottom:1px solid var(--br);transition:background .1s}
+tbody tr:hover{background:#0d1418}
+td{padding:.38rem .65rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.td-artist{color:var(--th);font-weight:500;max-width:0}
+.badge{display:inline-flex;align-items:center;justify-content:center;min-width:2.4rem;
+  padding:.12rem .4rem;border-radius:3px;font-size:.72rem;font-weight:700}
+.badge.on{background:#132018}.badge.off{color:#333}
+td.src{text-align:center}
+td.src.muspy .badge.on{color:var(--muspy);background:var(--muspyk)}
+td.src.airsonic .badge.on{color:var(--airsonic);background:var(--airsonick)}
+td.src.qbittorrent .badge.on{color:var(--qbit);background:var(--qbitk)}
+td.src.lastfm .badge.on{color:var(--lastfm);background:var(--lastfmk)}
+td.actions{text-align:right}
+.empty-row td{text-align:center;color:#444;padding:2rem}
+
+.log-box{position:fixed;bottom:.6rem;left:50%;transform:translateX(-50%);z-index:9998;
+  background:var(--bg3);border:1px solid var(--bh);border-radius:5px;padding:.5rem 1rem;
+  font-size:.75rem;color:var(--g);display:none;max-width:80vw;white-space:pre-wrap}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">ARTIST<span>-SYNC</span></div>
+  <button class="btn btn-primary" id="sync-btn">↻ Sincronizar</button>
+  <span class="sync-info" id="sync-info"></span>
+  <div class="spacer"></div>
+</header>
+
+<div class="stats-bar" id="stats-bar"></div>
+
+<div class="toolbar">
+  <div class="sw"><input type="search" id="search" placeholder="Buscar artista..."></div>
+
+  <button class="filter-chip" data-src="muspy">Muspy</button>
+  <button class="filter-chip" data-src="airsonic">Airsonic</button>
+  <button class="filter-chip" data-src="qbittorrent">qBittorrent</button>
+  <button class="filter-chip" data-src="lastfm">Last.fm</button>
+
+  <div class="slider-wrap">
+    Min. scrobbles
+    <input type="range" id="min-playcount" min="0" max="200" value="0" step="1">
+    <span class="slider-val" id="min-playcount-val">0</span>
+  </div>
+
+  <div class="spacer"></div>
+  <span class="sync-info" id="row-count"></span>
+</div>
+
+<div class="tw">
+<table>
+  <thead>
+    <tr>
+      <th data-sort="name">Artista</th>
+      <th class="center" data-src-col="muspy">Muspy</th>
+      <th class="center" data-sort="airsonic" data-src-col="airsonic">Airsonic</th>
+      <th class="center" data-sort="qbittorrent" data-src-col="qbittorrent">qBittorrent</th>
+      <th class="center" data-sort="lastfm" data-src-col="lastfm">Last.fm</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="tbody"></tbody>
+</table>
+</div>
+
+<div class="log-box" id="log-box"></div>
+
+<script>
+const SOURCES = ['muspy', 'airsonic', 'qbittorrent', 'lastfm'];
+let ARTISTS = [];
+let filterState = { muspy: 0, airsonic: 0, qbittorrent: 0, lastfm: 0 }; // 0=any 1=include -1=exclude
+let sortKey = 'name', sortDir = 1;
+let minPlaycount = 0;
+
+function el(tag, props) { const e = document.createElement(tag); if (props) Object.assign(e, props); return e; }
+
+async function api(path, opts) {
+  const r = await fetch(path, opts);
+  return r.json();
+}
+
+function showLog(text, isError) {
+  const box = document.getElementById('log-box');
+  box.textContent = text;
+  box.style.display = 'block';
+  box.style.color = isError ? 'var(--red)' : 'var(--g)';
+  box.style.borderColor = isError ? 'var(--red)' : 'var(--bh)';
+  clearTimeout(showLog._t);
+  showLog._t = setTimeout(() => { box.style.display = 'none'; }, 6000);
+}
+
+function renderStats() {
+  const counts = { muspy: 0, airsonic: 0, qbittorrent: 0, lastfm: 0 };
+  ARTISTS.forEach(a => SOURCES.forEach(s => { if (a.sources[s]) counts[s]++; }));
+  const bar = document.getElementById('stats-bar');
+  bar.innerHTML = '';
+  const labels = { muspy: 'Muspy', airsonic: 'Airsonic', qbittorrent: 'qBittorrent', lastfm: 'Last.fm' };
+  const total = el('div', { className: 'stat' });
+  total.innerHTML = `<span class="stat-label">Artistas totales</span><span class="stat-value" style="color:var(--th)">${ARTISTS.length}</span>`;
+  bar.appendChild(total);
+  SOURCES.forEach(s => {
+    const d = el('div', { className: 'stat' });
+    d.innerHTML = `<span class="stat-label">${labels[s]}</span><span class="stat-value ${s === 'qbittorrent' ? 'qbit' : s}">${counts[s]}</span>`;
+    bar.appendChild(d);
+  });
+}
+
+function passesFilters(a) {
+  const q = document.getElementById('search').value.trim().toLowerCase();
+  if (q && !a.name.toLowerCase().includes(q)) return false;
+  for (const s of SOURCES) {
+    const state = filterState[s];
+    const present = !!a.sources[s];
+    if (state === 1 && !present) return false;
+    if (state === -1 && present) return false;
+  }
+  const lf = a.sources.lastfm;
+  if (minPlaycount > 0) {
+    if (!lf || (lf.playcount || 0) < minPlaycount) return false;
+  }
+  return true;
+}
+
+function sortValue(a, key) {
+  if (key === 'name') return a.name.toLowerCase();
+  if (key === 'lastfm') return (a.sources.lastfm && a.sources.lastfm.playcount) || 0;
+  if (key === 'airsonic') return (a.sources.airsonic && a.sources.airsonic.count) || 0;
+  if (key === 'qbittorrent') return (a.sources.qbittorrent && a.sources.qbittorrent.count) || 0;
+  return '';
+}
+
+function badge(source, info) {
+  if (!info) return '<span class="badge off">–</span>';
+  let text = '✓';
+  if (source === 'lastfm') text = info.playcount ?? '✓';
+  else if (source === 'airsonic') text = info.count ?? '✓';
+  else if (source === 'qbittorrent') text = info.count ?? '✓';
+  return `<span class="badge on">${text}</span>`;
+}
+
+async function followMuspy(artistId, btn) {
+  btn.disabled = true; btn.textContent = '...';
+  const r = await api('./api/muspy/follow', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ artist_id: artistId }),
+  });
+  if (r.error) { showLog(r.error, true); btn.disabled = false; btn.textContent = '+ Muspy'; return; }
+  const a = ARTISTS.find(x => x.id === artistId);
+  a.sources.muspy = { raw_name: a.name, mbid: r.mbid };
+  renderTable(); renderStats();
+}
+
+async function unfollowMuspy(artistId, btn) {
+  if (!confirm('¿Dejar de seguir este artista en Muspy?')) return;
+  btn.disabled = true; btn.textContent = '...';
+  const r = await api('./api/muspy/unfollow', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ artist_id: artistId }),
+  });
+  if (r.error) { showLog(r.error, true); btn.disabled = false; btn.textContent = '− Muspy'; return; }
+  const a = ARTISTS.find(x => x.id === artistId);
+  delete a.sources.muspy;
+  renderTable(); renderStats();
+}
+
+function renderTable() {
+  const tbody = document.getElementById('tbody');
+  tbody.innerHTML = '';
+  let rows = ARTISTS.filter(passesFilters);
+  rows.sort((a, b) => {
+    const va = sortValue(a, sortKey), vb = sortValue(b, sortKey);
+    if (va < vb) return -1 * sortDir;
+    if (va > vb) return 1 * sortDir;
+    return 0;
+  });
+  document.getElementById('row-count').textContent = `${rows.length} / ${ARTISTS.length} artistas`;
+
+  if (!rows.length) {
+    tbody.appendChild(el('tr', { className: 'empty-row', innerHTML: '<td colspan="6">Sin resultados — sincroniza o ajusta los filtros</td>' }));
+    return;
+  }
+
+  for (const a of rows) {
+    const tr = el('tr');
+    const inMuspy = !!a.sources.muspy;
+    tr.innerHTML = `
+      <td class="td-artist">${a.name}</td>
+      <td class="src muspy">${badge('muspy', a.sources.muspy)}</td>
+      <td class="src airsonic">${badge('airsonic', a.sources.airsonic)}</td>
+      <td class="src qbittorrent">${badge('qbittorrent', a.sources.qbittorrent)}</td>
+      <td class="src lastfm">${badge('lastfm', a.sources.lastfm)}</td>
+      <td class="actions"></td>
+    `;
+    const actionsTd = tr.querySelector('.actions');
+    const btn = el('button', {
+      className: 'btn btn-small ' + (inMuspy ? 'btn-danger' : 'btn-ghost'),
+      textContent: inMuspy ? '− Muspy' : '+ Muspy',
+    });
+    btn.addEventListener('click', () => inMuspy ? unfollowMuspy(a.id, btn) : followMuspy(a.id, btn));
+    actionsTd.appendChild(btn);
+    tbody.appendChild(tr);
+  }
+}
+
+function setupFilterChips() {
+  document.querySelectorAll('.filter-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const src = chip.dataset.src;
+      filterState[src] = filterState[src] === 0 ? 1 : (filterState[src] === 1 ? -1 : 0);
+      chip.classList.remove('include', 'exclude');
+      if (filterState[src] === 1) chip.classList.add('include');
+      if (filterState[src] === -1) chip.classList.add('exclude');
+      renderTable();
+    });
+  });
+}
+
+function setupSort() {
+  document.querySelectorAll('th[data-sort]').forEach(th => {
+    th.addEventListener('click', () => {
+      const key = th.dataset.sort;
+      if (sortKey === key) sortDir *= -1; else { sortKey = key; sortDir = 1; }
+      document.querySelectorAll('th[data-sort]').forEach(t => t.classList.remove('sorted-asc', 'sorted-desc'));
+      th.classList.add(sortDir === 1 ? 'sorted-asc' : 'sorted-desc');
+      renderTable();
+    });
+  });
+}
+
+async function loadArtists() {
+  ARTISTS = await api('./api/artists');
+  renderStats();
+  renderTable();
+}
+
+async function loadLastSync() {
+  const r = await api('./api/last-sync');
+  const info = document.getElementById('sync-info');
+  if (!r.last_sync) { info.textContent = 'nunca sincronizado'; return; }
+  const d = new Date(r.last_sync * 1000);
+  info.textContent = 'última sync: ' + d.toLocaleString();
+}
+
+document.getElementById('sync-btn').addEventListener('click', async () => {
+  const btn = document.getElementById('sync-btn');
+  btn.disabled = true; btn.textContent = 'Sincronizando...';
+  const r = await api('./api/sync', { method: 'POST' });
+  btn.disabled = false; btn.textContent = '↻ Sincronizar';
+  showLog(r.log || (r.error || 'Listo'), !r.success);
+  await loadArtists();
+  await loadLastSync();
+});
+
+document.getElementById('search').addEventListener('input', renderTable);
+
+document.getElementById('min-playcount').addEventListener('input', (e) => {
+  minPlaycount = parseInt(e.target.value, 10);
+  document.getElementById('min-playcount-val').textContent = minPlaycount;
+  renderTable();
+});
+
+setupFilterChips();
+setupSort();
+loadArtists();
+loadLastSync();
+</script>
+
+</body>
+</html>

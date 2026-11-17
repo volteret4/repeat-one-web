@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="es">
+    <head><base href="../"><link rel="stylesheet" href="../_replay/replay.css"><script>window.REPLAY = {"mod": "rater", "root": "", "ports": [], "map": {"api/art/5886": "api/art/5886", "api/art/6235": "api/art/6235", "api/next": "data/f608f7f86c88.json", "api/random": "data/3f2b3807cb20.json", "api/sidebar": "data/78074ece5d9f.json", "api/similar/2354": "data/242a3975f234.json", "api/similar/3337": "data/f90a64651f73.json", "api/similar/4181": "data/0a063533c71e.json", "api/similar/4905": "data/64fd051c7dfd.json", "api/similar/5462": "data/ab470649e0b8.json", "api/similar/5886": "data/fdf0bf79f689.json", "api/similar/6235": "data/b2dc6e312b22.json", "api/similar/63": "data/9116641836a0.json", "api/stats": "data/8d8d4871158f.json", "api/track/2354": "data/089e4d419c1e.json", "api/track/4181": "data/bcd9f8660a89.json", "api/track/4905": "data/d55445d93957.json", "api/track/5462": "data/d403abf25e83.json", "api/track/5886": "data/db2855d67e3c.json", "api/track/6235": "data/c289656a7c4c.json", "static/info.js": "static/info.js", "static/settings.js": "static/settings.js"}, "readOnlyPosts": [], "search": {}};</script><script src="../_replay/replay.js"></script><script defer src="https://cloud.umami.is/script.js" data-website-id="5d84fd6c-0760-4a0c-a2d0-ffabb82179f5"></script>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Stats — Music Collection</title>
+        <script src="./static/settings.js"></script>
+        <script src="./static/info.js"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            *,
+            *::before,
+            *::after {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+            :root {
+                --bg: #0d0d0d;
+                --surface: #161616;
+                --surface2: #1f1f1f;
+                --border: #2a2a2a;
+                --border-bright: #3d3d3d;
+                --text: #e8e8e8;
+                --text-dim: #666;
+                --text-muted: #444;
+                --accent: #e8ff47;
+                --accent2: #ff6b35;
+                --accent3: #47c4ff;
+            }
+            body {
+                background: var(--bg);
+                color: var(--text);
+                font-family: "IBM Plex Sans", sans-serif;
+            }
+
+            nav {
+                display: flex;
+                gap: 1px;
+                background: var(--border);
+                border-bottom: 1px solid var(--border);
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            nav a {
+                padding: 12px 20px;
+                background: var(--surface);
+                color: var(--text-dim);
+                text-decoration: none;
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 11px;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                transition: all 0.15s;
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+            nav a:hover,
+            nav a.active {
+                background: var(--surface2);
+                color: var(--accent);
+            }
+
+            .container {
+                max-width: 1100px;
+                margin: 0 auto;
+                padding: 40px 24px;
+            }
+
+            /* TOP STATS */
+            .kpi-row {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 1px;
+                background: var(--border);
+                border: 1px solid var(--border);
+                margin-bottom: 32px;
+            }
+            @media (max-width: 600px) {
+                .kpi-row {
+                    grid-template-columns: 1fr 1fr;
+                }
+            }
+
+            .kpi {
+                background: var(--surface);
+                padding: 20px;
+            }
+            .kpi-label {
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 10px;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                color: var(--text-muted);
+                margin-bottom: 8px;
+            }
+            .kpi-value {
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 28px;
+                font-weight: 600;
+                color: var(--accent);
+                line-height: 1;
+            }
+            .kpi-sub {
+                font-size: 11px;
+                color: var(--text-dim);
+                margin-top: 4px;
+            }
+
+            /* SECTION */
+            .section-title {
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 11px;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                color: var(--text-dim);
+                margin-bottom: 16px;
+                padding-bottom: 8px;
+                border-bottom: 1px solid var(--border);
+            }
+
+            /* COVERAGE MAP */
+            .coverage-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 1px;
+                background: var(--border);
+                border: 1px solid var(--border);
+                margin-bottom: 32px;
+            }
+
+            .cov-block {
+                background: var(--surface);
+                padding: 14px;
+            }
+            .cov-name {
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 9px;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                color: var(--text-muted);
+                margin-bottom: 8px;
+            }
+            .cov-bar-track {
+                height: 6px;
+                background: var(--border);
+                margin-bottom: 5px;
+            }
+            .cov-bar-fill {
+                height: 100%;
+                transition: width 0.6s ease;
+            }
+            .cov-stats {
+                display: flex;
+                justify-content: space-between;
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 9px;
+                color: var(--text-muted);
+            }
+            .cov-pct {
+                color: var(--accent);
+                font-weight: 600;
+            }
+
+            /* DISTRIBUTION CHART */
+            .dist-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 1px;
+                background: var(--border);
+                border: 1px solid var(--border);
+                margin-bottom: 32px;
+            }
+            @media (max-width: 640px) {
+                .dist-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            .dist-block {
+                background: var(--surface);
+                padding: 16px;
+            }
+            .dist-title {
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 9px;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                color: var(--text-dim);
+                margin-bottom: 12px;
+            }
+            .dist-bars {
+                display: flex;
+                align-items: flex-end;
+                gap: 2px;
+                height: 60px;
+            }
+            .dist-bar-col {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-end;
+                height: 100%;
+                gap: 3px;
+            }
+            .dist-bar {
+                width: 100%;
+                background: var(--accent);
+                opacity: 0.7;
+                transition: height 0.5s ease;
+                min-height: 1px;
+            }
+            .dist-bar-label {
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 7px;
+                color: var(--text-muted);
+            }
+
+            /* GENRE TABLE */
+            .genre-list {
+                border: 1px solid var(--border);
+                margin-bottom: 32px;
+            }
+            .genre-row {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 10px 16px;
+                border-bottom: 1px solid var(--border);
+            }
+            .genre-row:last-child {
+                border-bottom: none;
+            }
+            .genre-name {
+                flex: 1;
+                font-size: 13px;
+            }
+            .genre-count {
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 11px;
+                color: var(--text-dim);
+                white-space: nowrap;
+            }
+            .genre-bar-wrap {
+                width: 120px;
+            }
+            .genre-bar-track {
+                height: 3px;
+                background: var(--border);
+            }
+            .genre-bar-fill {
+                height: 100%;
+                background: var(--accent3);
+            }
+
+            .loading {
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 12px;
+                color: var(--text-muted);
+                padding: 40px 0;
+            }
+            @media (max-width: 768px) {
+                .container { padding: 24px 16px; }
+                .coverage-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+            }
+            @media (max-width: 480px) {
+                .kpi-row { grid-template-columns: 1fr 1fr; }
+                .genre-bar-wrap { width: 70px; }
+                nav a { padding: 12px 14px; }
+            }
+        </style>
+    </head>
+    <body>
+        <nav>
+            <a href="./">Rate</a>
+            <a href="./recs/random">Recs Random</a>
+            <a href="./recs/vector">Recs Vector</a>
+            <a href="./stats" class="active">Stats</a>
+            <a href="./dominios">Dominios</a>
+        </nav>
+
+        <div class="container">
+            <div id="kpi-row" class="kpi-row">
+                <div class="kpi">
+                    <div class="kpi-label">Cargando</div>
+                    <div class="kpi-value">…</div>
+                </div>
+            </div>
+
+            <div class="section-title">Cobertura por dimensión</div>
+            <div id="coverage-grid" class="coverage-grid">
+                <div class="loading" style="padding: 20px">Cargando…</div>
+            </div>
+
+            <div class="section-title">Distribución de valores</div>
+            <div id="dist-grid" class="dist-grid"></div>
+
+            <div class="section-title">Géneros</div>
+            <div id="genre-list" class="genre-list">
+                <div class="loading" style="padding: 20px">Cargando…</div>
+            </div>
+        </div>
+
+        <script>
+            const DIMS = [
+                ["alegre_melancolica", "Alegre / Melancólica"],
+                ["relajada_energetica", "Mental / Emotivo"],
+                ["instrumental_cantada", "Instrumental / Cantada"],
+                ["lenta_rapida", "Lenta / Rápida"],
+                ["bailable_nobailable", "Bailable / No bailable"],
+                ["comercial_experimental", "Comercial / Experimental"],
+                ["luminosa_oscura", "Luminosa / Oscura"],
+                ["fondo_atencion", "Fondo / Atención"],
+                ["fluida_percusiva", "Fluida / Percusiva"],
+                ["estatica_dinamica", "Estática / Dinámica"],
+                ["reflexiva_fisica", "Reflexiva / Física"],
+                ["intima_epica", "Íntima / Épica"],
+            ];
+
+            // Color ramp for coverage bar: red→yellow→green
+            function coverageColor(pct) {
+                if (pct < 0.33)
+                    return `hsl(${Math.round((pct / 0.33) * 40)}, 80%, 45%)`;
+                if (pct < 0.66)
+                    return `hsl(${Math.round(40 + ((pct - 0.33) / 0.33) * 20)}, 80%, 50%)`;
+                return `hsl(${Math.round(60 + ((pct - 0.66) / 0.34) * 60)}, 75%, 45%)`;
+            }
+
+            async function load() {
+                const r = await fetch("./api/stats");
+                const d = await r.json();
+
+                // KPI
+                const kpi = document.getElementById("kpi-row");
+                const totalRatings = DIMS.reduce(
+                    (s, [k]) => s + (d.coverage[k]?.rated || 0),
+                    0,
+                );
+                const fullyCovered = DIMS.filter(
+                    ([k]) => (d.coverage[k]?.pct || 0) >= 1,
+                ).length;
+                kpi.innerHTML = `
+    <div class="kpi">
+      <div class="kpi-label">Tracks</div>
+      <div class="kpi-value">${d.total_tracks}</div>
+      <div class="kpi-sub">en la colección</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Ratings totales</div>
+      <div class="kpi-value">${totalRatings.toLocaleString()}</div>
+      <div class="kpi-sub">en ${DIMS.length} dimensiones</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Dims completas</div>
+      <div class="kpi-value">${fullyCovered}</div>
+      <div class="kpi-sub">de ${DIMS.length}</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Géneros</div>
+      <div class="kpi-value">${d.genres.length}</div>
+      <div class="kpi-sub">distintos</div>
+    </div>
+  `;
+
+                // COVERAGE
+                const covGrid = document.getElementById("coverage-grid");
+                covGrid.innerHTML = "";
+                DIMS.forEach(([key, label]) => {
+                    const cov = d.coverage[key] || {
+                        rated: 0,
+                        total: d.total_tracks,
+                        pct: 0,
+                    };
+                    const pct = cov.pct || 0;
+                    const color = coverageColor(pct);
+                    const block = document.createElement("div");
+                    block.className = "cov-block";
+                    block.innerHTML = `
+      <div class="cov-name">${label}</div>
+      <div class="cov-bar-track">
+        <div class="cov-bar-fill" style="width:${pct * 100}%;background:${color}"></div>
+      </div>
+      <div class="cov-stats">
+        <span>${cov.rated} / ${cov.total}</span>
+        <span class="cov-pct">${Math.round(pct * 100)}%</span>
+      </div>
+    `;
+                    covGrid.appendChild(block);
+                });
+
+                // DISTRIBUTIONS
+                const distGrid = document.getElementById("dist-grid");
+                distGrid.innerHTML = "";
+                DIMS.forEach(([key, label]) => {
+                    const dist = d.distributions[key] || {};
+                    const vals = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5];
+                    const counts = vals.map((v) => dist[v] || 0);
+                    const maxC = Math.max(...counts, 1);
+
+                    const block = document.createElement("div");
+                    block.className = "dist-block";
+
+                    let barsHtml = vals
+                        .map((v, i) => {
+                            const h = Math.round((counts[i] / maxC) * 100);
+                            return `
+        <div class="dist-bar-col">
+          <div class="dist-bar" style="height:${h}%"></div>
+          <div class="dist-bar-label">${v}</div>
+        </div>`;
+                        })
+                        .join("");
+
+                    block.innerHTML = `
+      <div class="dist-title">${label}</div>
+      <div class="dist-bars">${barsHtml}</div>
+    `;
+                    distGrid.appendChild(block);
+                });
+
+                // GENRES
+                const genreList = document.getElementById("genre-list");
+                genreList.innerHTML = "";
+                const maxG = d.genres[0]?.count || 1;
+                d.genres.slice(0, 30).forEach((g) => {
+                    const row = document.createElement("div");
+                    row.className = "genre-row";
+                    row.innerHTML = `
+      <div class="genre-name">${g.genre || "(sin género)"}</div>
+      <div class="genre-bar-wrap">
+        <div class="genre-bar-track">
+          <div class="genre-bar-fill" style="width:${(g.count / maxG) * 100}%"></div>
+        </div>
+      </div>
+      <div class="genre-count">${g.count}</div>
+    `;
+                    genreList.appendChild(row);
+                });
+            }
+
+            load();
+        </script>
+    
+</body>
+</html>

@@ -1,0 +1,1044 @@
+<!doctype html>
+<html lang="es">
+<head><link rel="stylesheet" href="../_replay/replay.css"><script>window.REPLAY = {"mod": "tracklist", "root": "", "ports": [], "map": {"api/cookies": "data/b8bffe12d676.json", "api/history": "data/eb24a106cd93.json", "api/history/17e3e17fd71e": "data/07889256490b.json", "api/history/1bf5900264bb": "data/7cec8136580f.json", "api/history/652ba220c98e": "data/3ee088dfb96c.json", "api/history/949d7eaa824f": "data/f30f8c0f3f4c.json", "api/history/b21879564052": "data/d1f841ee3211.json", "api/history/d34265e666bd": "data/82bd1017bd0f.json"}, "readOnlyPosts": [], "search": {}};</script><script src="../_replay/replay.js"></script><script defer src="https://cloud.umami.is/script.js" data-website-id="5d84fd6c-0760-4a0c-a2d0-ffabb82179f5"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tracklist ID</title>
+<style>
+  :root {
+    --bg: #12151b;
+    --panel: #1a1f29;
+    --border: #2a3140;
+    --text: #e6e9ef;
+    --muted: #8b93a3;
+    --accent: #5b8def;
+    --ok: #3ec28f;
+    --err: #e15c5c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+  main {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 2.5rem 1.25rem 4rem;
+  }
+  h1 { font-size: 1.4rem; margin: 0 0 .25rem; }
+  p.sub { color: var(--muted); margin: 0 0 1.75rem; font-size: .9rem; }
+  form {
+    display: flex;
+    gap: .5rem;
+  }
+  input[type=url] {
+    flex: 1;
+    padding: .7rem .85rem;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: var(--text);
+    font-size: .95rem;
+  }
+  input[type=url]:focus { outline: 2px solid var(--accent); }
+  button {
+    padding: .7rem 1.1rem;
+    border-radius: 8px;
+    border: none;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: .95rem;
+  }
+  button:disabled { opacity: .5; cursor: not-allowed; }
+  #status {
+    margin-top: 1.5rem;
+    display: none;
+  }
+  #status.show { display: block; }
+  .status-line {
+    display: flex;
+    justify-content: space-between;
+    font-size: .85rem;
+    color: var(--muted);
+    margin-bottom: .4rem;
+  }
+  .bar {
+    height: 6px;
+    border-radius: 3px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    background: var(--accent);
+    width: 0%;
+    transition: width .4s ease;
+  }
+  .bar-fill.done { background: var(--ok); }
+  .bar-fill.error { background: var(--err); }
+  #source-title {
+    margin-top: .6rem;
+    font-size: .95rem;
+    color: var(--text);
+  }
+  #player-container {
+    margin-top: .9rem;
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #000;
+    border-radius: 8px;
+    overflow: hidden;
+    display: none;
+  }
+  #player-container.show { display: block; }
+  #player-container iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1.5rem;
+    font-size: .9rem;
+  }
+  th, td {
+    text-align: left;
+    padding: .55rem .5rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  th { color: var(--muted); font-weight: 600; font-size: .78rem; text-transform: uppercase; letter-spacing: .03em; }
+  tr.approved td.track { color: var(--ok); }
+  td.ts button.ts-jump {
+    background: transparent;
+    border: none;
+    padding: 0;
+    color: var(--muted);
+    text-decoration: none;
+    font-variant-numeric: tabular-nums;
+    font-size: .9rem;
+    cursor: pointer;
+  }
+  td.ts button.ts-jump:hover { color: var(--accent); }
+  td.track { color: var(--text); }
+  td.track .artist { color: var(--muted); }
+  td.yt { min-width: 150px; }
+  td.yt .yt-thumb {
+    position: relative;
+    width: 96px;
+    height: 54px;
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+    background: var(--panel);
+    border: 1px solid var(--border);
+  }
+  td.yt .yt-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  td.yt .yt-thumb .play-dot {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,.25);
+    color: #fff;
+    font-size: 1.1rem;
+  }
+  td.yt .yt-title {
+    display: block;
+    margin-top: .3rem;
+    color: var(--accent);
+    text-decoration: none;
+    font-size: .78rem;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  td.yt .yt-title:hover { text-decoration: underline; }
+  td.yt iframe {
+    width: 160px;
+    height: 90px;
+    border: 0;
+    border-radius: 4px;
+  }
+  td.actions { white-space: nowrap; }
+  td.actions button {
+    padding: .3rem .5rem;
+    font-size: .85rem;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    margin-right: .3rem;
+    cursor: pointer;
+  }
+  td.actions button.approve:hover { color: var(--ok); border-color: var(--ok); }
+  td.actions button.approve.active { color: var(--ok); border-color: var(--ok); }
+  td.actions button.reject:hover { color: var(--err); border-color: var(--err); }
+  .muted { color: var(--muted); }
+  #error-box {
+    margin-top: 1rem;
+    padding: .75rem 1rem;
+    border-radius: 8px;
+    background: rgba(225, 92, 92, .12);
+    border: 1px solid var(--err);
+    color: var(--err);
+    font-size: .88rem;
+    display: none;
+  }
+  h2 {
+    font-size: 1rem;
+    margin: 2.5rem 0 .75rem;
+    color: var(--text);
+    border-top: 1px solid var(--border);
+    padding-top: 2rem;
+  }
+  #history-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: .4rem;
+  }
+  #history-list li {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    padding: .55rem .7rem;
+    border-radius: 8px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+  }
+  #history-list .h-title {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    font-size: .9rem;
+  }
+  #history-list .h-title:hover { color: var(--accent); }
+  #history-list .h-meta {
+    color: var(--muted);
+    font-size: .78rem;
+    flex-shrink: 0;
+  }
+  #history-list button.h-delete {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--err);
+    padding: .3rem .55rem;
+    font-size: .78rem;
+    font-weight: 500;
+  }
+  #history-empty { color: var(--muted); font-size: .88rem; }
+  #ytauth-box {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    flex-wrap: wrap;
+    font-size: .88rem;
+  }
+  #ytauth-status { color: var(--muted); }
+  #ytauth-status.ok { color: var(--ok); }
+  #ytauth-status.warn { color: var(--err); }
+  #ytauth-file {
+    color: var(--muted);
+    font-size: .85rem;
+    max-width: 220px;
+  }
+  #ytauth-msg { font-size: .82rem; margin-top: .5rem; display: none; }
+  #ytauth-msg.ok { color: var(--ok); display: block; }
+  #ytauth-msg.err { color: var(--err); display: block; }
+  details.adv {
+    margin-top: .75rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: .6rem .8rem;
+    background: var(--panel);
+  }
+  details.adv summary {
+    cursor: pointer;
+    font-size: .85rem;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .adv-row {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    flex-wrap: wrap;
+    margin-top: .7rem;
+    font-size: .85rem;
+    color: var(--muted);
+  }
+  .adv-row label {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+  }
+  .adv-row input[type=number] {
+    width: 4.5rem;
+    padding: .3rem .4rem;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+  }
+  .adv-row input[type=range] { flex: 1; min-width: 120px; accent-color: var(--accent); }
+  .adv-row .range-label {
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+    min-width: 3.6rem;
+    text-align: right;
+  }
+  #rescan-panel {
+    margin-top: 1.25rem;
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+    display: none;
+  }
+  #rescan-panel.show { display: block; }
+  #rescan-panel h3 {
+    font-size: .85rem;
+    margin: 0 0 .5rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .03em;
+  }
+  #gap-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem;
+    margin-bottom: .6rem;
+  }
+  #gap-chips button {
+    padding: .3rem .6rem;
+    font-size: .78rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: var(--muted);
+    cursor: pointer;
+  }
+  #gap-chips button:hover { color: var(--accent); border-color: var(--accent); }
+  #rescan-btn { margin-top: .7rem; }
+  #rescan-msg { font-size: .82rem; margin-top: .5rem; display: none; }
+  #rescan-msg.ok { color: var(--ok); display: block; }
+  #rescan-msg.err { color: var(--err); display: block; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Tracklist ID</h1>
+  <p class="sub">Pega un enlace de YouTube (mix, set de DJ...) y lo analiza por tramos con Shazam, buscando además cada tema encontrado como vídeo suelto.</p>
+
+  <form id="form">
+    <input type="url" id="url" placeholder="https://www.youtube.com/watch?v=..." required>
+    <button type="submit" id="submit-btn">Analizar</button>
+  </form>
+
+  <details class="adv">
+    <summary>Opciones avanzadas</summary>
+    <div class="adv-row">
+      <label>Intervalo entre comprobaciones <input type="number" id="opt-step" value="45" min="5" max="300"> s</label>
+      <label>Duración de cada fragmento enviado <input type="number" id="opt-snippet" value="12" min="4" max="60"> s</label>
+    </div>
+    <div class="adv-row">
+      <label><input type="checkbox" id="opt-range-enable"> Analizar solo un tramo</label>
+      <button type="button" id="opt-fetch-duration">Detectar duración del vídeo</button>
+      <span id="opt-duration-label" class="muted"></span>
+    </div>
+    <div class="adv-row" id="opt-range-row" style="display:none">
+      <label>Desde <input type="range" id="opt-start" min="0" max="3600" value="0"><span class="range-label" id="opt-start-label">0:00</span></label>
+      <label>Hasta <input type="range" id="opt-end" min="0" max="3600" value="3600"><span class="range-label" id="opt-end-label">1:00:00</span></label>
+    </div>
+  </details>
+
+  <div id="error-box"></div>
+
+  <div id="status">
+    <div class="status-line">
+      <span id="status-text">—</span>
+      <span id="status-time"></span>
+    </div>
+    <div class="bar"><div class="bar-fill" id="bar-fill"></div></div>
+    <div id="source-title"></div>
+    <div id="player-container"><div id="yt-player"></div></div>
+
+    <table id="tracks-table" style="display:none">
+      <thead>
+        <tr>
+          <th>Tiempo</th>
+          <th>Tema</th>
+          <th>Vídeo encontrado</th>
+          <th>Comprobar</th>
+        </tr>
+      </thead>
+      <tbody id="tracks-body"></tbody>
+    </table>
+
+    <div id="rescan-panel">
+      <h3>Reanalizar un tramo</h3>
+      <p class="sub" style="margin-bottom:.5rem">Útil para huecos largos sin tema identificado o transiciones mal reconocidas: reanaliza solo ese tramo, con un intervalo más fino si hace falta. Los temas ya aprobados (✓) no se tocan.</p>
+      <div id="gap-chips"></div>
+      <div class="adv-row">
+        <label>Desde <input type="range" id="rescan-start" min="0" max="0" value="0"><span class="range-label" id="rescan-start-label">0:00</span></label>
+        <label>Hasta <input type="range" id="rescan-end" min="0" max="0" value="0"><span class="range-label" id="rescan-end-label">0:00</span></label>
+      </div>
+      <div class="adv-row">
+        <label>Intervalo <input type="number" id="rescan-step" value="20" min="5" max="300"> s</label>
+        <label>Fragmento <input type="number" id="rescan-snippet" value="8" min="4" max="60"> s</label>
+      </div>
+      <button type="button" id="rescan-btn">Reanalizar tramo</button>
+      <div id="rescan-msg"></div>
+    </div>
+  </div>
+
+  <h2>Historial</h2>
+  <div id="history-empty">Todavía no hay análisis guardados.</div>
+  <ul id="history-list"></ul>
+
+  <h2>Cookies de YouTube</h2>
+  <p class="sub" style="margin-bottom:.75rem">Cuando caduquen las actuales y vuelva el error "Sign in to confirm you're not a bot", sube aquí un <code>cookies.txt</code> nuevo (formato Netscape) sin necesidad de entrar por SSH.</p>
+  <div id="ytauth-box">
+    <span id="ytauth-status">comprobando…</span>
+    <input type="file" id="ytauth-file" accept=".txt">
+    <button type="button" id="ytauth-upload-btn">Subir</button>
+  </div>
+  <div id="ytauth-msg"></div>
+</main>
+
+<script>
+const form = document.getElementById("form");
+const urlInput = document.getElementById("url");
+const submitBtn = document.getElementById("submit-btn");
+const statusBox = document.getElementById("status");
+const statusText = document.getElementById("status-text");
+const statusTime = document.getElementById("status-time");
+const barFill = document.getElementById("bar-fill");
+const sourceTitle = document.getElementById("source-title");
+const table = document.getElementById("tracks-table");
+const tbody = document.getElementById("tracks-body");
+const errorBox = document.getElementById("error-box");
+const historyList = document.getElementById("history-list");
+const historyEmpty = document.getElementById("history-empty");
+const playerContainer = document.getElementById("player-container");
+const ytPlayerDiv = document.getElementById("yt-player");
+const cookiesStatus = document.getElementById("ytauth-status");
+const cookiesFileInput = document.getElementById("ytauth-file");
+const cookiesUploadBtn = document.getElementById("ytauth-upload-btn");
+const cookiesMsg = document.getElementById("ytauth-msg");
+
+const optStep = document.getElementById("opt-step");
+const optSnippet = document.getElementById("opt-snippet");
+const optRangeEnable = document.getElementById("opt-range-enable");
+const optRangeRow = document.getElementById("opt-range-row");
+const optFetchDuration = document.getElementById("opt-fetch-duration");
+const optDurationLabel = document.getElementById("opt-duration-label");
+const optStart = document.getElementById("opt-start");
+const optEnd = document.getElementById("opt-end");
+const optStartLabel = document.getElementById("opt-start-label");
+const optEndLabel = document.getElementById("opt-end-label");
+
+const rescanPanel = document.getElementById("rescan-panel");
+const gapChips = document.getElementById("gap-chips");
+const rescanStart = document.getElementById("rescan-start");
+const rescanEnd = document.getElementById("rescan-end");
+const rescanStartLabel = document.getElementById("rescan-start-label");
+const rescanEndLabel = document.getElementById("rescan-end-label");
+const rescanStep = document.getElementById("rescan-step");
+const rescanSnippet = document.getElementById("rescan-snippet");
+const rescanBtn = document.getElementById("rescan-btn");
+const rescanMsg = document.getElementById("rescan-msg");
+
+let pollTimer = null;
+let mainPlayerLoadedFor = null;
+let currentAnalysisId = null;
+let currentDuration = 0;
+
+function fmtTime(sec) {
+  sec = Math.max(0, Math.floor(sec || 0));
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return `${m}:${String(s).padStart(2, "0")}`;
+}
+
+function fmtTimeLong(sec) {
+  sec = Math.max(0, Math.floor(sec || 0));
+  const h = Math.floor(sec / 3600);
+  const m = Math.floor((sec % 3600) / 60);
+  const s = sec % 60;
+  return h
+    ? `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`
+    : `${m}:${String(s).padStart(2, "0")}`;
+}
+
+function wireRangePair(startInput, endInput, startLabel, endLabel) {
+  function update(moved) {
+    if (+startInput.value > +endInput.value) {
+      if (moved === "start") endInput.value = startInput.value;
+      else startInput.value = endInput.value;
+    }
+    startLabel.textContent = fmtTimeLong(+startInput.value);
+    endLabel.textContent = fmtTimeLong(+endInput.value);
+  }
+  startInput.addEventListener("input", () => update("start"));
+  endInput.addEventListener("input", () => update("end"));
+  return update;
+}
+
+const updateOptRangeLabels = wireRangePair(optStart, optEnd, optStartLabel, optEndLabel);
+const updateRescanRangeLabels = wireRangePair(rescanStart, rescanEnd, rescanStartLabel, rescanEndLabel);
+
+optRangeEnable.addEventListener("change", () => {
+  optRangeRow.style.display = optRangeEnable.checked ? "flex" : "none";
+});
+
+optFetchDuration.addEventListener("click", async () => {
+  const url = urlInput.value.trim();
+  if (!url) {
+    optDurationLabel.textContent = "pega antes un enlace";
+    return;
+  }
+  optDurationLabel.textContent = "consultando…";
+  try {
+    const res = await fetch(`./api/info?url=${encodeURIComponent(url)}`);
+    const data = await res.json();
+    if (!res.ok || !data.duration) {
+      optDurationLabel.textContent = data.error || "no se pudo obtener la duración";
+      return;
+    }
+    const dur = Math.floor(data.duration);
+    optStart.max = dur;
+    optEnd.max = dur;
+    optEnd.value = dur;
+    optDurationLabel.textContent = `duración: ${fmtTimeLong(dur)}`;
+    updateOptRangeLabels();
+  } catch (e) {
+    optDurationLabel.textContent = "no se pudo contactar con el servidor";
+  }
+});
+
+function fmtDate(iso) {
+  if (!iso) return "";
+  const d = new Date(iso.endsWith("Z") ? iso : iso + "Z");
+  return d.toLocaleString();
+}
+
+function extractYoutubeId(url) {
+  if (!url) return null;
+  const m = url.match(/(?:v=|youtu\.be\/|embed\/)([a-zA-Z0-9_-]{11})/);
+  return m ? m[1] : null;
+}
+
+const STATUS_LABELS = {
+  queued: "En cola…",
+  downloading: "Descargando audio…",
+  analyzing: "Analizando con Shazam…",
+  searching: "Buscando vídeos de cada tema…",
+  done: "Completado",
+  error: "Error",
+};
+
+function showMainPlayer(sourceUrl, startSeconds, autoplay) {
+  const id = extractYoutubeId(sourceUrl);
+  if (!id) {
+    playerContainer.classList.remove("show");
+    return;
+  }
+  const start = Math.max(0, Math.floor(startSeconds || 0));
+  ytPlayerDiv.innerHTML = "";
+  const iframe = document.createElement("iframe");
+  iframe.src = `https://www.youtube.com/embed/${id}?start=${start}&autoplay=${autoplay ? 1 : 0}`;
+  iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+  iframe.allowFullscreen = true;
+  ytPlayerDiv.appendChild(iframe);
+  playerContainer.classList.add("show");
+}
+
+function jumpToTimestamp(sourceUrl, seconds) {
+  showMainPlayer(sourceUrl, seconds, true);
+  playerContainer.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+function buildYtCell(tr, finished) {
+  const wrap = document.createElement("div");
+  if (!tr.youtube || !tr.youtube.url) {
+    wrap.innerHTML = finished
+      ? '<span class="muted">no encontrado</span>'
+      : '<span class="muted">buscando…</span>';
+    return wrap;
+  }
+
+  const vid = extractYoutubeId(tr.youtube.url);
+  const thumbWrap = document.createElement("div");
+  thumbWrap.className = "yt-thumb";
+  if (tr.youtube.thumbnail) {
+    const img = document.createElement("img");
+    img.src = tr.youtube.thumbnail;
+    thumbWrap.appendChild(img);
+  }
+  const dot = document.createElement("div");
+  dot.className = "play-dot";
+  dot.textContent = "▶";
+  thumbWrap.appendChild(dot);
+  thumbWrap.title = "Reproducir aquí para comparar";
+  thumbWrap.addEventListener("click", () => {
+    if (!vid) return;
+    const iframe = document.createElement("iframe");
+    iframe.src = `https://www.youtube.com/embed/${vid}?autoplay=1`;
+    iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+    iframe.allowFullscreen = true;
+    thumbWrap.replaceWith(iframe);
+  });
+  wrap.appendChild(thumbWrap);
+
+  const link = document.createElement("a");
+  link.href = tr.youtube.url;
+  link.target = "_blank";
+  link.rel = "noopener";
+  link.className = "yt-title";
+  link.textContent = tr.youtube.title || "Ver en YouTube";
+  wrap.appendChild(link);
+  return wrap;
+}
+
+function buildActionsCell(tr, analysisId, row) {
+  const td = document.createElement("td");
+  td.className = "actions";
+  if (!analysisId || tr.id == null) {
+    td.innerHTML = '<span class="muted">—</span>';
+    return td;
+  }
+
+  const approveBtn = document.createElement("button");
+  approveBtn.className = "approve" + (tr.status === "approved" ? " active" : "");
+  approveBtn.textContent = "✓";
+  approveBtn.title = "Marcar como correcta";
+  approveBtn.addEventListener("click", async () => {
+    const newStatus = tr.status === "approved" ? "pending" : "approved";
+    const res = await fetch(`./api/history/${analysisId}/tracks/${tr.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: newStatus }),
+    });
+    if (res.ok) {
+      tr.status = newStatus;
+      approveBtn.classList.toggle("active", newStatus === "approved");
+      row.classList.toggle("approved", newStatus === "approved");
+    }
+  });
+
+  const rejectBtn = document.createElement("button");
+  rejectBtn.className = "reject";
+  rejectBtn.textContent = "✕";
+  rejectBtn.title = "Eliminar (identificación incorrecta)";
+  rejectBtn.addEventListener("click", async () => {
+    const res = await fetch(`./api/history/${analysisId}/tracks/${tr.id}`, { method: "DELETE" });
+    if (res.ok) row.remove();
+  });
+
+  td.appendChild(approveBtn);
+  td.appendChild(rejectBtn);
+  return td;
+}
+
+function renderTracks(tracks, sourceUrl, finished, analysisId) {
+  tbody.innerHTML = "";
+  table.style.display = tracks.length ? "table" : "none";
+  for (const tr of tracks) {
+    const row = document.createElement("tr");
+    if (tr.status === "approved") row.classList.add("approved");
+
+    const tsCell = document.createElement("td");
+    tsCell.className = "ts";
+    const tsBtn = document.createElement("button");
+    tsBtn.className = "ts-jump";
+    tsBtn.type = "button";
+    tsBtn.textContent = fmtTime(tr.timestamp);
+    tsBtn.title = "Saltar aquí en el reproductor";
+    tsBtn.addEventListener("click", () => jumpToTimestamp(sourceUrl, tr.timestamp));
+    tsCell.appendChild(tsBtn);
+
+    const trackCell = document.createElement("td");
+    trackCell.className = "track";
+    trackCell.innerHTML = `<span class="artist">${tr.artist || "?"}</span> — ${tr.title || "?"}`;
+
+    const ytCell = document.createElement("td");
+    ytCell.className = "yt";
+    ytCell.appendChild(buildYtCell(tr, finished));
+
+    row.appendChild(tsCell);
+    row.appendChild(trackCell);
+    row.appendChild(ytCell);
+    row.appendChild(buildActionsCell(tr, analysisId, row));
+    tbody.appendChild(row);
+  }
+}
+
+function computeGaps(tracks, duration, minGapSeconds) {
+  minGapSeconds = minGapSeconds || 60;
+  const gaps = [];
+  let prevEnd = 0;
+  for (const tr of tracks) {
+    const t = tr.timestamp || 0;
+    if (t - prevEnd >= minGapSeconds) gaps.push([prevEnd, t]);
+    prevEnd = Math.max(prevEnd, t);
+  }
+  if (duration - prevEnd >= minGapSeconds) gaps.push([prevEnd, duration]);
+  return gaps;
+}
+
+function renderGapChips(gaps) {
+  gapChips.innerHTML = "";
+  if (!gaps.length) {
+    gapChips.innerHTML = '<span class="muted">No hay huecos largos sin identificar.</span>';
+    return;
+  }
+  for (const [a, b] of gaps) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = `${fmtTimeLong(a)}–${fmtTimeLong(b)} (${fmtTimeLong(b - a)})`;
+    btn.addEventListener("click", () => {
+      rescanStart.value = a;
+      rescanEnd.value = b;
+      updateRescanRangeLabels();
+    });
+    gapChips.appendChild(btn);
+  }
+}
+
+function setupRescanPanel(analysisId, duration, tracks) {
+  currentAnalysisId = analysisId;
+  currentDuration = duration || 0;
+  rescanStart.max = currentDuration;
+  rescanEnd.max = currentDuration;
+  rescanStart.value = 0;
+  rescanEnd.value = currentDuration;
+  updateRescanRangeLabels();
+  renderGapChips(computeGaps(tracks || [], currentDuration));
+  rescanMsg.className = "";
+  rescanMsg.textContent = "";
+  rescanBtn.disabled = false;
+  rescanPanel.classList.add("show");
+}
+
+async function finalizeDoneJob(jobId, sourceUrl) {
+  try {
+    const res = await fetch(`./api/history/${jobId}`);
+    if (res.ok) {
+      const job = await res.json();
+      renderTracks(job.tracks || [], sourceUrl, true, jobId);
+      setupRescanPanel(jobId, job.source?.duration || 0, job.tracks || []);
+    }
+  } catch (e) {}
+  loadHistory();
+}
+
+async function pollRescan(jobId, analysisId) {
+  const res = await fetch(`./api/jobs/${jobId}`);
+  if (!res.ok) {
+    rescanBtn.disabled = false;
+    return;
+  }
+  const job = await res.json();
+  const total = job.progress?.total || 0;
+  const current = job.progress?.current || 0;
+  rescanMsg.className = "";
+  rescanMsg.textContent = `${STATUS_LABELS[job.status] || job.status}${total ? ` (${fmtTime(current)}/${fmtTime(total)})` : ""}`;
+
+  if (job.status === "done") {
+    rescanMsg.className = "ok";
+    rescanMsg.textContent = "Tramo reanalizado.";
+    rescanBtn.disabled = false;
+    viewHistory(analysisId);
+    loadHistory();
+  } else if (job.status === "error") {
+    rescanMsg.className = "err";
+    rescanMsg.textContent = job.error || "Error al reanalizar.";
+    rescanBtn.disabled = false;
+  } else {
+    setTimeout(() => pollRescan(jobId, analysisId), 2000);
+  }
+}
+
+rescanBtn.addEventListener("click", async () => {
+  if (!currentAnalysisId) return;
+  const startVal = +rescanStart.value;
+  const endVal = +rescanEnd.value;
+  if (endVal <= startVal) {
+    rescanMsg.className = "err";
+    rescanMsg.textContent = "El tramo final debe ser mayor que el inicial.";
+    return;
+  }
+  rescanBtn.disabled = true;
+  rescanMsg.className = "";
+  rescanMsg.textContent = "Reanalizando…";
+
+  let res;
+  try {
+    res = await fetch(`./api/history/${currentAnalysisId}/rescan`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        start_time: startVal,
+        end_time: endVal,
+        step_seconds: +rescanStep.value || undefined,
+        snippet_seconds: +rescanSnippet.value || undefined,
+      }),
+    });
+  } catch (e) {
+    rescanMsg.className = "err";
+    rescanMsg.textContent = "No se pudo contactar con el servidor.";
+    rescanBtn.disabled = false;
+    return;
+  }
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    rescanMsg.className = "err";
+    rescanMsg.textContent = data.error || "Error al reanalizar.";
+    rescanBtn.disabled = false;
+    return;
+  }
+  pollRescan(data.job_id, currentAnalysisId);
+});
+
+async function poll(jobId, sourceUrl) {
+  let res;
+  try {
+    res = await fetch(`./api/jobs/${jobId}`);
+  } catch (e) {
+    return;
+  }
+  if (!res.ok) return;
+  const job = await res.json();
+
+  statusText.textContent = STATUS_LABELS[job.status] || job.status;
+
+  if (job.source) {
+    sourceTitle.textContent = job.source.title || "";
+    if (mainPlayerLoadedFor !== sourceUrl) {
+      mainPlayerLoadedFor = sourceUrl;
+      showMainPlayer(sourceUrl, 0, false);
+    }
+  }
+
+  const total = job.progress?.total || 0;
+  const current = job.progress?.current || 0;
+  if (total > 0) {
+    statusTime.textContent = `${fmtTime(current)} / ${fmtTime(total)}`;
+    barFill.style.width = `${Math.min(100, (current / total) * 100)}%`;
+  } else {
+    statusTime.textContent = "";
+  }
+
+  const finished = job.status === "done" || job.status === "error";
+  renderTracks(job.tracks || [], sourceUrl, finished, null);
+
+  if (job.status === "done") {
+    barFill.classList.add("done");
+    barFill.style.width = "100%";
+    clearInterval(pollTimer);
+    submitBtn.disabled = false;
+    finalizeDoneJob(jobId, sourceUrl);
+  } else if (job.status === "error") {
+    barFill.classList.add("error");
+    errorBox.style.display = "block";
+    errorBox.textContent = job.error || "Error desconocido";
+    clearInterval(pollTimer);
+    submitBtn.disabled = false;
+  }
+}
+
+async function loadHistory() {
+  let res;
+  try {
+    res = await fetch("./api/history");
+  } catch (e) {
+    return;
+  }
+  if (!res.ok) return;
+  const items = await res.json();
+
+  historyList.innerHTML = "";
+  historyEmpty.style.display = items.length ? "none" : "block";
+
+  for (const item of items) {
+    const li = document.createElement("li");
+
+    const titleSpan = document.createElement("span");
+    titleSpan.className = "h-title";
+    titleSpan.textContent = item.title || item.url;
+    titleSpan.title = "Ver tracklist";
+    titleSpan.addEventListener("click", () => viewHistory(item.id));
+
+    const meta = document.createElement("span");
+    meta.className = "h-meta";
+    meta.textContent = `${item.track_count} temas · ${fmtDate(item.created_at)}`;
+
+    const delBtn = document.createElement("button");
+    delBtn.className = "h-delete";
+    delBtn.textContent = "Borrar";
+    delBtn.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      if (!confirm("¿Borrar este análisis del historial?")) return;
+      await fetch(`./api/history/${item.id}`, { method: "DELETE" });
+      loadHistory();
+    });
+
+    li.appendChild(titleSpan);
+    li.appendChild(meta);
+    li.appendChild(delBtn);
+    historyList.appendChild(li);
+  }
+}
+
+async function viewHistory(id) {
+  const res = await fetch(`./api/history/${id}`);
+  if (!res.ok) return;
+  const job = await res.json();
+
+  if (pollTimer) clearInterval(pollTimer);
+  submitBtn.disabled = false;
+  errorBox.style.display = "none";
+  statusBox.classList.add("show");
+  barFill.classList.remove("error");
+  barFill.classList.add("done");
+  barFill.style.width = "100%";
+  statusText.textContent = "Guardado";
+  const total = job.source?.duration || 0;
+  statusTime.textContent = total ? `${fmtTime(total)}` : "";
+  sourceTitle.textContent = job.source?.title || "";
+  const sourceUrl = job.source?.url || "";
+  mainPlayerLoadedFor = sourceUrl;
+  showMainPlayer(sourceUrl, 0, false);
+  renderTracks(job.tracks || [], sourceUrl, true, id);
+  setupRescanPanel(id, job.source?.duration || 0, job.tracks || []);
+  window.scrollTo({ top: statusBox.offsetTop - 20, behavior: "smooth" });
+}
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const url = urlInput.value.trim();
+  if (!url) return;
+
+  submitBtn.disabled = true;
+  errorBox.style.display = "none";
+  barFill.classList.remove("done", "error");
+  barFill.style.width = "0%";
+  statusBox.classList.add("show");
+  statusText.textContent = "Enviando…";
+  statusTime.textContent = "";
+  sourceTitle.textContent = "";
+  table.style.display = "none";
+  tbody.innerHTML = "";
+  playerContainer.classList.remove("show");
+  mainPlayerLoadedFor = null;
+  rescanPanel.classList.remove("show");
+  currentAnalysisId = null;
+
+  const body = {
+    url,
+    step_seconds: +optStep.value || undefined,
+    snippet_seconds: +optSnippet.value || undefined,
+  };
+  if (optRangeEnable.checked) {
+    body.start_time = +optStart.value;
+    body.end_time = +optEnd.value;
+  }
+
+  let res;
+  try {
+    res = await fetch("./api/jobs", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+  } catch (err) {
+    errorBox.style.display = "block";
+    errorBox.textContent = "No se pudo contactar con el servidor.";
+    submitBtn.disabled = false;
+    return;
+  }
+
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    errorBox.style.display = "block";
+    errorBox.textContent = data.error || "Error al crear el análisis.";
+    submitBtn.disabled = false;
+    return;
+  }
+
+  const data = await res.json();
+  if (pollTimer) clearInterval(pollTimer);
+  poll(data.job_id, url);
+  pollTimer = setInterval(() => poll(data.job_id, url), 2500);
+});
+
+async function loadCookiesStatus() {
+  try {
+    const res = await fetch("./api/cookies");
+    if (!res.ok) return;
+    const data = await res.json();
+    if (data.present) {
+      cookiesStatus.textContent = `cookies activas (actualizadas ${fmtDate(data.updated_at)})`;
+      cookiesStatus.className = "ok";
+    } else {
+      cookiesStatus.textContent = "sin cookies (yt-dlp funciona hasta que YouTube pida verificación)";
+      cookiesStatus.className = "warn";
+    }
+  } catch (e) {}
+}
+
+cookiesUploadBtn.addEventListener("click", async () => {
+  const file = cookiesFileInput.files[0];
+  if (!file) {
+    cookiesMsg.className = "err";
+    cookiesMsg.textContent = "Elige primero un archivo cookies.txt";
+    return;
+  }
+  const formData = new FormData();
+  formData.append("file", file);
+  cookiesUploadBtn.disabled = true;
+  try {
+    const res = await fetch("./api/cookies", { method: "POST", body: formData });
+    const data = await res.json().catch(() => ({}));
+    if (res.ok) {
+      cookiesMsg.className = "ok";
+      cookiesMsg.textContent = "Cookies actualizadas correctamente.";
+      cookiesFileInput.value = "";
+      loadCookiesStatus();
+    } else {
+      cookiesMsg.className = "err";
+      cookiesMsg.textContent = data.error || "Error al subir el archivo.";
+    }
+  } catch (e) {
+    cookiesMsg.className = "err";
+    cookiesMsg.textContent = "No se pudo contactar con el servidor.";
+  }
+  cookiesUploadBtn.disabled = false;
+});
+
+loadHistory();
+loadCookiesStatus();
+</script>
+</body>
+</html>

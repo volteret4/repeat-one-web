@@ -18,7 +18,7 @@ function el(tag, attrs = {}, ...kids) {
 const external = url => /^https?:/.test(url) ? {target: '_blank', rel: 'noopener'} : {};
 const link = (label, url, cls) => el('a', {class: cls, href: url, ...external(url)}, label + (/^https?:/.test(url) ? ' ↗' : ''));
 
-const KIND_LABEL = {public: 'Versión pública', sim: 'Simulación', blog: 'Blog'};
+const KIND_LABEL = {public: 'Versión pública', sim: 'Simulación o demo', blog: 'Blog', script: 'Script', app: 'App de terceros'};
 const filters = {kind: 'all', tag: null};
 const matches = m => (filters.kind === 'all' || m.kind === filters.kind) && (!filters.tag || m.tags.includes(filters.tag));
 
@@ -46,23 +46,25 @@ function renderGrid() {
 
 function panelBody(m) {
   const body = [
-    el('div', {class: 'badge'}, el('span', {class: 'dot ' + m.kind}), {public: 'Versión pública disponible', sim: 'Solo despliegue local', blog: 'Blog'}[m.kind]),
+    el('div', {class: 'badge'}, el('span', {class: 'dot ' + m.kind}), {public: 'Versión pública disponible', sim: 'Solo despliegue local', blog: 'Blog', script: 'Script (sin web)', app: 'App de terceros'}[m.kind]),
     el('h2', {id: 'p-title'}, m.label),
     el('h3', {}, 'Qué hace'),
     el('p', {}, m.what),
     m.detail ? el('p', {class: 'detail'}, m.detail) : null,
   ];
-  if (m.kind === 'blog') {
-    body.push(el('h3', {}, 'Leer'), ...m.try.map(t => link(t.label, t.url, 'btn')),
-      el('h3', {}, 'Código'), ...m.repos.map(r => link(`Repositorio ${r.label}`, r.url, 'btn ghost')));
+  if (['blog', 'script', 'app'].includes(m.kind)) {
+    body.push(el('h3', {}, {blog: 'Leer', script: 'Código', app: 'Enlaces'}[m.kind]), ...m.try.map(t => link(t.label, t.url, 'btn')));
+    if (m.repos.length) body.push(el('h3', {}, 'Código'), ...m.repos.map(r => link(`Repositorio ${r.label}`, r.url, 'btn ghost')));
     return body;
   }
   if (m.kind === 'public') {
     body.push(el('h3', {}, 'Versión pública de prueba'), ...m.try.map(t => link(t.label, t.url, 'btn')));
   } else {
-    body.push(el('h3', {}, 'Simulación'),
-      el('p', {class: 'warn'}, 'Este módulo no tiene versión pública. La simulación imita su despliegue local con datos inventados: no se conecta a nada ni guarda cambios.'),
-      link('Ver la simulación', `./demo/${m.demo}.html`, 'btn'));
+    body.push(el('h3', {}, m.replay ? 'Demo' : 'Simulación'),
+      el('p', {class: 'warn'}, m.replay
+        ? 'Este módulo no tiene versión pública. La demo es su web local con un extracto de datos reales: puedes navegar, buscar y filtrar, pero lo que cambiaría algo no se guarda.'
+        : 'Este módulo no tiene versión pública. La simulación imita su despliegue local con datos inventados: no se conecta a nada ni guarda cambios.'),
+      link(m.replay ? 'Ver la demo' : 'Ver la simulación', m.replay ? `./demo/${m.demo}/` : `./demo/${m.demo}.html`, 'btn'));
   }
   body.push(el('h3', {}, 'Versión local'));
   if (m.repos.length) body.push(...m.repos.map(r => link(`Repositorio ${r.label}`, r.url, 'btn ghost')));
@@ -147,6 +149,6 @@ kindRow.querySelectorAll('.chip').forEach(chip => chip.addEventListener('click',
 }));
 
 $('n-all').textContent = MODULES.length;
-for (const k of ['public', 'sim', 'blog']) $('n-' + k).textContent = MODULES.filter(m => m.kind === k).length;
+for (const k of ['public', 'sim', 'blog', 'script', 'app']) $('n-' + k).textContent = MODULES.filter(m => m.kind === k).length;
 renderGrid();
 route();

@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="es">
+<head><link rel="stylesheet" href="../_replay/replay.css"><script>window.REPLAY = {"mod": "consejero", "root": "", "ports": [8780], "map": {"api/cajas": "data/b65f819e1c2a.json", "api/canciones?caja=1_djtools": "data/6bcbe093c4d4.json", "api/canciones?caja=2_Felices": "data/96582bf75267.json", "api/canciones?caja=3_Cantadas": "data/7a6f1017a537.json", "api/canciones?caja=6_house": "data/d00d67c6e8e0.json", "api/canciones?caja=6_house%2F6_house_dream": "data/441194aa5141.json", "api/canciones?caja=6_house%2F6_house_funk": "data/976f2e39fa40.json", "api/recs": "data/80ac393afd63.json", "api/semillas": "data/cb0136ab05e5.json", "static/theme-palettes.css": "static/theme-palettes.css"}, "readOnlyPosts": ["p8780/api/owned"], "search": {}};</script><script src="../_replay/replay.js"></script><script defer src="https://cloud.umami.is/script.js" data-website-id="5d84fd6c-0760-4a0c-a2d0-ffabb82179f5"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Consejero Mix</title>
+<link rel="stylesheet" href="./static/theme-palettes.css">
+<style>
+  [data-theme="og"], :root:not([data-theme]) {
+    --bg: #15161a;
+    --surface: #1e1f26;
+    --surface-2: #272934;
+    --border: #30333f;
+    --text: #e8e6e3;
+    --text-muted: #7d818b;
+    --accent: #c9a24a;
+    --accent-2: #8a7bd1;
+    --success: #6fcf97;
+    --warning: #e0c268;
+    --danger: #e07070;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: system-ui, sans-serif; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 1.6rem 1rem 4rem; }
+  h1 { font-weight: 400; font-size: 1.7rem; margin: 0 0 .2rem; }
+  .sub { color: var(--text-muted); font-size: .8rem; font-family: monospace; margin: 0 0 1.2rem; }
+  .filters { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: 1.4rem; align-items: center; }
+  .chip, select {
+    background: var(--surface); color: var(--text); border: 1px solid var(--border);
+    border-radius: 14px; padding: .3rem .8rem; font-size: .8rem; cursor: pointer;
+  }
+  .chip.active { border-color: var(--accent); color: var(--accent); }
+  .tanda { margin-bottom: 1.8rem; }
+  .tanda h2 { font-size: .8rem; font-weight: 500; color: var(--text-muted); text-transform: uppercase;
+              letter-spacing: .05em; margin: 0 0 .6rem; border-bottom: 1px solid var(--border); padding-bottom: .35rem; }
+  .tanda h2 b { color: var(--accent); font-weight: 500; }
+  .rec { background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+         padding: .8rem 1rem; margin-bottom: .55rem; border-left: 3px solid var(--border); }
+  .rec.si { border-left-color: var(--success); }
+  .rec.meh { border-left-color: var(--warning); }
+  .rec.no { border-left-color: var(--danger); opacity: .6; }
+  .head { display: flex; justify-content: space-between; gap: .8rem; flex-wrap: wrap; }
+  .tema { font-size: 1rem; }
+  .tema .artista { font-weight: 600; }
+  .meta { color: var(--text-muted); font-size: .75rem; font-family: monospace; margin-top: .15rem; }
+  .motivo { font-size: .85rem; margin: .45rem 0 .55rem; color: var(--text); opacity: .85; }
+  .links { display: flex; flex-wrap: wrap; gap: .35rem; }
+  .links a { font-size: .72rem; color: var(--accent-2); text-decoration: none; border: 1px solid var(--border);
+             border-radius: 10px; padding: .1rem .55rem; }
+  .links a:hover { border-color: var(--accent-2); }
+  .votos { display: flex; gap: .3rem; align-items: center; }
+  .votos button { background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px;
+                  font-size: 1.05rem; padding: .2rem .5rem; cursor: pointer; filter: grayscale(.7); }
+  .votos button.on { filter: none; border-color: var(--accent); }
+  .nota { display: flex; gap: .4rem; margin-top: .55rem; }
+  .nota input { flex: 1; background: var(--surface-2); border: 1px solid var(--border); color: var(--text);
+                border-radius: 6px; padding: .3rem .55rem; font-size: .8rem; }
+  .nota .ok { color: var(--success); font-size: .75rem; align-self: center; }
+  .rec-body { display: flex; flex-wrap: wrap; gap: .9rem; }
+  .info { flex: 1 1 300px; min-width: 0; }
+  .video { flex: 0 0 200px; min-width: 0; display: flex; flex-direction: column; gap: .3rem; }
+  .video.playing { flex-basis: 100%; }
+  .thumb { position: relative; aspect-ratio: 16/9; border-radius: 6px; overflow: hidden; cursor: pointer;
+           background: var(--surface-2) center/cover no-repeat; border: 1px solid var(--border); padding: 0; width: 100%; }
+  .thumb::after { content: "▶"; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+                  font-size: 1.6rem; color: #fff; background: rgba(0,0,0,.25); transition: background .15s; }
+  .thumb:hover::after { background: rgba(0,0,0,.05); }
+  .video iframe { width: 100%; aspect-ratio: 16/9; border: 0; border-radius: 6px; }
+  .novideo { aspect-ratio: 16/9; border-radius: 6px; border: 1px dashed var(--border); color: var(--text-muted);
+             font-size: .75rem; display: flex; align-items: center; justify-content: center; text-align: center; padding: .4rem; }
+  .vctl { display: flex; gap: .3rem; align-items: center; font-size: .68rem; color: var(--text-muted); }
+  .vctl .vt { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .vctl button { background: none; border: 1px solid var(--border); color: var(--text-muted); border-radius: 5px;
+                 font-size: .68rem; padding: .05rem .4rem; cursor: pointer; }
+  .vctl button:hover { color: var(--text); border-color: var(--accent); }
+  .empty { color: var(--text-muted); font-size: .9rem; text-align: center; margin-top: 3rem; }
+  .tabs { display: flex; gap: .4rem; margin-bottom: 1.2rem; }
+  .tabs button { background: none; border: none; color: var(--text-muted); font-size: .95rem;
+                 padding: .3rem .1rem; cursor: pointer; border-bottom: 2px solid transparent; }
+  .tabs button.active { color: var(--text); border-bottom-color: var(--accent); }
+  .cancion { display: flex; align-items: center; gap: .6rem; background: var(--surface);
+             border: 1px solid var(--border); border-radius: 8px; padding: .5rem .8rem; margin-bottom: .4rem; }
+  .cancion .ctexto { flex: 1; min-width: 0; }
+  .cancion .ctexto .artista { font-weight: 600; }
+  .cancion .cmeta { color: var(--text-muted); font-size: .72rem; font-family: monospace; margin-top: .1rem; }
+  .cancion button { background: var(--surface-2); border: 1px solid var(--border); color: var(--text);
+                     border-radius: 6px; font-size: .9rem; padding: .25rem .55rem; cursor: pointer; }
+  .cancion button:hover { border-color: var(--accent); }
+  .cancion button.added { border-color: var(--success); color: var(--success); }
+  .seedform { display: none; flex: 0 0 100%; gap: .4rem; margin-top: .5rem; }
+  .seedform.open { display: flex; }
+  .seedform input { flex: 1; background: var(--surface-2); border: 1px solid var(--border); color: var(--text);
+                     border-radius: 6px; padding: .3rem .55rem; font-size: .8rem; }
+  .semillas { margin-top: 1.6rem; }
+  .semillas h3 { font-size: .75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: .05em;
+                 border-bottom: 1px solid var(--border); padding-bottom: .3rem; }
+  .semilla-row { display: flex; align-items: center; gap: .5rem; font-size: .8rem; padding: .3rem 0; color: var(--text-muted); }
+  .semilla-row b { color: var(--text); }
+  .semilla-row button { margin-left: auto; background: none; border: 1px solid var(--border); color: var(--text-muted);
+                         border-radius: 5px; font-size: .7rem; padding: .05rem .4rem; cursor: pointer; }
+  @media (max-width: 480px) {
+    .wrap { padding: 1.1rem 1rem 3rem; }
+    h1 { font-size: 1.35rem; }
+    .head { flex-direction: column; gap: .4rem; }
+    .video { flex-basis: 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Consejero Mix</h1>
+  <div class="tabs" id="tabs">
+    <button class="tab active" data-tab="recs">Recomendaciones</button>
+    <button class="tab" data-tab="canciones">Canciones</button>
+  </div>
+  <div id="panel-recs">
+    <p class="sub" id="sub">cargando…</p>
+    <div class="filters" id="filters">
+      <button class="chip active" data-estado="pendientes">pendientes</button>
+      <button class="chip" data-estado="todas">todas</button>
+      <button class="chip" data-estado="si">👍</button>
+      <button class="chip" data-estado="meh">🤷</button>
+      <button class="chip" data-estado="no">👎</button>
+      <select id="caja"><option value="">todas las cajas</option></select>
+    </div>
+    <div id="lista"></div>
+  </div>
+  <div id="panel-canciones" style="display:none">
+    <p class="sub">elige una carpeta y añade canciones de las que quieras que Claude saque recomendaciones parecidas</p>
+    <div class="filters">
+      <select id="cajaCanciones"><option value="">elige una caja…</option></select>
+    </div>
+    <p class="meta" id="playerMatch" style="display:none"></p>
+    <audio id="player" controls style="width:100%; display:none; margin-bottom:1rem;"></audio>
+    <div id="cancionesLista"></div>
+    <div class="semillas">
+      <h3>Cola de semillas (<span id="semillasCount">0</span>)</h3>
+      <div id="semillasLista"></div>
+    </div>
+  </div>
+</div>
+<script>
+const VOTOS = [["si", "👍"], ["meh", "🤷"], ["no", "👎"]];
+let recs = [];
+let estado = "pendientes";
+let caja = "";
+let playing = null;            // id de la recomendación que suena ahora
+const videoBoxes = new Map();  // id -> contenedor .video (para actualizarlo sin re-pintar todo)
+
+function el(tag, cls, text) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text != null) e.textContent = text;
+  return e;
+}
+
+function links(r) {
+  const q = encodeURIComponent(r.artista + " " + r.titulo);
+  return [
+    ["YouTube", "https://www.youtube.com/results?search_query=" + q],
+    ["Bandcamp", "https://bandcamp.com/search?q=" + q],
+    ["Beatport", "https://www.beatport.com/search?q=" + q],
+    ["Discogs", "https://www.discogs.com/search/?type=all&q=" + q],
+  ];
+}
+
+async function votar(r, v, notaInput, okEl) {
+  const res = await fetch("./api/feedback", {
+    method: "POST", headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({id: r.id, veredicto: v, nota: notaInput.value, origen: "web"}),
+  });
+  if (!res.ok) { alert((await res.json().catch(() => ({}))).error || "No se pudo guardar"); return; }
+  r.veredicto = v; r.nota = notaInput.value;
+  okEl.textContent = "guardado ✓";
+  const card = okEl.closest(".rec");
+  card.className = "rec " + v;
+  card.querySelectorAll(".votos button").forEach(b => b.classList.toggle("on", b.title === v));
+  updateSub();
+}
+
+async function postVideo(body) {
+  const res = await fetch("./api/video", {
+    method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body),
+  });
+  const d = await res.json().catch(() => ({}));
+  if (!res.ok) { alert(d.error || "No se pudo cambiar el vídeo"); return null; }
+  return d;
+}
+
+function fillVideo(box, r) {
+  box.innerHTML = "";
+  box.classList.toggle("playing", playing === r.id && !!r.video);
+  if (r.video && playing === r.id) {
+    const f = document.createElement("iframe");
+    f.src = "https://www.youtube-nocookie.com/embed/" + r.video + "?autoplay=1&rel=0";
+    f.allow = "autoplay; encrypted-media; picture-in-picture";
+    f.allowFullscreen = true;
+    box.appendChild(f);
+  } else if (r.video) {
+    const t = el("button", "thumb");
+    t.style.backgroundImage = "url(https://i.ytimg.com/vi/" + r.video + "/mqdefault.jpg)";
+    t.title = "Escuchar: " + r.video_titulo;
+    t.addEventListener("click", () => play(r));
+    box.appendChild(t);
+  } else {
+    box.appendChild(el("div", "novideo", r.video_estado === "error" ? "sin vídeo (yt-dlp no encontró nada)" : "buscando vídeo…"));
+  }
+  const ctl = el("div", "vctl");
+  ctl.appendChild(el("span", "vt", r.video ? r.video_titulo : ""));
+  const otro = el("button", "", "🔄");
+  otro.title = "No es este: buscar otra vez";
+  otro.addEventListener("click", async () => {
+    if (!(await postVideo({id: r.id, buscar: true}))) return;
+    r.video = null; r.video_estado = "buscando"; if (playing === r.id) playing = null;
+    fillVideo(box, r); schedulePoll();
+  });
+  const url = el("button", "", "🔗");
+  url.title = "Pegar la URL de YouTube correcta";
+  url.addEventListener("click", async () => {
+    const u = prompt("URL del vídeo de YouTube para " + r.artista + " — " + r.titulo);
+    if (!u) return;
+    const d = await postVideo({id: r.id, url: u});
+    if (!d) return;
+    r.video = d.video; r.video_titulo = "(elegido a mano)"; r.video_estado = "ok";
+    fillVideo(box, r);
+  });
+  ctl.appendChild(otro); ctl.appendChild(url);
+  box.appendChild(ctl);
+}
+
+function play(r) {
+  const prev = playing;
+  playing = r.id;
+  if (prev && videoBoxes.has(prev)) fillVideo(videoBoxes.get(prev), recs.find(x => x.id === prev));
+  fillVideo(videoBoxes.get(r.id), r);
+}
+
+// mientras haya vídeos "buscando", refresca sólo esas miniaturas
+let pollTimer = null;
+function schedulePoll() {
+  if (pollTimer) return;
+  pollTimer = setTimeout(async () => {
+    pollTimer = null;
+    let fresh;
+    try { fresh = await (await fetch("./api/recs")).json(); } catch (e) { schedulePoll(); return; }
+    const byId = new Map(fresh.map(x => [x.id, x]));
+    for (const r of recs) {
+      const f = byId.get(r.id);
+      if (!f || r.video_estado !== "buscando" || f.video_estado === "buscando") continue;
+      Object.assign(r, {video: f.video, video_titulo: f.video_titulo, video_estado: f.video_estado});
+      if (videoBoxes.has(r.id)) fillVideo(videoBoxes.get(r.id), r);
+    }
+    if (recs.some(r => r.video_estado === "buscando")) schedulePoll();
+  }, 5000);
+}
+
+function recEl(r) {
+  const card = el("div", "rec" + (r.veredicto ? " " + r.veredicto : ""));
+  const head = el("div", "head");
+  const left = el("div");
+  const tema = el("div", "tema");
+  tema.appendChild(el("span", "artista", r.artista));
+  tema.appendChild(document.createTextNode(" — " + r.titulo));
+  left.appendChild(tema);
+  left.appendChild(el("div", "meta", [r.sello, r.anio].filter(Boolean).join(" · ")));
+  head.appendChild(left);
+
+  const nota = el("input"); nota.placeholder = "nota (opcional): por qué sí / por qué no"; nota.value = r.nota || "";
+  const ok = el("span", "ok");
+  const votos = el("div", "votos");
+  for (const [v, emoji] of VOTOS) {
+    const b = el("button", r.veredicto === v ? "on" : "", emoji);
+    b.title = v;
+    b.addEventListener("click", () => votar(r, v, nota, ok));
+    votos.appendChild(b);
+  }
+  head.appendChild(votos);
+  const body = el("div", "rec-body");
+  const box = el("div", "video");
+  videoBoxes.set(r.id, box);
+  fillVideo(box, r);
+  const info = el("div", "info");
+  body.appendChild(box); body.appendChild(info);
+  card.appendChild(body);
+  info.appendChild(head);
+
+  if (r.motivo) info.appendChild(el("div", "motivo", r.motivo));
+  const ls = el("div", "links");
+  for (const [name, url] of links(r)) {
+    const a = el("a", "", name); a.href = url; a.target = "_blank"; a.rel = "noopener";
+    ls.appendChild(a);
+  }
+  info.appendChild(ls);
+  const notaRow = el("div", "nota");
+  notaRow.appendChild(nota); notaRow.appendChild(ok);
+  info.appendChild(notaRow);
+  return card;
+}
+
+function updateSub() {
+  document.getElementById("sub").textContent =
+    recs.length + " recomendaciones · " + recs.filter(r => !r.veredicto).length + " pendientes · " +
+    recs.filter(r => r.veredicto === "si").length + " 👍";
+}
+
+function render() {
+  const lista = document.getElementById("lista");
+  lista.innerHTML = "";
+  videoBoxes.clear();
+  const visibles = recs.filter(r =>
+    (!caja || r.caja === caja) &&
+    (estado === "todas" || (estado === "pendientes" ? !r.veredicto : r.veredicto === estado)));
+
+  updateSub();
+
+  if (!visibles.length) {
+    lista.appendChild(el("p", "empty", estado === "pendientes" ? "Nada pendiente. Pídele a Claude otra tanda." : "Nada por aquí."));
+    return;
+  }
+  // tandas: misma fecha + caja + ancla, más recientes primero
+  const tandas = new Map();
+  for (const r of visibles) {
+    const k = r.fecha + "|" + r.caja + "|" + r.ancla;
+    if (!tandas.has(k)) tandas.set(k, []);
+    tandas.get(k).push(r);
+  }
+  const keys = [...tandas.keys()].sort().reverse();
+  for (const k of keys) {
+    const [fecha, c, ancla] = k.split("|");
+    const t = el("div", "tanda");
+    const h = el("h2");
+    h.appendChild(document.createTextNode(fecha + " · "));
+    h.appendChild(el("b", "", c));
+    if (ancla) h.appendChild(document.createTextNode(" · como " + ancla));
+    t.appendChild(h);
+    for (const r of tandas.get(k)) t.appendChild(recEl(r));
+    lista.appendChild(t);
+  }
+}
+
+document.getElementById("filters").addEventListener("click", e => {
+  const b = e.target.closest(".chip");
+  if (!b) return;
+  estado = b.dataset.estado;
+  document.querySelectorAll(".chip").forEach(c => c.classList.toggle("active", c === b));
+  render();
+});
+document.getElementById("caja").addEventListener("change", e => { caja = e.target.value; render(); });
+
+(async function init() {
+  recs = await (await fetch("./api/recs")).json();
+  const sel = document.getElementById("caja");
+  for (const c of [...new Set(recs.map(r => r.caja))].sort()) {
+    const o = el("option", "", c); o.value = c; sel.appendChild(o);
+  }
+  render();
+  if (recs.some(r => r.video_estado === "buscando")) schedulePoll();
+})();
+
+// ---- pestaña Canciones ----
+let cajasCargadas = false;
+let semillas = [];
+
+document.getElementById("tabs").addEventListener("click", e => {
+  const b = e.target.closest(".tab");
+  if (!b) return;
+  document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t === b));
+  const tab = b.dataset.tab;
+  document.getElementById("panel-recs").style.display = tab === "recs" ? "" : "none";
+  document.getElementById("panel-canciones").style.display = tab === "canciones" ? "" : "none";
+  if (tab === "canciones" && !cajasCargadas) initCanciones();
+});
+
+async function initCanciones() {
+  cajasCargadas = true;
+  const cajas = await (await fetch("./api/cajas")).json();
+  const sel = document.getElementById("cajaCanciones");
+  for (const c of cajas) {
+    const o = el("option", "", c); o.value = c; sel.appendChild(o);
+  }
+  sel.addEventListener("change", () => loadCanciones(sel.value));
+  await loadSemillas();
+}
+
+async function loadCanciones(caja) {
+  const lista = document.getElementById("cancionesLista");
+  lista.innerHTML = "";
+  if (!caja) return;
+  const canciones = await (await fetch("./api/canciones?caja=" + encodeURIComponent(caja))).json();
+  for (const c of canciones) lista.appendChild(cancionEl(c, caja));
+}
+
+function cancionEl(c, caja) {
+  const row = el("div", "cancion");
+  const texto = el("div", "ctexto");
+  const tema = el("div");
+  tema.appendChild(el("span", "artista", c.artista));
+  tema.appendChild(document.createTextNode(" — " + c.titulo));
+  texto.appendChild(tema);
+  texto.appendChild(el("div", "cmeta", [c.album, c.sello, c.anio].filter(Boolean).join(" · ")));
+  row.appendChild(texto);
+
+  const playBtn = el("button", "", "▶");
+  playBtn.title = "Reproducir (vía Airsonic)";
+  playBtn.addEventListener("click", async () => {
+    playBtn.textContent = "…";
+    const player = document.getElementById("player");
+    try {
+      const res = await fetch("./api/play?artista=" + encodeURIComponent(c.artista) + "&titulo=" + encodeURIComponent(c.titulo));
+      const d = await res.json();
+      if (!res.ok) { alert(d.error || "No se pudo reproducir"); playBtn.textContent = "▶"; return; }
+      player.src = d.stream_url;
+      player.style.display = "";
+      const match = document.getElementById("playerMatch");
+      match.style.display = "";
+      match.textContent = "sonando en Airsonic: " + d.titulo_airsonic +
+        (d.titulo_airsonic.toLowerCase().includes(c.titulo.toLowerCase().slice(0, 8)) ? "" : "  ⚠️ puede que no sea el tema correcto");
+      await player.play();
+    } finally { playBtn.textContent = "▶"; }
+  });
+  row.appendChild(playBtn);
+
+  const addBtn = el("button", "", "➕ recomiéndame");
+  const form = el("div", "seedform");
+  const comentario = el("input"); comentario.placeholder = "comentario opcional (qué te gusta de esta)";
+  const confirmar = el("button", "", "añadir");
+  form.appendChild(comentario); form.appendChild(confirmar);
+  addBtn.addEventListener("click", () => form.classList.toggle("open"));
+  confirmar.addEventListener("click", async () => {
+    const res = await fetch("./api/semillas", {
+      method: "POST", headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({caja, artista: c.artista, titulo: c.titulo, comentario: comentario.value}),
+    });
+    if (!res.ok) { alert((await res.json().catch(() => ({}))).error || "No se pudo añadir"); return; }
+    addBtn.classList.add("added"); addBtn.textContent = "✓ añadida";
+    form.classList.remove("open");
+    await loadSemillas();
+  });
+  row.appendChild(addBtn);
+  row.appendChild(form);
+  return row;
+}
+
+async function loadSemillas() {
+  semillas = await (await fetch("./api/semillas")).json();
+  document.getElementById("semillasCount").textContent = semillas.length;
+  const lista = document.getElementById("semillasLista");
+  lista.innerHTML = "";
+  for (const s of [...semillas].reverse()) {
+    const row = el("div", "semilla-row");
+    row.appendChild(el("span", "", s.caja + ": "));
+    const b = el("b", "", s.artista + " — " + s.titulo);
+    row.appendChild(b);
+    if (s.comentario) row.appendChild(el("span", "", " (" + s.comentario + ")"));
+    const del = el("button", "", "quitar");
+    del.addEventListener("click", async () => {
+      await fetch("./api/semillas/" + encodeURIComponent(s.id), { method: "DELETE" });
+      await loadSemillas();
+    });
+    row.appendChild(del);
+    lista.appendChild(row);
+  }
+}
+</script>
+
+</body>
+</html>

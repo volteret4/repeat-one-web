@@ -1,0 +1,777 @@
+<!doctype html>
+<html lang="es">
+    <head><base href="../"><link rel="stylesheet" href="../_replay/replay.css"><script>window.REPLAY = {"mod": "rater", "root": "", "ports": [], "map": {"api/art/5886": "api/art/5886", "api/art/6235": "api/art/6235", "api/next": "data/f608f7f86c88.json", "api/random": "data/3f2b3807cb20.json", "api/sidebar": "data/78074ece5d9f.json", "api/similar/2354": "data/242a3975f234.json", "api/similar/3337": "data/f90a64651f73.json", "api/similar/4181": "data/0a063533c71e.json", "api/similar/4905": "data/64fd051c7dfd.json", "api/similar/5462": "data/ab470649e0b8.json", "api/similar/5886": "data/fdf0bf79f689.json", "api/similar/6235": "data/b2dc6e312b22.json", "api/similar/63": "data/9116641836a0.json", "api/stats": "data/8d8d4871158f.json", "api/track/2354": "data/089e4d419c1e.json", "api/track/4181": "data/bcd9f8660a89.json", "api/track/4905": "data/d55445d93957.json", "api/track/5462": "data/d403abf25e83.json", "api/track/5886": "data/db2855d67e3c.json", "api/track/6235": "data/c289656a7c4c.json", "static/info.js": "static/info.js", "static/settings.js": "static/settings.js"}, "readOnlyPosts": [], "search": {}};</script><script src="../_replay/replay.js"></script><script defer src="https://cloud.umami.is/script.js" data-website-id="5d84fd6c-0760-4a0c-a2d0-ffabb82179f5"></script>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Dominios — Music Rater</title>
+        <script src="./static/settings.js"></script>
+        <script src="./static/info.js"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            *,
+            *::before,
+            *::after {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+            :root {
+                --bg: #0d0d0d;
+                --surface: #161616;
+                --surface2: #1f1f1f;
+                --border: #2a2a2a;
+                --border-bright: #3d3d3d;
+                --text: #e8e8e8;
+                --text-dim: #666;
+                --text-muted: #444;
+                --accent: #e8ff47;
+                --accent2: #ff6b35;
+            }
+            body {
+                background: var(--bg);
+                color: var(--text);
+                font-family: "IBM Plex Sans", sans-serif;
+                height: 100vh;
+                overflow: hidden;
+                display: flex;
+                flex-direction: column;
+            }
+            nav {
+                display: flex;
+                gap: 1px;
+                background: var(--border);
+                border-bottom: 1px solid var(--border);
+                flex-shrink: 0;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            nav a {
+                padding: 12px 20px;
+                background: var(--surface);
+                color: var(--text-dim);
+                text-decoration: none;
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 11px;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                transition: all 0.15s;
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+            nav a:hover,
+            nav a.active {
+                background: var(--surface2);
+                color: var(--accent);
+            }
+
+            /* APP LAYOUT */
+            .app-layout {
+                display: grid;
+                grid-template-columns: 220px 1fr;
+                flex: 1;
+                overflow: hidden;
+                min-width: 0;
+            }
+            @media (max-width: 768px) {
+                .app-layout {
+                    grid-template-columns: 1fr;
+                    grid-template-rows: auto 1fr;
+                }
+                .sidebar {
+                    flex-direction: row;
+                    max-height: 140px;
+                    border-right: none;
+                    border-bottom: 1px solid var(--border);
+                }
+                .sb-section {
+                    flex: 1;
+                    min-width: 140px;
+                    border-bottom: none;
+                    border-right: 1px solid var(--border);
+                    overflow-y: auto;
+                }
+                .sb-section:last-child { border-right: none; }
+            }
+
+            /* ======= SIDEBAR ======= */
+            .sidebar {
+                background: var(--surface);
+                border-right: 1px solid var(--border);
+                overflow-y: auto;
+                display: flex;
+                flex-direction: column;
+            }
+            .sb-section { border-bottom: 1px solid var(--border); }
+            .sb-header {
+                padding: 9px 12px;
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 9px;
+                letter-spacing: 0.14em;
+                text-transform: uppercase;
+                color: var(--text-muted);
+                background: var(--bg);
+                border-bottom: 1px solid var(--border);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                position: sticky;
+                top: 0;
+                z-index: 1;
+            }
+            .sb-clear {
+                cursor: pointer;
+                color: var(--accent2);
+                font-size: 9px;
+                letter-spacing: 0.06em;
+                text-transform: lowercase;
+            }
+            .sb-clear:hover { text-decoration: underline; }
+            .sb-item {
+                padding: 6px 12px 6px 14px;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                cursor: pointer;
+                border-left: 2px solid transparent;
+                transition: background 0.1s;
+            }
+            .sb-item:hover { background: var(--surface2); }
+            .sb-item.active {
+                background: #0f1305;
+                border-left-color: var(--accent);
+            }
+            .sb-item.active .sb-name { color: var(--accent); }
+            .sb-item.active .sb-count { color: var(--text-dim); }
+            .sb-name {
+                flex: 1;
+                min-width: 0;
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 10px;
+                color: var(--text-dim);
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .sb-count {
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 9px;
+                color: var(--text-muted);
+                flex-shrink: 0;
+            }
+            .sb-empty {
+                padding: 12px;
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 9px;
+                color: var(--text-muted);
+                font-style: italic;
+            }
+
+            /* ======= MAIN COLUMN ======= */
+            .main-col {
+                overflow-y: auto;
+                display: flex;
+                flex-direction: column;
+            }
+            .container {
+                padding: 24px 24px 32px;
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+            }
+
+            /* TOOLBAR */
+            .toolbar {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 14px;
+                flex-wrap: wrap;
+            }
+            select {
+                padding: 9px 32px 9px 14px;
+                background: var(--surface);
+                border: 1px solid var(--border-bright);
+                color: var(--text);
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 12px;
+                cursor: pointer;
+                outline: none;
+                appearance: none;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23666'/%3E%3C/svg%3E");
+                background-repeat: no-repeat;
+                background-position: right 12px center;
+            }
+            select:focus { border-color: var(--accent); }
+            select option { background: var(--surface2); }
+
+            .btn-toggle {
+                padding: 8px 14px;
+                border: 1px solid var(--border-bright);
+                background: transparent;
+                color: var(--text-muted);
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 10px;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                cursor: pointer;
+                transition: all 0.15s;
+                white-space: nowrap;
+            }
+            .btn-toggle:hover { border-color: var(--border-bright); color: var(--text-dim); }
+            .btn-toggle.on {
+                border-color: var(--accent2);
+                color: var(--accent2);
+                background: #1a0d08;
+            }
+
+            .dim-count {
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 10px;
+                color: var(--text-dim);
+                margin-left: auto;
+            }
+            .dim-count .hl { color: var(--accent); }
+            .dim-count .dim2 { color: var(--text-muted); }
+
+            /* FILTER BADGE */
+            .filter-badge {
+                display: none;
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 9px;
+                letter-spacing: 0.08em;
+                color: var(--accent2);
+                background: #1a0d08;
+                border: 1px solid var(--accent2);
+                padding: 3px 10px;
+                margin-bottom: 12px;
+                align-items: center;
+                gap: 8px;
+                align-self: flex-start;
+            }
+            .filter-badge.visible { display: flex; }
+            .filter-badge-x { cursor: pointer; opacity: 0.7; }
+            .filter-badge-x:hover { opacity: 1; }
+
+            /* TABLE */
+            .table-wrap { overflow-x: auto; flex: 1; }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                border: 1px solid var(--border);
+                table-layout: fixed;
+            }
+            thead th {
+                background: var(--surface);
+                padding: 10px 8px;
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 10px;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                color: var(--text-dim);
+                border-bottom: 1px solid var(--border-bright);
+                text-align: center;
+                position: sticky;
+                top: 0;
+                z-index: 1;
+            }
+            thead th.col-info {
+                text-align: left;
+                padding-left: 12px;
+            }
+            col.col-star   { width: 30px; }
+            col.col-edit   { width: 30px; }
+            col.col-artist { width: 180px; }
+            col.col-title  { width: 240px; }
+            col.col-vote   { width: 36px; }
+
+            td.star-cell {
+                text-align: center;
+                width: 30px;
+                height: 34px;
+                font-size: 14px;
+                border-right: 1px solid var(--border);
+                vertical-align: middle;
+                user-select: none;
+                cursor: pointer;
+                color: var(--text-muted);
+                transition: color 0.1s;
+            }
+            td.star-cell:hover { color: var(--accent); }
+            td.star-cell.starred { color: var(--accent); }
+            td.star-cell-empty {
+                width: 30px;
+                border-right: 1px solid var(--border);
+            }
+            td.edit-cell {
+                text-align: center;
+                width: 30px;
+                height: 34px;
+                cursor: pointer;
+                color: var(--text-muted);
+                border-right: 1px solid var(--border);
+                vertical-align: middle;
+                transition: color 0.1s;
+            }
+            td.edit-cell:hover { color: var(--accent); }
+
+            tbody td {
+                padding: 0;
+                border-bottom: 1px solid var(--border);
+            }
+            tbody td.col-info { padding: 8px 12px; }
+            td.col-artist {
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 11px;
+                color: var(--text-dim);
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                cursor: pointer;
+            }
+            td.col-title {
+                font-size: 12px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                cursor: pointer;
+            }
+            td.col-artist:hover { color: var(--accent); }
+            td.col-title:hover  { color: var(--accent); }
+
+            td.vote-cell {
+                text-align: center;
+                width: 36px;
+                height: 34px;
+                cursor: pointer;
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 10px;
+                color: var(--text-muted);
+                border-right: 1px solid var(--border);
+                transition: background 0.1s, color 0.1s;
+                user-select: none;
+                vertical-align: middle;
+            }
+            td.vote-cell:hover { background: var(--surface2); color: var(--text); }
+            td.vote-cell.active {
+                background: var(--accent);
+                color: #0d0d0d;
+                font-weight: 600;
+            }
+            td.vote-cell.active:hover { background: #d4e83f; }
+
+            tr.track-row:hover td.col-info { background: #111; }
+
+            tr.group-row td {
+                background: #111;
+                padding: 5px 12px;
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 10px;
+                letter-spacing: 0.14em;
+                text-transform: uppercase;
+                color: var(--accent);
+                border-bottom: 1px solid var(--border-bright);
+            }
+            tr.group-row.unrated-group td {
+                color: var(--text-muted);
+            }
+
+            .empty-state {
+                font-family: "IBM Plex Mono", monospace;
+                font-size: 12px;
+                color: var(--text-muted);
+                padding: 60px 0;
+                text-align: center;
+            }
+            @media (max-width: 480px) {
+                .container { padding: 16px 16px 24px; }
+                select { min-height: 44px; }
+                .btn-toggle { min-height: 44px; }
+                col.col-artist { width: 130px; }
+                col.col-title { width: 160px; }
+                td.star-cell, td.edit-cell, td.vote-cell { height: 40px; }
+                nav a { padding: 12px 14px; }
+            }
+        </style>
+    </head>
+    <body>
+        <nav>
+            <a href="./">Rate</a>
+            <a href="./recs/random">Recs Random</a>
+            <a href="./recs/vector">Recs Vector</a>
+            <a href="./stats">Stats</a>
+            <a href="./dominios" class="active">Dominios</a>
+        </nav>
+
+        <div class="app-layout">
+
+            <!-- ===== SIDEBAR ===== -->
+            <aside class="sidebar">
+                <div class="sb-section">
+                    <div class="sb-header">
+                        <span>Carpetas</span>
+                        <span class="sb-clear" id="folder-clear" onclick="clearFilter()" style="display:none">× todo</span>
+                    </div>
+                    <div id="folder-list"><div class="sb-empty">—</div></div>
+                </div>
+                <div class="sb-section">
+                    <div class="sb-header">
+                        <span>Géneros</span>
+                        <span class="sb-clear" id="genre-clear" onclick="clearFilter()" style="display:none">× todo</span>
+                    </div>
+                    <div id="genre-list"><div class="sb-empty">—</div></div>
+                </div>
+            </aside>
+
+            <!-- ===== MAIN COLUMN ===== -->
+            <div class="main-col">
+                <div class="container">
+                    <div class="toolbar">
+                        <select id="dim-select" onchange="loadDim()">
+                            <option value="">— Selecciona dimensión —</option>
+                            <option value="alegre_melancolica">Alegre / Melancólica</option>
+                            <option value="relajada_energetica">Mental / Emotivo</option>
+                            <option value="instrumental_cantada">Instrumental / Cantada</option>
+                            <option value="lenta_rapida">Lenta / Rápida</option>
+                            <option value="bailable_nobailable">Bailable / No bailable</option>
+                            <option value="comercial_experimental">Comercial / Experimental</option>
+                            <option value="luminosa_oscura">Luminosa / Oscura</option>
+                            <option value="fondo_atencion">Fondo / Atención</option>
+                            <option value="fluida_percusiva">Fluida / Percusiva</option>
+                            <option value="estatica_dinamica">Estática / Dinámica</option>
+                            <option value="reflexiva_fisica">Reflexiva / Física</option>
+                            <option value="intima_epica">Íntima / Épica</option>
+                        </select>
+                        <button class="btn-toggle" id="btn-unrated" onclick="toggleUnrated()">
+                            + No valoradas
+                        </button>
+                        <span class="dim-count" id="dim-count"></span>
+                    </div>
+
+                    <div class="filter-badge" id="filter-badge">
+                        <span id="filter-badge-text"></span>
+                        <span class="filter-badge-x" onclick="clearFilter()">✕</span>
+                    </div>
+
+                    <div id="empty-state" class="empty-state">
+                        Selecciona una dimensión.
+                    </div>
+
+                    <div class="table-wrap" id="table-wrap" style="display:none">
+                        <table>
+                            <colgroup>
+                                <col class="col-star" />
+                                <col class="col-edit" />
+                                <col class="col-artist" />
+                                <col class="col-title" />
+                                <col class="col-vote" /><col class="col-vote" />
+                                <col class="col-vote" /><col class="col-vote" />
+                                <col class="col-vote" /><col class="col-vote" />
+                                <col class="col-vote" /><col class="col-vote" />
+                                <col class="col-vote" /><col class="col-vote" />
+                                <col class="col-vote" />
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th style="text-align:center;font-size:12px">★</th>
+                                    <th style="text-align:center;font-size:11px;color:var(--text-muted)">✎</th>
+                                    <th class="col-info">Artista</th>
+                                    <th class="col-info">Título</th>
+                                    <th>−5</th><th>−4</th><th>−3</th><th>−2</th><th>−1</th>
+                                    <th>0</th>
+                                    <th>+1</th><th>+2</th><th>+3</th><th>+4</th><th>+5</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            const VALUES = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5];
+            let tracks = [];        // all tracks loaded from server
+            let currentDim = null;
+            let showUnrated = false;
+            let lockedFolder = null;  // {path, display}
+            let lockedGenre  = null;  // string
+
+            // ---- PATH HELPERS ----
+            function pathDirname(p) {
+                const parts = (p || "").split("/");
+                parts.pop();
+                return parts.join("/") || "/";
+            }
+            function folderDisplay(p) {
+                const parts = p.split("/").filter(Boolean);
+                return parts.length >= 2
+                    ? parts.slice(-2).join("/")
+                    : (parts[0] || p);
+            }
+
+            // ---- LOAD ----
+            async function loadDim() {
+                const dim = document.getElementById("dim-select").value;
+                if (!dim) return;
+                currentDim = dim;
+                document.getElementById("dim-count").textContent = "…";
+                const url = `./api/dimension/${dim}` + (showUnrated ? "?unrated=1" : "");
+                const r = await fetch(url);
+                tracks = await r.json();
+                render();
+            }
+
+            function toggleUnrated() {
+                showUnrated = !showUnrated;
+                const btn = document.getElementById("btn-unrated");
+                btn.classList.toggle("on", showUnrated);
+                btn.textContent = showUnrated ? "● No valoradas" : "+ No valoradas";
+                if (currentDim) loadDim();
+            }
+
+            // ---- FILTER ----
+            function getFilteredTracks() {
+                return tracks.filter((t) => {
+                    if (lockedFolder) {
+                        if (pathDirname(t.path || "") !== lockedFolder.path) return false;
+                    }
+                    if (lockedGenre) {
+                        const gs = (t.genre || "").split(";").map((g) => g.trim()).filter(Boolean);
+                        if (!gs.includes(lockedGenre)) return false;
+                    }
+                    return true;
+                });
+            }
+
+            function selectFolder(folder) {
+                if (lockedFolder && lockedFolder.path === folder.path) {
+                    clearFilter();
+                    return;
+                }
+                lockedFolder = folder;
+                lockedGenre  = null;
+                document.getElementById("folder-clear").style.display = "inline";
+                document.getElementById("genre-clear").style.display  = "none";
+                updateFilterBadge();
+                render();
+            }
+
+            function selectGenre(genre) {
+                if (lockedGenre === genre) {
+                    clearFilter();
+                    return;
+                }
+                lockedGenre  = genre;
+                lockedFolder = null;
+                document.getElementById("genre-clear").style.display  = "inline";
+                document.getElementById("folder-clear").style.display = "none";
+                updateFilterBadge();
+                render();
+            }
+
+            function clearFilter() {
+                lockedFolder = null;
+                lockedGenre  = null;
+                document.getElementById("folder-clear").style.display = "none";
+                document.getElementById("genre-clear").style.display  = "none";
+                updateFilterBadge();
+                render();
+            }
+
+            function updateFilterBadge() {
+                const badge = document.getElementById("filter-badge");
+                const text  = document.getElementById("filter-badge-text");
+                if (lockedFolder) {
+                    text.textContent = "📁 " + lockedFolder.display;
+                    badge.classList.add("visible");
+                } else if (lockedGenre) {
+                    text.textContent = "🎵 " + lockedGenre;
+                    badge.classList.add("visible");
+                } else {
+                    badge.classList.remove("visible");
+                }
+            }
+
+            // ---- SIDEBAR (computed from loaded tracks) ----
+            function computeAndRenderSidebar() {
+                const folderCounts = {};
+                const genreCounts  = {};
+
+                tracks.forEach((t) => {
+                    const dir = pathDirname(t.path || "");
+                    if (dir && dir !== ".") {
+                        folderCounts[dir] = (folderCounts[dir] || 0) + 1;
+                    }
+                    (t.genre || "").split(";").map((g) => g.trim()).filter(Boolean).forEach((g) => {
+                        genreCounts[g] = (genreCounts[g] || 0) + 1;
+                    });
+                });
+
+                // Folders
+                const fl = document.getElementById("folder-list");
+                fl.innerHTML = "";
+                const sortedFolders = Object.entries(folderCounts).sort(
+                    ([a], [b]) => a.toLowerCase().localeCompare(b.toLowerCase())
+                );
+                if (!sortedFolders.length) {
+                    fl.innerHTML = '<div class="sb-empty">—</div>';
+                } else {
+                    sortedFolders.forEach(([path, count]) => {
+                        const display = folderDisplay(path);
+                        const el = document.createElement("div");
+                        el.className = "sb-item" +
+                            (lockedFolder && lockedFolder.path === path ? " active" : "");
+                        el.title = path;
+                        el.innerHTML = `<span class="sb-name">${esc(display)}</span>
+                                        <span class="sb-count">${count}</span>`;
+                        el.onclick = () => selectFolder({ path, display });
+                        fl.appendChild(el);
+                    });
+                }
+
+                // Genres
+                const gl = document.getElementById("genre-list");
+                gl.innerHTML = "";
+                const sortedGenres = Object.entries(genreCounts).sort(
+                    ([, a], [, b]) => b - a
+                );
+                if (!sortedGenres.length) {
+                    gl.innerHTML = '<div class="sb-empty">—</div>';
+                } else {
+                    sortedGenres.forEach(([genre, count]) => {
+                        const el = document.createElement("div");
+                        el.className = "sb-item" +
+                            (lockedGenre === genre ? " active" : "");
+                        el.innerHTML = `<span class="sb-name">${esc(genre)}</span>
+                                        <span class="sb-count">${count}</span>`;
+                        el.onclick = () => selectGenre(genre);
+                        gl.appendChild(el);
+                    });
+                }
+            }
+
+            // ---- RENDER TABLE ----
+            function render() {
+                const filtered = getFilteredTracks();
+
+                // Sort: rated by value, unrated last
+                const sorted = [...filtered].sort((a, b) => {
+                    const aN = a.value === null, bN = b.value === null;
+                    if (aN && !bN) return 1;
+                    if (!aN && bN) return -1;
+                    if (aN && bN) return (a.artist || "").localeCompare(b.artist || "");
+                    if (a.value !== b.value) return a.value - b.value;
+                    return (a.artist || "").localeCompare(b.artist || "");
+                });
+
+                const tbody = document.getElementById("tbody");
+                tbody.innerHTML = "";
+
+                let lastGroup = undefined;
+                sorted.forEach((t) => {
+                    const groupKey = t.value === null ? "unrated" : t.value;
+                    if (groupKey !== lastGroup) {
+                        lastGroup = groupKey;
+                        const gr = document.createElement("tr");
+                        gr.className = "group-row" + (groupKey === "unrated" ? " unrated-group" : "");
+                        const label = groupKey === "unrated"
+                            ? "sin valorar"
+                            : fmtVal(groupKey);
+                        gr.innerHTML = `<td colspan="15">${label}</td>`;
+                        tbody.appendChild(gr);
+                    }
+
+                    const tr = document.createElement("tr");
+                    tr.className = "track-row";
+                    const isExtreme = t.value === -5 || t.value === 5;
+                    const starHtml = isExtreme
+                        ? `<td class="star-cell${t.starred ? ' starred' : ''}"
+                               onclick="toggleStar(${t.id})"
+                               title="${t.starred ? 'Quitar estrella' : 'Marcar representativa'}">${t.starred ? '★' : '☆'}</td>`
+                        : `<td class="star-cell-empty"></td>`;
+
+                    const editSvg = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;
+                    const editHtml = `<td class="edit-cell" onclick="openRate(${t.id})" title="Editar en Rate">${editSvg}</td>`;
+
+                    let html = starHtml + editHtml + `
+                        <td class="col-info col-artist" title="${esc(t.artist)}"
+                            onclick="playTrack(${t.id})">${esc(t.artist)}</td>
+                        <td class="col-info col-title" title="${esc(t.title)}"
+                            onclick="playTrack(${t.id})">${esc(t.title)}</td>
+                    `;
+                    VALUES.forEach((v) => {
+                        const active = t.value === v ? " active" : "";
+                        html += `<td class="vote-cell${active}" onclick="setVote(${t.id},${v})">${fmtVal(v)}</td>`;
+                    });
+                    tr.innerHTML = html;
+                    tbody.appendChild(tr);
+                });
+
+                // Count bar
+                const ratedN   = filtered.filter((t) => t.value !== null).length;
+                const unratedN = filtered.filter((t) => t.value === null).length;
+                const countEl  = document.getElementById("dim-count");
+                if (showUnrated) {
+                    countEl.innerHTML =
+                        `<span class="hl">${ratedN}</span> valoradas` +
+                        ` · <span class="dim2">${unratedN} sin valorar</span>`;
+                } else {
+                    countEl.innerHTML =
+                        `<span class="hl">${ratedN}</span> valoradas`;
+                }
+
+                document.getElementById("table-wrap").style.display = "";
+                document.getElementById("empty-state").style.display = "none";
+
+                computeAndRenderSidebar();
+            }
+
+            // ---- HELPERS ----
+            function esc(s) {
+                if (!s) return "?";
+                return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            }
+            function fmtVal(v) {
+                return v > 0 ? "+" + v : String(v);
+            }
+
+            async function playTrack(id) {
+                await fetch(`./api/play/${id}`);
+            }
+
+            function openRate(trackId) {
+                window.open('/?track=' + trackId, '_blank');
+            }
+
+            async function toggleStar(trackId) {
+                const t = tracks.find((t) => t.id === trackId);
+                if (!t) return;
+                t.starred = t.starred ? 0 : 1;
+                render();
+                fetch("./api/star", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ track_id: trackId, dimension: currentDim }),
+                });
+            }
+
+            async function setVote(trackId, value) {
+                const dim = currentDim;
+                const t = tracks.find((t) => t.id === trackId);
+                if (!t || t.value === value) return;
+                t.value = value;
+                render();
+                fetch("./api/save", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ id: trackId, ratings: { [dim]: value } }),
+                });
+            }
+        </script>
+    
+</body>
+</html>

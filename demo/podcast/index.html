@@ -1,0 +1,2310 @@
+<!doctype html>
+<html lang="es">
+    <head><link rel="stylesheet" href="../_replay/replay.css"><script>window.REPLAY = {"mod": "podcast", "root": "", "ports": [], "map": {"api/articles_data.json": "data/0798cbcbc82c.json"}, "readOnlyPosts": [], "search": {}};</script><script src="../_replay/replay.js"></script><script defer src="https://cloud.umami.is/script.js" data-website-id="5d84fd6c-0760-4a0c-a2d0-ffabb82179f5"></script>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Articles to MP3 - Selector</title>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Work+Sans:wght@300;400;600;800&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            :root {
+                --bg-primary: #0a0a0a;
+                --bg-secondary: #1a1a1a;
+                --bg-tertiary: #2a2a2a;
+                --bg-quaternary: #353535;
+                --accent: #00ff88;
+                --accent-dim: #00cc6a;
+                --text-primary: #ffffff;
+                --text-secondary: #aaaaaa;
+                --text-dim: #666666;
+                --border: #333333;
+                --warning: #ffaa00;
+                --danger: #ff4444;
+            }
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: "Work Sans", sans-serif;
+                background: var(--bg-primary);
+                color: var(--text-primary);
+                line-height: 1.6;
+                overflow-x: hidden;
+            }
+
+            .header {
+                background: var(--bg-secondary);
+                border-bottom: 2px solid var(--accent);
+                padding: 2rem;
+                position: sticky;
+                top: 0;
+                z-index: 100;
+                backdrop-filter: blur(10px);
+            }
+
+            .header-content {
+                max-width: 1400px;
+                margin: 0 auto;
+            }
+
+            h1 {
+                font-family: "Space Mono", monospace;
+                font-size: 2.5rem;
+                font-weight: 700;
+                letter-spacing: -0.02em;
+                margin-bottom: 0.5rem;
+            }
+
+            .accent-text {
+                color: var(--accent);
+            }
+
+            .subtitle {
+                color: var(--text-secondary);
+                font-size: 1rem;
+                font-weight: 300;
+            }
+
+            /* Opciones globales */
+            .global-options {
+                margin-top: 1.5rem;
+                padding: 1.5rem;
+                background: var(--bg-tertiary);
+                border-radius: 4px;
+                border-left: 3px solid var(--accent);
+            }
+
+            .options-title {
+                font-family: "Space Mono", monospace;
+                font-size: 0.9rem;
+                color: var(--accent);
+                margin-bottom: 1rem;
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+            }
+
+            .options-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 1rem;
+            }
+
+            .option-item {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .option-label {
+                font-size: 0.75rem;
+                color: var(--text-dim);
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                font-family: "Space Mono", monospace;
+            }
+
+            .option-item select,
+            .option-item input[type="text"] {
+                padding: 0.5rem;
+                background: var(--bg-secondary);
+                border: 1px solid var(--border);
+                color: var(--text-primary);
+                font-family: "Work Sans", sans-serif;
+                font-size: 0.9rem;
+                transition: border-color 0.2s ease;
+            }
+
+            .option-item select:focus,
+            .option-item input[type="text"]:focus {
+                outline: none;
+                border-color: var(--accent);
+            }
+
+            .option-checkbox {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .option-checkbox input[type="checkbox"] {
+                width: 18px;
+                height: 18px;
+                cursor: pointer;
+                accent-color: var(--accent);
+            }
+
+            .option-checkbox label {
+                font-size: 0.85rem;
+                color: var(--text-secondary);
+                cursor: pointer;
+            }
+
+            .stats-bar {
+                display: flex;
+                gap: 2rem;
+                margin-top: 1.5rem;
+                padding: 1rem;
+                background: var(--bg-tertiary);
+                border-radius: 4px;
+                border-left: 3px solid var(--accent);
+            }
+
+            .stat {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .stat-label {
+                font-size: 0.75rem;
+                color: var(--text-dim);
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                font-family: "Space Mono", monospace;
+            }
+
+            .stat-value {
+                font-size: 1.5rem;
+                font-weight: 800;
+                color: var(--accent);
+            }
+
+            .container {
+                max-width: 1400px;
+                margin: 0 auto;
+                padding: 2rem;
+            }
+
+            .controls {
+                display: flex;
+                gap: 1rem;
+                margin-bottom: 2rem;
+                flex-wrap: wrap;
+            }
+
+            .btn {
+                padding: 0.75rem 1.5rem;
+                background: var(--bg-tertiary);
+                border: 2px solid var(--border);
+                color: var(--text-primary);
+                font-family: "Space Mono", monospace;
+                font-size: 0.9rem;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+            }
+
+            .btn:hover {
+                border-color: var(--accent);
+                background: var(--bg-secondary);
+                transform: translateY(-2px);
+            }
+
+            .btn-primary {
+                background: var(--accent);
+                color: var(--bg-primary);
+                border-color: var(--accent);
+                font-weight: 700;
+            }
+
+            .btn-primary:hover {
+                background: var(--accent-dim);
+                border-color: var(--accent-dim);
+            }
+
+            .source-section {
+                margin-bottom: 3rem;
+                border: 1px solid var(--border);
+                background: var(--bg-secondary);
+                overflow: hidden;
+            }
+
+            .source-header {
+                padding: 1.5rem;
+                background: var(--bg-tertiary);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                cursor: pointer;
+                user-select: none;
+                transition: background 0.2s ease;
+            }
+
+            .source-header:hover {
+                background: #333333;
+            }
+
+            .source-title {
+                font-family: "Space Mono", monospace;
+                font-size: 1.5rem;
+                font-weight: 700;
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
+
+            .source-badge {
+                font-size: 0.75rem;
+                padding: 0.25rem 0.75rem;
+                background: var(--accent);
+                color: var(--bg-primary);
+                border-radius: 20px;
+                font-weight: 700;
+            }
+
+            /* Categoría */
+            .category-group {
+                border-bottom: 1px solid var(--border);
+            }
+
+            .category-group:last-child {
+                border-bottom: none;
+            }
+
+            .category-header {
+                padding: 1rem 1.5rem;
+                background: var(--bg-secondary);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                cursor: pointer;
+                user-select: none;
+                transition: all 0.2s ease;
+            }
+
+            .category-header:hover {
+                background: var(--bg-tertiary);
+                padding-left: 2rem;
+            }
+
+            .category-name {
+                font-weight: 600;
+                font-size: 1.1rem;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .category-count {
+                font-size: 0.8rem;
+                color: var(--text-dim);
+                font-family: "Space Mono", monospace;
+            }
+
+            /* Feed */
+            .feed-group {
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            }
+
+            .feed-group:last-child {
+                border-bottom: none;
+            }
+
+            .feed-header {
+                padding: 0.75rem 2.5rem;
+                background: var(--bg-tertiary);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                cursor: pointer;
+                user-select: none;
+                transition: all 0.2s ease;
+                border-left: 3px solid transparent;
+            }
+
+            .feed-header:hover {
+                background: var(--bg-quaternary);
+                padding-left: 3rem;
+                border-left-color: var(--accent);
+            }
+
+            .feed-info {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                flex: 1;
+            }
+
+            .feed-checkbox-wrapper {
+                display: flex;
+                align-items: center;
+            }
+
+            .feed-checkbox {
+                width: 20px;
+                height: 20px;
+                cursor: pointer;
+                accent-color: var(--accent);
+            }
+
+            .feed-name {
+                font-weight: 500;
+                font-size: 1rem;
+                color: var(--text-secondary);
+            }
+
+            .feed-count {
+                font-size: 0.75rem;
+                color: var(--text-dim);
+                font-family: "Space Mono", monospace;
+            }
+
+            .feed-toggle {
+                color: var(--accent);
+                font-size: 1.2rem;
+                transition: transform 0.2s ease;
+            }
+
+            .feed-toggle.active {
+                transform: rotate(90deg);
+            }
+
+            /* Articles list */
+            .articles-list {
+                display: none;
+            }
+
+            .articles-list.active {
+                display: block;
+            }
+
+            .article-item {
+                padding: 1rem 3.5rem;
+                background: var(--bg-secondary);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
+
+            .article-item:hover {
+                background: var(--bg-tertiary);
+                padding-left: 4rem;
+            }
+
+            .article-main {
+                display: flex;
+                gap: 1rem;
+                align-items: start;
+            }
+
+            .checkbox-wrapper {
+                padding-top: 0.2rem;
+            }
+
+            .checkbox {
+                width: 18px;
+                height: 18px;
+                cursor: pointer;
+                accent-color: var(--accent);
+            }
+
+            .article-content {
+                flex: 1;
+            }
+
+            .article-title {
+                font-weight: 500;
+                margin-bottom: 0.5rem;
+                color: var(--text-primary);
+            }
+
+            .article-meta {
+                display: flex;
+                gap: 1.5rem;
+                font-size: 0.85rem;
+                color: var(--text-dim);
+                flex-wrap: wrap;
+            }
+
+            .meta-item {
+                display: flex;
+                align-items: center;
+                gap: 0.25rem;
+            }
+
+            .article-tags {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.4rem;
+                margin-top: 0.4rem;
+            }
+
+            .article-tag {
+                font-size: 0.7rem;
+                padding: 0.15rem 0.5rem;
+                background: var(--bg-quaternary);
+                border: 1px solid var(--border);
+                color: var(--text-dim);
+                border-radius: 20px;
+                font-family: "Space Mono", monospace;
+            }
+
+            .article-link {
+                color: var(--accent);
+                text-decoration: none;
+                margin-left: 0.5rem;
+                font-size: 0.85rem;
+                opacity: 0.6;
+                vertical-align: middle;
+            }
+
+            .article-link:hover {
+                opacity: 1;
+            }
+
+            .starred-icon {
+                font-size: 0.85rem;
+                margin-right: 0.25rem;
+            }
+
+            .refresh-btn-spinner {
+                display: none;
+                width: 14px;
+                height: 14px;
+                border: 2px solid rgba(0, 255, 136, 0.3);
+                border-top-color: var(--accent);
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+                vertical-align: middle;
+                margin-right: 6px;
+            }
+
+            .last-updated {
+                font-size: 0.75rem;
+                color: var(--text-dim);
+                font-family: "Space Mono", monospace;
+            }
+
+            /* Opciones del artículo */
+            .article-options {
+                display: none;
+                padding: 1rem;
+                padding-left: 2rem;
+                background: rgba(0, 255, 136, 0.05);
+                border-left: 2px solid var(--accent);
+                margin-left: 2rem;
+            }
+
+            .article-item.selected .article-options {
+                display: block;
+            }
+
+            .article-options-title {
+                font-size: 0.75rem;
+                color: var(--accent);
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                font-family: "Space Mono", monospace;
+                margin-bottom: 0.75rem;
+            }
+
+            .article-options-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 0.75rem;
+            }
+
+            .article-option {
+                display: flex;
+                flex-direction: column;
+                gap: 0.35rem;
+            }
+
+            .article-option label {
+                font-size: 0.7rem;
+                color: var(--text-dim);
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                font-family: "Space Mono", monospace;
+            }
+
+            .article-option select {
+                padding: 0.4rem;
+                background: var(--bg-secondary);
+                border: 1px solid var(--border);
+                color: var(--text-primary);
+                font-size: 0.85rem;
+                transition: border-color 0.2s ease;
+            }
+
+            .article-option select:focus {
+                outline: none;
+                border-color: var(--accent);
+            }
+
+            .article-option-checkbox {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding-top: 0.5rem;
+            }
+
+            .article-option-checkbox input {
+                width: 16px;
+                height: 16px;
+                cursor: pointer;
+                accent-color: var(--accent);
+            }
+
+            .article-option-checkbox label {
+                font-size: 0.8rem;
+                color: var(--text-secondary);
+                text-transform: none;
+                letter-spacing: normal;
+                cursor: pointer;
+            }
+
+            .toggle-icon {
+                color: var(--accent);
+                font-size: 1.2rem;
+                transition: transform 0.2s ease;
+            }
+
+            .toggle-icon.active {
+                transform: rotate(90deg);
+            }
+
+            /* Search + controls row */
+            .search-controls {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                margin-bottom: 2rem;
+            }
+            .search-controls input[type="text"] {
+                flex: 1;
+                padding: 0.65rem 0.75rem;
+                background: var(--bg-tertiary);
+                border: 1px solid var(--border);
+                color: var(--text-primary);
+                font-family: "Work Sans", sans-serif;
+                font-size: 1rem;
+                transition: border-color 0.2s;
+            }
+            .search-controls input[type="text"]:focus {
+                outline: none;
+                border-color: var(--accent);
+            }
+            .search-controls select {
+                padding: 0.6rem 0.5rem;
+                background: var(--bg-tertiary);
+                border: 1px solid var(--border);
+                color: var(--text-secondary);
+                font-size: 0.8rem;
+                font-family: "Space Mono", monospace;
+                cursor: pointer;
+            }
+            .search-controls select:focus { outline: none; border-color: var(--accent); }
+            .btn-sm {
+                padding: 0.5rem 0.75rem;
+                background: var(--bg-tertiary);
+                border: 1px solid var(--border);
+                color: var(--text-secondary);
+                font-family: "Space Mono", monospace;
+                font-size: 0.75rem;
+                cursor: pointer;
+                white-space: nowrap;
+                transition: all 0.2s;
+            }
+            .btn-sm:hover {
+                border-color: var(--accent);
+                color: var(--text-primary);
+            }
+
+            /* Sort select inside source/feed headers */
+            .sort-select {
+                padding: 0.2rem 0.4rem;
+                background: var(--bg-secondary);
+                border: 1px solid var(--border);
+                color: var(--text-dim);
+                font-size: 0.7rem;
+                font-family: "Space Mono", monospace;
+                cursor: pointer;
+            }
+            .sort-select:focus { outline: none; border-color: var(--accent); }
+
+            .action-panel {
+                position: fixed;
+                bottom: 2rem;
+                right: 2rem;
+                background: var(--bg-tertiary);
+                border: 2px solid var(--accent);
+                padding: 1.5rem;
+                border-radius: 4px;
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+                display: none;
+                z-index: 1000;
+            }
+
+            .action-panel h3 {
+                font-family: "Space Mono", monospace;
+                font-size: 1rem;
+                margin-bottom: 1rem;
+                color: var(--accent);
+            }
+
+            .action-stats {
+                margin-bottom: 1rem;
+                font-size: 0.9rem;
+                color: var(--text-secondary);
+            }
+
+            .action-buttons {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .search-box {
+                margin-bottom: 1.5rem;
+            }
+
+            .search-box input {
+                width: 100%;
+                padding: 0.75rem;
+                background: var(--bg-tertiary);
+                border: 1px solid var(--border);
+                color: var(--text-primary);
+                font-family: "Work Sans", sans-serif;
+                font-size: 1rem;
+                transition: border-color 0.2s ease;
+            }
+
+            .search-box input:focus {
+                outline: none;
+                border-color: var(--accent);
+            }
+
+            /* Modal de progreso */
+            .progress-modal {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.9);
+                z-index: 2000;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .progress-content {
+                background: var(--bg-secondary);
+                border: 2px solid var(--accent);
+                border-radius: 8px;
+                padding: 3rem;
+                max-width: 600px;
+                width: 90%;
+            }
+
+            .progress-title {
+                font-family: "Space Mono", monospace;
+                font-size: 1.5rem;
+                color: var(--accent);
+                margin-bottom: 2rem;
+                text-align: center;
+            }
+
+            .progress-bar-container {
+                background: var(--bg-tertiary);
+                border-radius: 4px;
+                height: 22px;
+                margin-bottom: 0.4rem;
+                overflow: hidden;
+                border: 1px solid var(--border);
+            }
+
+            .progress-bar {
+                height: 100%;
+                background: linear-gradient(90deg, var(--accent-dim), var(--accent));
+                width: 0%;
+                transition: width 0.3s ease;
+            }
+
+            .progress-text {
+                text-align: center;
+                font-family: "Space Mono", monospace;
+                font-size: 0.85rem;
+                font-weight: 700;
+                color: var(--accent);
+                margin-bottom: 1rem;
+            }
+
+            .progress-message {
+                color: var(--text-secondary);
+                text-align: center;
+                margin-top: 1rem;
+                min-height: 60px;
+            }
+
+            .progress-spinner {
+                display: inline-block;
+                width: 20px;
+                height: 20px;
+                border: 3px solid rgba(0, 255, 136, 0.3);
+                border-top-color: var(--accent);
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+                margin-right: 10px;
+            }
+
+            @keyframes spin {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+
+            @media (max-width: 768px) {
+                .options-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .article-options-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            /* Modal de configuración */
+            .config-modal {
+                display: none;
+                position: fixed;
+                top: 0; left: 0;
+                width: 100%; height: 100%;
+                background: rgba(0,0,0,0.9);
+                z-index: 2000;
+                align-items: center;
+                justify-content: center;
+            }
+            .config-modal.open { display: flex; }
+            .config-content {
+                background: var(--bg-secondary);
+                border: 2px solid var(--accent);
+                border-radius: 8px;
+                width: 90%;
+                max-width: 800px;
+                max-height: 90vh;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+            }
+            .config-header {
+                padding: 1.5rem 2rem;
+                background: var(--bg-tertiary);
+                border-bottom: 1px solid var(--border);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .config-header h2 {
+                font-family: "Space Mono", monospace;
+                font-size: 1.2rem;
+                color: var(--accent);
+            }
+            .config-close {
+                background: none;
+                border: none;
+                color: var(--text-dim);
+                font-size: 1.5rem;
+                cursor: pointer;
+                line-height: 1;
+            }
+            .config-close:hover { color: var(--text-primary); }
+            .config-tabs {
+                display: flex;
+                border-bottom: 1px solid var(--border);
+                background: var(--bg-tertiary);
+            }
+            .config-tab {
+                padding: 0.75rem 1.5rem;
+                cursor: pointer;
+                font-family: "Space Mono", monospace;
+                font-size: 0.8rem;
+                color: var(--text-dim);
+                border-bottom: 2px solid transparent;
+                transition: all 0.2s;
+                background: none;
+                border-top: none;
+                border-left: none;
+                border-right: none;
+            }
+            .config-tab:hover { color: var(--text-primary); }
+            .config-tab.active {
+                color: var(--accent);
+                border-bottom-color: var(--accent);
+            }
+            .config-body {
+                padding: 1.5rem 2rem;
+                overflow-y: auto;
+                flex: 1;
+            }
+            .config-section { display: none; }
+            .config-section.active { display: block; }
+            .config-field {
+                margin-bottom: 1rem;
+            }
+            .config-field label {
+                display: block;
+                font-size: 0.75rem;
+                color: var(--text-dim);
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                font-family: "Space Mono", monospace;
+                margin-bottom: 0.35rem;
+            }
+            .config-field input, .config-field select {
+                width: 100%;
+                padding: 0.6rem 0.75rem;
+                background: var(--bg-tertiary);
+                border: 1px solid var(--border);
+                color: var(--text-primary);
+                font-family: "Work Sans", sans-serif;
+                font-size: 0.9rem;
+                border-radius: 2px;
+                transition: border-color 0.2s;
+            }
+            .config-field input:focus, .config-field select:focus {
+                outline: none;
+                border-color: var(--accent);
+            }
+            .config-field-row {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
+            }
+            .config-checkbox-row {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                margin-bottom: 1rem;
+            }
+            .config-checkbox-row input { width: auto; }
+            .config-checkbox-row label {
+                font-size: 0.9rem;
+                color: var(--text-secondary);
+                text-transform: none;
+                letter-spacing: normal;
+                margin: 0;
+            }
+            .feeds-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 1rem;
+                font-size: 0.85rem;
+            }
+            .feeds-table th {
+                text-align: left;
+                padding: 0.5rem 0.75rem;
+                background: var(--bg-tertiary);
+                color: var(--text-dim);
+                font-family: "Space Mono", monospace;
+                font-size: 0.7rem;
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                border-bottom: 1px solid var(--border);
+            }
+            .feeds-table td {
+                padding: 0.5rem 0.4rem;
+                border-bottom: 1px solid rgba(255,255,255,0.04);
+                vertical-align: middle;
+            }
+            .feeds-table input, .feeds-table select {
+                width: 100%;
+                padding: 0.35rem 0.5rem;
+                background: var(--bg-secondary);
+                border: 1px solid var(--border);
+                color: var(--text-primary);
+                font-size: 0.8rem;
+                border-radius: 2px;
+            }
+            .feeds-table input[type="checkbox"] { width: auto; accent-color: var(--accent); }
+            .btn-danger {
+                background: transparent;
+                border: 1px solid var(--danger);
+                color: var(--danger);
+                padding: 0.25rem 0.6rem;
+                font-size: 0.75rem;
+                cursor: pointer;
+                border-radius: 2px;
+            }
+            .btn-danger:hover { background: var(--danger); color: white; }
+            .btn-add {
+                background: transparent;
+                border: 1px solid var(--accent);
+                color: var(--accent);
+                padding: 0.5rem 1rem;
+                font-family: "Space Mono", monospace;
+                font-size: 0.8rem;
+                cursor: pointer;
+                border-radius: 2px;
+            }
+            .btn-add:hover { background: rgba(0,255,136,0.1); }
+            .config-footer {
+                padding: 1rem 2rem;
+                border-top: 1px solid var(--border);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background: var(--bg-tertiary);
+            }
+            .config-status {
+                font-size: 0.85rem;
+                color: var(--text-dim);
+            }
+            .config-status.ok { color: var(--accent); }
+            .config-status.err { color: var(--danger); }
+
+            /* Toolbar unificada */
+            .toolbar {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                margin-top: 1rem;
+                padding: 0.6rem 1rem;
+                background: var(--bg-tertiary);
+                border-radius: 4px;
+                border-left: 3px solid var(--accent);
+                flex-wrap: wrap;
+            }
+            .toolbar-group {
+                display: flex;
+                align-items: center;
+                gap: 0.6rem;
+            }
+            .toolbar-divider {
+                width: 1px;
+                height: 28px;
+                background: var(--border);
+                flex-shrink: 0;
+            }
+            .toolbar-item {
+                display: flex;
+                align-items: center;
+                gap: 0.3rem;
+            }
+            .toolbar-label {
+                font-size: 0.85rem;
+                color: var(--text-dim);
+            }
+            .toolbar-item select {
+                padding: 0.35rem 0.5rem;
+                background: var(--bg-secondary);
+                border: 1px solid var(--border);
+                color: var(--text-primary);
+                font-size: 0.8rem;
+                font-family: "Work Sans", sans-serif;
+            }
+            .toolbar-item select:focus { outline: none; border-color: var(--accent); }
+            .toolbar-item label { font-size: 0.8rem; color: var(--text-secondary); cursor: pointer; }
+            .toolbar-item input[type="checkbox"] { accent-color: var(--accent); cursor: pointer; }
+            .stat-inline { display: flex; flex-direction: column; align-items: center; min-width: 48px; }
+            .stat-inline .stat-label {
+                font-size: 0.6rem;
+                color: var(--text-dim);
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                font-family: "Space Mono", monospace;
+            }
+            .stat-inline .stat-value { font-size: 1.2rem; font-weight: 800; color: var(--accent); }
+
+            /* Feed picker */
+            .feed-picker {
+                display: none;
+                position: fixed;
+                top: 50%; left: 50%;
+                transform: translate(-50%, -50%);
+                background: var(--bg-secondary);
+                border: 2px solid var(--accent);
+                border-radius: 6px;
+                padding: 1.5rem;
+                z-index: 3000;
+                min-width: 340px;
+                box-shadow: 0 8px 32px rgba(0,0,0,0.7);
+            }
+            .feed-picker.open { display: block; }
+            .feed-picker h3 {
+                font-family: "Space Mono", monospace;
+                font-size: 0.9rem;
+                color: var(--accent);
+                margin-bottom: 1rem;
+            }
+            .feed-picker select {
+                width: 100%;
+                padding: 0.5rem;
+                background: var(--bg-tertiary);
+                border: 1px solid var(--border);
+                color: var(--text-primary);
+                font-size: 0.9rem;
+                margin-bottom: 1rem;
+                border-radius: 2px;
+            }
+            .feed-picker-btns { display: flex; gap: 0.5rem; justify-content: flex-end; }
+            .picker-type-row { display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+            .picker-type-row label { display: flex; align-items: center; gap: 0.35rem; font-size: 0.85rem; cursor: pointer; }
+            .picker-section { margin-bottom: 0.8rem; }
+            .picker-section label { display: block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.3rem; }
+            .picker-common { display: grid; grid-template-columns: 1fr 1fr 80px; gap: 0.5rem; margin-top: 0.8rem; }
+            .picker-common label { display: block; font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 0.2rem; }
+            .picker-common input, .picker-common select { width: 100%; padding: 0.35rem; background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--text-primary); border-radius: 2px; font-size: 0.85rem; }
+            .wb-tag-select { width: 100%; height: 120px; background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--text-primary); border-radius: 2px; font-size: 0.85rem; }
+            .picker-name-row { margin: 0.8rem 0 0; }
+            .picker-name-row label { font-size: 0.8rem; color: var(--text-secondary); display: block; margin-bottom: 0.25rem; }
+            .picker-name-row input { width: 100%; padding: 0.35rem; background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--text-primary); border-radius: 2px; font-size: 0.85rem; }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <div class="header-content">
+                <h1><span class="accent-text">♪</span> Articles to MP3</h1>
+
+                <div class="toolbar">
+                    <!-- Stats -->
+                    <div class="toolbar-group">
+                        <div class="stat-inline">
+                            <span class="stat-label">Total</span>
+                            <span class="stat-value" id="totalArticles">0</span>
+                        </div>
+                        <div class="stat-inline">
+                            <span class="stat-label">Sel.</span>
+                            <span class="stat-value" id="selectedCount">0</span>
+                        </div>
+                        <div class="stat-inline">
+                            <span class="stat-label">Palabras</span>
+                            <span class="stat-value" id="estimatedWords">0</span>
+                        </div>
+                    </div>
+                    <div class="toolbar-divider"></div>
+                    <!-- Opciones -->
+                    <div class="toolbar-group">
+                        <div class="toolbar-item">
+                            <span class="toolbar-label">🎤</span>
+                            <select id="default-voice">
+                                <optgroup label="Español">
+                                    <option value="es-ES-AlvaroNeural" selected>Alvaro (ES)</option>
+                                    <option value="es-ES-ElviraNeural">Elvira (ES)</option>
+                                    <option value="es-ES-AbrilNeural">Abril (ES)</option>
+                                    <option value="es-MX-DaliaNeural">Dalia (MX)</option>
+                                    <option value="es-MX-JorgeNeural">Jorge (MX)</option>
+                                    <option value="es-AR-ElenaNeural">Elena (AR)</option>
+                                    <option value="es-AR-TomasNeural">Tomás (AR)</option>
+                                </optgroup>
+                                <optgroup label="English">
+                                    <option value="en-US-AriaNeural">Aria (US)</option>
+                                    <option value="en-US-GuyNeural">Guy (US)</option>
+                                    <option value="en-GB-SoniaNeural">Sonia (UK)</option>
+                                    <option value="en-GB-RyanNeural">Ryan (UK)</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <div class="toolbar-item">
+                            <span class="toolbar-label">🌍</span>
+                            <select id="default-language">
+                                <option value="es" selected>ES</option>
+                                <option value="en">EN</option>
+                                <option value="fr">FR</option>
+                                <option value="de">DE</option>
+                                <option value="it">IT</option>
+                                <option value="pt">PT</option>
+                            </select>
+                        </div>
+                        <div class="toolbar-item">
+                            <span class="toolbar-label">🎛</span>
+                            <select id="tts-engine">
+                                <option value="edge" selected>Edge TTS</option>
+                                <option value="gtts">Google TTS</option>
+                            </select>
+                        </div>
+                        <div class="toolbar-item">
+                            <input type="checkbox" id="default-youtube" />
+                            <label for="default-youtube">📺 YouTube</label>
+                        </div>
+                    </div>
+                    <div class="toolbar-divider"></div>
+                    <!-- Refresh + timestamp -->
+                    <div class="toolbar-group" style="margin-left:auto">
+                        <span class="last-updated" id="lastUpdated">—</span>
+                        <button class="btn" id="refreshBtn" onclick="refreshArticles()" style="padding:0.35rem 0.75rem; font-size:0.8rem; white-space:nowrap;">
+                            <span class="refresh-btn-spinner" id="refreshSpinner"></span>
+                            🔄 Actualizar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="search-controls">
+                <input type="text" id="searchFilter"
+                    placeholder="🔍 Buscar por título o tag..."
+                    oninput="filterArticles()" />
+                <select id="sortOrder" onchange="applySortAndRender()" title="Ordenar artículos">
+                    <option value="default">Orden original</option>
+                    <option value="date-desc">Fecha ↓</option>
+                    <option value="date-asc">Fecha ↑</option>
+                    <option value="words-desc">Palabras ↓</option>
+                    <option value="words-asc">Palabras ↑</option>
+                    <option value="title-asc">Título A-Z</option>
+                    <option value="title-desc">Título Z-A</option>
+                </select>
+                <button class="btn-sm" onclick="selectAll()" title="Seleccionar todos">☑ Todos</button>
+                <button class="btn-sm" onclick="deselectAll()" title="Deseleccionar todos">☐ Ninguno</button>
+                <button class="btn-sm" onclick="downloadSelectionJson()" title="Descargar JSON">💾 JSON</button>
+                <button class="btn-sm" onclick="openConfigModal()" title="Configuración">⚙ Config</button>
+            </div>
+
+            <div id="sourcesContainer">
+                <!-- Se llenará dinámicamente -->
+            </div>
+        </div>
+
+        <!-- Panel de acción flotante -->
+        <div class="action-panel" id="actionPanel">
+            <h3>ACCIÓN</h3>
+            <div class="action-stats">
+                <div>
+                    <strong id="actionCount">0</strong> artículos seleccionados
+                </div>
+                <div>~<strong id="actionWords">0</strong> palabras</div>
+            </div>
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="saveToServer()">
+                    🎵 CONVERTIR A MP3
+                </button>
+            </div>
+        </div>
+
+        <!-- Modal de progreso -->
+        <div class="progress-modal" id="progressModal">
+            <div class="progress-content">
+                <div class="progress-title">CONVERSIÓN EN PROGRESO</div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <div class="progress-text" id="progressText">0%</div>
+                <div class="progress-message">
+                    <span class="progress-spinner"></span>
+                    <span id="progressMessage">Iniciando...</span>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            let articlesData = null;
+            let selectedArticlesData = {};
+
+            async function loadData() {
+                try {
+                    const response = await fetch("./api/articles_data.json");
+                    articlesData = await response.json();
+                    renderSources();
+                    updateCounts();
+                    if (articlesData.generated_at) {
+                        const d = new Date(articlesData.generated_at);
+                        document.getElementById('lastUpdated').textContent =
+                            `Datos: ${d.toLocaleDateString()} ${d.toLocaleTimeString()}`;
+                    }
+                } catch (error) {
+                    console.error("Error cargando datos:", error);
+                    alert(
+                        "Error al cargar los artículos. Verifica que el servidor esté corriendo.",
+                    );
+                }
+            }
+
+            function renderSources() {
+                const container = document.getElementById("sourcesContainer");
+                let html = "";
+
+                // Wallabag
+                if (articlesData.wallabag && articlesData.wallabag.enabled) {
+                    html += renderWallabag();
+                }
+
+                // FreshRSS
+                if (articlesData.freshrss && articlesData.freshrss.enabled) {
+                    html += renderFreshRSS();
+                }
+
+                container.innerHTML = html;
+            }
+
+            function renderWallabag() {
+                const articles = sortArticles(articlesData.wallabag.articles || []);
+                if (!articles.length) return "";
+
+                let html = `
+                    <div class="source-section">
+                        <div class="source-header" onclick="toggleSourceContent(this)">
+                            <div class="source-title">
+                                <span>📚 WALLABAG</span>
+                                <span class="source-badge">${articles.length}</span>
+                            </div>
+                            <span class="toggle-icon">▶</span>
+                        </div>
+                        <div class="category-group">
+                `;
+
+                articles.forEach((article) => {
+                    html += renderArticle(article, "wallabag", "", "");
+                });
+
+                html += `</div></div>`;
+                return html;
+            }
+
+            function renderFreshRSS() {
+                const categories = articlesData.freshrss.categories || [];
+                if (!categories.length) return "";
+
+                let totalArticles = 0;
+                categories.forEach((cat) => {
+                    cat.feeds.forEach((feed) => {
+                        totalArticles += feed.articles.length;
+                    });
+                });
+
+                let html = `
+                    <div class="source-section">
+                        <div class="source-header" onclick="toggleSourceContent(this)">
+                            <div class="source-title">
+                                <span>📰 FRESHRSS</span>
+                                <span class="source-badge">${totalArticles}</span>
+                            </div>
+                            <span class="toggle-icon">▶</span>
+                        </div>
+                `;
+
+                categories.forEach((category) => {
+                    html += renderCategory(category);
+                });
+
+                html += `</div>`;
+                return html;
+            }
+
+            function renderCategory(category) {
+                let totalArticles = 0;
+                category.feeds.forEach((feed) => {
+                    totalArticles += feed.articles.length;
+                });
+
+                let html = `
+                    <div class="category-group">
+                        <div class="category-header" onclick="toggleCategoryContent(this)">
+                            <div class="category-name">
+                                <span>📁 ${escapeHtml(category.name)}</span>
+                                <span class="category-count">${totalArticles}</span>
+                            </div>
+                            <span class="toggle-icon">▶</span>
+                        </div>
+                `;
+
+                category.feeds.forEach((feed) => {
+                    html += renderFeed(feed, category.name);
+                });
+
+                html += `</div>`;
+                return html;
+            }
+
+            function renderFeed(feed, categoryName) {
+                let html = `
+                    <div class="feed-group">
+                        <div class="feed-header" onclick="toggleFeedContent(this)">
+                            <div class="feed-info">
+                                <div class="feed-checkbox-wrapper" onclick="event.stopPropagation()">
+                                    <input type="checkbox" class="feed-checkbox"
+                                           onchange="toggleFeedArticles(this, '${categoryName}', '${feed.id}')" />
+                                </div>
+                                <span class="feed-name">${escapeHtml(feed.title)}</span>
+                                <span class="feed-count">${feed.articles.length}</span>
+                            </div>
+                            <span class="feed-toggle">▶</span>
+                        </div>
+                        <div class="articles-list">
+                `;
+
+                sortArticles(feed.articles).forEach((article) => {
+                    html += renderArticle(
+                        article,
+                        "freshrss",
+                        categoryName,
+                        feed.id,
+                    );
+                });
+
+                html += `</div></div>`;
+                return html;
+            }
+
+            function renderArticle(article, source, categoryName, feedId) {
+                const articleId =
+                    `${source}_${categoryName}_${feedId}_${article.id}`.replace(
+                        /[^a-zA-Z0-9_-]/g,
+                        "_",
+                    );
+
+                const url = article.url || article.alternate || '';
+                const isStarred = article.is_starred == '1' || article.is_starred === true || article.is_starred === 1;
+                const author = article.author || '';
+
+                let tags = article.tags || [];
+                if (typeof tags === 'string') {
+                    try { tags = JSON.parse(tags); } catch(e) {
+                        tags = tags.replace(/^\[|\]$/g, '').split(',')
+                            .map(s => s.trim().replace(/^['"]|['"]$/g, '')).filter(Boolean);
+                    }
+                }
+
+                let dateStr = '';
+                if (article.published) {
+                    dateStr = new Date(article.published * 1000).toLocaleDateString();
+                } else if (article.created_at) {
+                    dateStr = new Date(article.created_at).toLocaleDateString();
+                }
+
+                const tagsHtml = tags.length
+                    ? `<div class="article-tags">${tags.map(t => `<span class="article-tag">${escapeHtml(t)}</span>`).join('')}</div>`
+                    : '';
+
+                const urlLink = url
+                    ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener" class="article-link" onclick="event.stopPropagation()" title="Abrir artículo original">🔗</a>`
+                    : '';
+
+                return `
+                    <div class="article-item" id="article_${articleId}">
+                        <div class="article-main">
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" class="checkbox"
+                                       id="${articleId}"
+                                       data-source="${source}"
+                                       data-category="${escapeHtml(categoryName)}"
+                                       data-original-feed-id="${escapeHtml(feedId)}"
+                                       data-article-id="${escapeHtml(article.id)}"
+                                       data-word-count="${article.word_count || 0}"
+                                       onchange="toggleArticle(this, '${articleId}', '${source}', '${escapeHtml(article.id)}', '${escapeHtml(categoryName)}', '${escapeHtml(feedId)}', '${escapeHtml(article.title)}')" />
+                            </div>
+                            <div class="article-content">
+                                <div class="article-title">
+                                    ${isStarred ? '<span class="starred-icon" title="Destacado">⭐</span>' : ''}
+                                    ${escapeHtml(article.title)}
+                                    ${urlLink}
+                                </div>
+                                <div class="article-meta">
+                                    <span class="meta-item">📊 ${(article.word_count || 0).toLocaleString()} palabras</span>
+                                    <span class="meta-item">📝 ${(article.char_count || 0).toLocaleString()} chars</span>
+                                    ${dateStr ? `<span class="meta-item">📅 ${dateStr}</span>` : ''}
+                                    ${author ? `<span class="meta-item">✍ ${escapeHtml(author)}</span>` : ''}
+                                </div>
+                                ${tagsHtml}
+                            </div>
+                        </div>
+                        <div class="article-options">
+                            <div class="article-options-title">⚙ Opciones de conversión</div>
+                            <div class="article-options-grid">
+                                <div class="article-option">
+                                    <label>🎤 Voz</label>
+                                    <select id="voice_${articleId}" onchange="updateArticleOption('${articleId}', 'voice', this.value)">
+                                        <optgroup label="Español">
+                                            <option value="es-ES-AlvaroNeural">Alvaro (España, H)</option>
+                                            <option value="es-ES-ElviraNeural">Elvira (España, M)</option>
+                                            <option value="es-MX-DaliaNeural">Dalia (México, M)</option>
+                                            <option value="es-MX-JorgeNeural">Jorge (México, H)</option>
+                                        </optgroup>
+                                        <optgroup label="Inglés">
+                                            <option value="en-US-GuyNeural">Guy (US, H)</option>
+                                            <option value="en-US-AriaNeural">Aria (US, M)</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+                                <div class="article-option">
+                                    <label>🌍 Idioma</label>
+                                    <select id="lang_${articleId}" onchange="updateArticleOption('${articleId}', 'language', this.value)">
+                                        <option value="es">Español</option>
+                                        <option value="en">English</option>
+                                        <option value="fr">Français</option>
+                                        <option value="de">Deutsch</option>
+                                    </select>
+                                </div>
+                                <div class="article-option">
+                                    <div class="article-option-checkbox">
+                                        <input type="checkbox" id="youtube_${articleId}"
+                                               onchange="updateArticleOption('${articleId}', 'include_youtube', this.checked)">
+                                        <label for="youtube_${articleId}">📺 Incluir YouTube</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            function toggleArticle(
+                checkbox,
+                articleId,
+                source,
+                originalId,
+                categoryName,
+                feedId,
+                title,
+            ) {
+                const articleEl = document.getElementById(
+                    `article_${articleId}`,
+                );
+
+                if (checkbox.checked) {
+                    articleEl.classList.add("selected");
+
+                    // Inicializar opciones con valores por defecto
+                    const defaultVoice =
+                        document.getElementById("default-voice").value;
+                    const defaultLanguage =
+                        document.getElementById("default-language").value;
+                    const defaultYouTube =
+                        document.getElementById("default-youtube").checked;
+                    const ttsEngine =
+                        document.getElementById("tts-engine").value;
+
+                    document.getElementById(`voice_${articleId}`).value =
+                        defaultVoice;
+                    document.getElementById(`lang_${articleId}`).value =
+                        defaultLanguage;
+                    document.getElementById(`youtube_${articleId}`).checked =
+                        defaultYouTube;
+
+                    selectedArticlesData[articleId] = {
+                        source,
+                        originalId,
+                        categoryName,
+                        feedId,
+                        title,
+                        voice: defaultVoice,
+                        language: defaultLanguage,
+                        include_youtube: defaultYouTube,
+                        tts_engine: ttsEngine,
+                    };
+                } else {
+                    articleEl.classList.remove("selected");
+                    delete selectedArticlesData[articleId];
+                }
+
+                updateCounts();
+            }
+
+            function updateArticleOption(articleId, option, value) {
+                if (selectedArticlesData[articleId]) {
+                    selectedArticlesData[articleId][option] = value;
+                }
+            }
+
+            function selectAll() {
+                document
+                    .querySelectorAll(".checkbox:not(:checked)")
+                    .forEach((cb) => cb.click());
+            }
+
+            function deselectAll() {
+                document
+                    .querySelectorAll(".checkbox:checked")
+                    .forEach((cb) => cb.click());
+            }
+
+            function toggleFeedArticles(checkbox, categoryName, feedId) {
+                const feedGroup = checkbox.closest(".feed-group");
+                const articleCheckboxes = feedGroup.querySelectorAll(
+                    ".articles-list .checkbox",
+                );
+
+                articleCheckboxes.forEach((cb) => {
+                    if (checkbox.checked && !cb.checked) {
+                        cb.click();
+                    } else if (!checkbox.checked && cb.checked) {
+                        cb.click();
+                    }
+                });
+            }
+
+            function toggleSourceContent(header) {
+                const icon = header.querySelector(".toggle-icon");
+                const content = header.nextElementSibling;
+
+                while (
+                    content &&
+                    !content.classList.contains("source-header")
+                ) {
+                    content.style.display =
+                        content.style.display === "none" ? "block" : "none";
+                    break;
+                }
+
+                icon.classList.toggle("active");
+            }
+
+            function toggleCategoryContent(header) {
+                const icon = header.querySelector(".toggle-icon");
+                const feeds =
+                    header.parentElement.querySelectorAll(".feed-group");
+
+                feeds.forEach((feed) => {
+                    feed.style.display =
+                        feed.style.display === "none" ? "block" : "none";
+                });
+
+                icon.classList.toggle("active");
+            }
+
+            function toggleFeedContent(header) {
+                const icon = header.querySelector(".feed-toggle");
+                const articles = header.nextElementSibling;
+
+                articles.classList.toggle("active");
+                icon.classList.toggle("active");
+            }
+
+            function updateCounts() {
+                const count =
+                    document.querySelectorAll(".checkbox:checked").length;
+                let totalWords = 0;
+
+                document.querySelectorAll(".checkbox:checked").forEach((cb) => {
+                    totalWords += parseInt(cb.dataset.wordCount || 0);
+                });
+
+                document.getElementById("selectedCount").textContent = count;
+                document.getElementById("estimatedWords").textContent =
+                    totalWords.toLocaleString();
+                document.getElementById("actionCount").textContent = count;
+                document.getElementById("actionWords").textContent =
+                    totalWords.toLocaleString();
+                document.getElementById("actionPanel").style.display =
+                    count > 0 ? "block" : "none";
+
+                const totalArticles =
+                    document.querySelectorAll(".checkbox").length;
+                document.getElementById("totalArticles").textContent =
+                    totalArticles;
+            }
+
+            function filterArticles() {
+                const query = document.getElementById("searchFilter").value.toLowerCase();
+                document.querySelectorAll(".article-item").forEach((item) => {
+                    const title = item.querySelector(".article-title")?.textContent.toLowerCase() || '';
+                    const tags = Array.from(item.querySelectorAll(".article-tag"))
+                        .map(t => t.textContent.toLowerCase()).join(' ');
+                    const match = title.includes(query) || tags.includes(query);
+                    item.style.display = match ? "flex" : "none";
+                });
+            }
+
+            function sortArticles(articles) {
+                const order = document.getElementById('sortOrder')?.value || 'default';
+                if (order === 'default') return articles;
+                const sorted = [...articles];
+                sorted.sort((a, b) => {
+                    switch (order) {
+                        case 'date-desc': return (b.published || 0) - (a.published || 0) || new Date(b.created_at||0) - new Date(a.created_at||0);
+                        case 'date-asc':  return (a.published || 0) - (b.published || 0) || new Date(a.created_at||0) - new Date(b.created_at||0);
+                        case 'words-desc': return (b.word_count || 0) - (a.word_count || 0);
+                        case 'words-asc':  return (a.word_count || 0) - (b.word_count || 0);
+                        case 'title-asc':  return (a.title||'').localeCompare(b.title||'');
+                        case 'title-desc': return (b.title||'').localeCompare(a.title||'');
+                        default: return 0;
+                    }
+                });
+                return sorted;
+            }
+
+            function applySortAndRender() {
+                renderSources();
+                updateCounts();
+            }
+
+            async function saveToServer() {
+                const count = Object.keys(selectedArticlesData).length;
+
+                if (count === 0) {
+                    alert("⚠ No hay artículos seleccionados");
+                    return;
+                }
+
+                try {
+                    const selection = {
+                        options: {
+                            tts_engine:
+                                document.getElementById("tts-engine").value,
+                            default_voice:
+                                document.getElementById("default-voice").value,
+                            default_language:
+                                document.getElementById("default-language")
+                                    .value,
+                            include_youtube:
+                                document.getElementById("default-youtube")
+                                    .checked,
+                            generate_feed: true,
+                            skip_existing: true,
+                        },
+                        wallabag: [],
+                        freshrss: {
+                            categories: {},
+                        },
+                    };
+
+                    // Procesar artículos seleccionados
+                    for (const [articleId, data] of Object.entries(
+                        selectedArticlesData,
+                    )) {
+                        if (data.source === "wallabag") {
+                            const fullArticle =
+                                articlesData.wallabag.articles.find(
+                                    (a) => a.id == data.originalId,
+                                );
+                            if (fullArticle) {
+                                selection.wallabag.push({
+                                    id: fullArticle.id,
+                                    title: fullArticle.title,
+                                    voice: data.voice,
+                                    language: data.language,
+                                    include_youtube: data.include_youtube,
+                                    tts_engine: data.tts_engine,
+                                });
+                            }
+                        } else if (data.source === "freshrss") {
+                            if (
+                                !selection.freshrss.categories[
+                                    data.categoryName
+                                ]
+                            ) {
+                                selection.freshrss.categories[
+                                    data.categoryName
+                                ] = {};
+                            }
+                            if (
+                                !selection.freshrss.categories[
+                                    data.categoryName
+                                ][data.feedId]
+                            ) {
+                                selection.freshrss.categories[
+                                    data.categoryName
+                                ][data.feedId] = [];
+                            }
+
+                            const category =
+                                articlesData.freshrss.categories.find(
+                                    (c) => c.name === data.categoryName,
+                                );
+                            if (category) {
+                                const feed = category.feeds.find(
+                                    (f) => f.id === data.feedId,
+                                );
+                                if (feed) {
+                                    const fullArticle = feed.articles.find(
+                                        (a) => a.id === data.originalId,
+                                    );
+                                    if (fullArticle) {
+                                        selection.freshrss.categories[
+                                            data.categoryName
+                                        ][data.feedId].push({
+                                            id: fullArticle.id,
+                                            title: fullArticle.title,
+                                            voice: data.voice,
+                                            language: data.language,
+                                            include_youtube:
+                                                data.include_youtube,
+                                            tts_engine: data.tts_engine,
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    showProgressModal();
+                    updateProgress(0, count, "Iniciando conversión...");
+
+                    const response = await fetch("./api/save-selection", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(selection),
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        startProgressPolling();
+                    } else {
+                        hideProgressModal();
+                        alert(`✗ Error al guardar: ${result.message}`);
+                    }
+                } catch (error) {
+                    console.error("Error:", error);
+                    hideProgressModal();
+                    alert("✗ Error de conexión con el servidor.");
+                }
+            }
+
+            let progressInterval = null;
+
+            function showProgressModal() {
+                document.getElementById("progressModal").style.display = "flex";
+            }
+
+            function hideProgressModal() {
+                document.getElementById("progressModal").style.display = "none";
+                if (progressInterval) {
+                    clearInterval(progressInterval);
+                    progressInterval = null;
+                }
+            }
+
+            function updateProgress(current, total, message) {
+                const percentage =
+                    total > 0 ? Math.round((current / total) * 100) : 0;
+                document.getElementById("progressBar").style.width =
+                    percentage + "%";
+                document.getElementById("progressText").textContent =
+                    `${current}/${total} (${percentage}%)`;
+                document.getElementById("progressMessage").textContent =
+                    message;
+            }
+
+            async function startProgressPolling() {
+                progressInterval = setInterval(async () => {
+                    try {
+                        const response = await fetch("./api/conversion-status");
+                        const status = await response.json();
+
+                        updateProgress(
+                            status.progress,
+                            status.total,
+                            status.current_article,
+                        );
+
+                        if (!status.running) {
+                            clearInterval(progressInterval);
+                            progressInterval = null;
+
+                            if (status.errors && status.errors.length > 0) {
+                                alert(
+                                    `⚠ Conversión completada con errores:\n${status.errors.join("\n")}`,
+                                );
+                            } else {
+                                setTimeout(() => {
+                                    hideProgressModal();
+                                    alert(
+                                        `✓ ¡Conversión completada!\n\n${status.progress} artículos convertidos a MP3`,
+                                    );
+                                }, 1000);
+                            }
+                        }
+                    } catch (error) {
+                        console.error("Error obteniendo estado:", error);
+                    }
+                }, 1000);
+            }
+
+            function downloadSelectionJson() {
+                const count = Object.keys(selectedArticlesData).length;
+
+                if (count === 0) {
+                    alert("⚠ No hay artículos seleccionados");
+                    return;
+                }
+
+                const selection = {
+                    options: {
+                        tts_engine: document.getElementById("tts-engine").value,
+                        default_voice:
+                            document.getElementById("default-voice").value,
+                        default_language:
+                            document.getElementById("default-language").value,
+                        include_youtube:
+                            document.getElementById("default-youtube").checked,
+                        generate_feed: true,
+                    },
+                    wallabag: [],
+                    freshrss: { categories: {} },
+                };
+
+                // Similar al saveToServer pero para descargar
+                for (const [articleId, data] of Object.entries(
+                    selectedArticlesData,
+                )) {
+                    if (data.source === "wallabag") {
+                        const fullArticle = articlesData.wallabag.articles.find(
+                            (a) => a.id == data.originalId,
+                        );
+                        if (fullArticle) {
+                            selection.wallabag.push({
+                                id: fullArticle.id,
+                                title: fullArticle.title,
+                                voice: data.voice,
+                                language: data.language,
+                                include_youtube: data.include_youtube,
+                            });
+                        }
+                    }
+                    // Similar para freshrss...
+                }
+
+                const blob = new Blob([JSON.stringify(selection, null, 2)], {
+                    type: "application/json",
+                });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "selection.json";
+                a.click();
+                URL.revokeObjectURL(url);
+
+                alert(
+                    `✓ Archivo selection.json descargado\n\n${count} artículos seleccionados`,
+                );
+            }
+
+            function escapeHtml(text) {
+                const div = document.createElement("div");
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            let refreshPollInterval = null;
+
+            async function refreshArticles() {
+                const btn = document.getElementById('refreshBtn');
+                const spinner = document.getElementById('refreshSpinner');
+
+                try {
+                    const resp = await fetch('./api/refresh-articles', { method: 'POST' });
+                    const data = await resp.json();
+                    if (!data.success) {
+                        alert(`⚠ ${data.message}`);
+                        return;
+                    }
+                } catch(e) {
+                    alert('✗ Error de conexión con el servidor.');
+                    return;
+                }
+
+                btn.disabled = true;
+                spinner.style.display = 'inline-block';
+                document.getElementById('lastUpdated').textContent = 'Actualizando…';
+
+                refreshPollInterval = setInterval(async () => {
+                    try {
+                        const r = await fetch('./api/refresh-status');
+                        const status = await r.json();
+                        document.getElementById('lastUpdated').textContent = status.message || 'Actualizando…';
+
+                        if (!status.running) {
+                            clearInterval(refreshPollInterval);
+                            refreshPollInterval = null;
+                            btn.disabled = false;
+                            spinner.style.display = 'none';
+
+                            if (status.error) {
+                                alert(`✗ Error al actualizar:\n${status.error}`);
+                            } else {
+                                await loadData();
+                            }
+                        }
+                    } catch(e) {
+                        console.error('Error polling refresh status:', e);
+                    }
+                }, 1500);
+            }
+
+            // ── CONFIG MODAL ──────────────────────────────────────────
+            const VOICES = [
+                {v:"es-ES-AlvaroNeural", l:"Alvaro (España, H)"},
+                {v:"es-ES-ElviraNeural", l:"Elvira (España, M)"},
+                {v:"es-ES-AbrilNeural",  l:"Abril (España, M)"},
+                {v:"es-MX-DaliaNeural",  l:"Dalia (México, M)"},
+                {v:"es-MX-JorgeNeural",  l:"Jorge (México, H)"},
+                {v:"es-AR-ElenaNeural",  l:"Elena (Argentina, M)"},
+                {v:"es-AR-TomasNeural",  l:"Tomás (Argentina, H)"},
+                {v:"en-US-AriaNeural",   l:"Aria (US, M)"},
+                {v:"en-US-GuyNeural",    l:"Guy (US, H)"},
+                {v:"en-GB-SoniaNeural",  l:"Sonia (UK, M)"},
+                {v:"en-GB-RyanNeural",   l:"Ryan (UK, H)"},
+            ];
+
+            function voiceOptions(selected) {
+                return VOICES.map(v =>
+                    `<option value="${v.v}" ${v.v === selected ? 'selected' : ''}>${v.l}</option>`
+                ).join('');
+            }
+
+            function openConfigModal() {
+                document.getElementById('configModal').classList.add('open');
+                loadConfig();
+            }
+            function closeConfigModal() {
+                document.getElementById('configModal').classList.remove('open');
+            }
+            function switchConfigTab(tab) {
+                document.querySelectorAll('.config-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.config-section').forEach(s => s.classList.remove('active'));
+                document.querySelector(`.config-tab[data-tab="${tab}"]`).classList.add('active');
+                document.getElementById(`cfg-${tab}`).classList.add('active');
+            }
+
+            async function loadConfig() {
+                try {
+                    const r = await fetch('./api/config');
+                    const data = await r.json();
+                    if (!data.success) { alert('Error cargando config: ' + data.error); return; }
+                    renderConfig(data.config);
+                } catch(e) { alert('Error de conexión al cargar config'); }
+            }
+
+
+            function renderFeedsTable(feeds) {
+                const tbody = document.getElementById('feeds-tbody');
+                tbody.innerHTML = feeds.map((f, i) => {
+                    const isWb = f.source === 'wallabag';
+                    const filterCell = isWb
+                        ? (f.filter === 'tag'
+                            ? `<td><input type="text" value="${escapeHtml((f.tags||[]).join(', '))}" placeholder="tag1, tag2" style="width:120px" onchange="updateFeed(${i},'tags',this.value.split(',').map(t=>t.trim()).filter(Boolean))"/></td>`
+                            : `<td><input type="number" value="${f.min_words||0}" min="0" style="width:80px" onchange="updateFeed(${i},'min_words',+this.value)"/> palabras</td>`)
+                        : `<td><input type="text" value="${escapeHtml(f.id||'')}" onchange="updateFeed(${i},'id',this.value)" style="width:110px"/></td>`;
+                    const ytCell = isWb ? `<td style="text-align:center;color:var(--text-dim)">—</td>`
+                        : `<td style="text-align:center"><input type="checkbox" ${f.include_youtube?'checked':''} onchange="updateFeed(${i},'include_youtube',this.checked)"/></td>`;
+                    const badge = isWb
+                        ? `<span style="font-size:0.65rem;color:var(--accent);font-family:monospace">WB/${f.filter==='tag'?'🏷':'📏'}</span>`
+                        : `<span style="font-size:0.65rem;color:var(--text-dim);font-family:monospace">RSS</span>`;
+                    return `
+                    <tr id="feed-row-${i}">
+                        <td>${badge}</td>
+                        <td><input type="text" value="${escapeHtml(f.name||'')}" onchange="updateFeed(${i},'name',this.value)"/></td>
+                        ${filterCell}
+                        <td><select onchange="updateFeed(${i},'voice',this.value)">${voiceOptions(f.voice)}</select></td>
+                        ${ytCell}
+                        <td><input type="number" value="${f.limit??10}" min="1" max="200" style="width:55px" onchange="updateFeed(${i},'limit',+this.value)"/></td>
+                        <td><button class="btn-danger" onclick="removeFeed(${i})">✕</button></td>
+                    </tr>`;
+                }).join('');
+            }
+
+            let currentFeeds = [];
+            function updateFeed(i, key, val) { currentFeeds[i][key] = val; }
+            function removeFeed(i) { currentFeeds.splice(i, 1); renderFeedsTable(currentFeeds); }
+
+            function addFeed() {
+                // Reset picker
+                document.querySelector('input[name="feedType"][value="freshrss"]').checked = true;
+                onPickerTypeChange();
+                document.getElementById('pickerName').value = '';
+                document.getElementById('pickerLimit').value = '10';
+
+                // Populate FreshRSS select
+                const sel = document.getElementById('feedPickerSelect');
+                sel.innerHTML = '<option value="">— Seleccionar —</option>';
+                if (articlesData?.freshrss?.categories) {
+                    articlesData.freshrss.categories.forEach(cat => {
+                        if (!cat.feeds?.length) return;
+                        const g = document.createElement('optgroup');
+                        g.label = '📁 ' + cat.name;
+                        cat.feeds.forEach(f => {
+                            const o = document.createElement('option');
+                            o.value = JSON.stringify({id: f.id, name: f.title});
+                            o.textContent = f.title + ' (' + (f.articles?.length||0) + ')';
+                            g.appendChild(o);
+                        });
+                        sel.appendChild(g);
+                    });
+                }
+                const mg = document.createElement('optgroup'); mg.label = '✏ Manual';
+                const mo = document.createElement('option'); mo.value='__manual__'; mo.textContent='Introducir ID manualmente';
+                mg.appendChild(mo); sel.appendChild(mg);
+
+                // Populate Wallabag tags
+                const tagSel = document.getElementById('wbTagSelect');
+                tagSel.innerHTML = '';
+                const allTags = new Set();
+                articlesData?.wallabag?.articles?.forEach(a => (a.tags||[]).forEach(t => allTags.add(t)));
+                [...allTags].sort().forEach(t => {
+                    const o = document.createElement('option'); o.value = t; o.textContent = t;
+                    tagSel.appendChild(o);
+                });
+
+                document.getElementById('feedPicker').classList.add('open');
+            }
+
+            function onPickerTypeChange() {
+                const type = document.querySelector('input[name="feedType"]:checked')?.value;
+                document.getElementById('picker-freshrss').style.display  = type==='freshrss'      ? '' : 'none';
+                document.getElementById('picker-wb-tag').style.display    = type==='wallabag_tag'  ? '' : 'none';
+                document.getElementById('picker-wb-words').style.display  = type==='wallabag_words'? '' : 'none';
+            }
+
+            function confirmAddFeed() {
+                const type = document.querySelector('input[name="feedType"]:checked')?.value;
+                const name = document.getElementById('pickerName').value.trim();
+                const voice = document.getElementById('pickerVoice').value;
+                const limit = +document.getElementById('pickerLimit').value || 10;
+                let feed;
+
+                if (type === 'freshrss') {
+                    const val = document.getElementById('feedPickerSelect').value;
+                    if (!val) return;
+                    if (val === '__manual__') {
+                        feed = {source:'freshrss', id:'feed/', name: name||'Nuevo feed', voice, include_youtube:false, limit};
+                    } else {
+                        const p = JSON.parse(val);
+                        feed = {source:'freshrss', id:p.id, name: name||p.name, voice, include_youtube:false, limit};
+                    }
+                } else if (type === 'wallabag_tag') {
+                    const tags = [...document.getElementById('wbTagSelect').selectedOptions].map(o=>o.value);
+                    feed = {source:'wallabag', filter:'tag', tags, name: name||(tags.join(', ')||'Wallabag tags'), voice, limit};
+                } else {
+                    const min = +document.getElementById('wbMinWords').value || 500;
+                    feed = {source:'wallabag', filter:'words', min_words:min, name: name||`>${min} palabras`, voice, limit};
+                }
+
+                currentFeeds.push(feed);
+                renderFeedsTable(currentFeeds);
+                closeFeedPicker();
+            }
+
+            function closeFeedPicker() { document.getElementById('feedPicker').classList.remove('open'); }
+
+            function getConfigFromForm() {
+                const wbFeeds = currentFeeds.filter(f => f.source === 'wallabag');
+                const frFeeds = currentFeeds.filter(f => f.source !== 'wallabag').map(({source,...f})=>f);
+                return {
+                    wallabag: {
+                        url:           document.getElementById('cfg-wb-url').value.trim(),
+                        client_id:     document.getElementById('cfg-wb-clientid').value.trim(),
+                        client_secret: document.getElementById('cfg-wb-secret').value.trim(),
+                        username:      document.getElementById('cfg-wb-user').value.trim(),
+                        password:      document.getElementById('cfg-wb-pass').value,
+                        limit:         +document.getElementById('cfg-wb-limit').value,
+                        feeds:         wbFeeds.map(({source,...f})=>f),
+                    },
+                    freshrss: {
+                        url:         document.getElementById('cfg-fr-url').value.trim(),
+                        username:    document.getElementById('cfg-fr-user').value.trim(),
+                        password:    document.getElementById('cfg-fr-pass').value,
+                        limit:       +document.getElementById('cfg-fr-limit').value,
+                        unread_only: document.getElementById('cfg-fr-unread').checked,
+                        feeds:       frFeeds,
+                    }
+                };
+            }
+
+            async function saveConfig() {
+                const status = document.getElementById('cfg-status');
+                status.textContent = 'Guardando…';
+                status.className = 'config-status';
+                try {
+                    const r = await fetch('./api/config', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(getConfigFromForm())
+                    });
+                    const data = await r.json();
+                    if (data.success) {
+                        status.textContent = '✓ ' + data.message;
+                        status.className = 'config-status ok';
+                    } else {
+                        status.textContent = '✗ ' + data.error;
+                        status.className = 'config-status err';
+                    }
+                } catch(e) {
+                    status.textContent = '✗ Error de conexión';
+                    status.className = 'config-status err';
+                }
+            }
+
+            function renderConfig(cfg) {
+                const wb = cfg.wallabag || {};
+                document.getElementById('cfg-wb-url').value      = wb.url || '';
+                document.getElementById('cfg-wb-clientid').value = wb.client_id || '';
+                document.getElementById('cfg-wb-secret').value   = wb.client_secret || '';
+                document.getElementById('cfg-wb-user').value     = wb.username || '';
+                document.getElementById('cfg-wb-pass').value     = wb.password || '';
+                document.getElementById('cfg-wb-limit').value    = wb.limit ?? 10;
+                const fr = cfg.freshrss || {};
+                document.getElementById('cfg-fr-url').value     = fr.url || '';
+                document.getElementById('cfg-fr-user').value    = fr.username || '';
+                document.getElementById('cfg-fr-pass').value    = fr.password || '';
+                document.getElementById('cfg-fr-limit').value   = fr.limit ?? 10;
+                document.getElementById('cfg-fr-unread').checked = !!fr.unread_only;
+
+                // Merge freshrss.feeds + wallabag.feeds into currentFeeds with source tag
+                const frFeeds = (fr.feeds || []).map(f => ({source:'freshrss', ...f}));
+                const wbFeeds = (wb.feeds || []).map(f => ({source:'wallabag', ...f}));
+                currentFeeds = JSON.parse(JSON.stringify([...frFeeds, ...wbFeeds]));
+                renderFeedsTable(currentFeeds);
+            }
+
+            // Cargar datos al inicio
+            loadData();
+        </script>
+
+        <!-- Feed Picker -->
+        <div class="feed-picker" id="feedPicker" style="min-width:420px">
+            <h3>📡 Añadir feed / fuente</h3>
+            <div class="picker-type-row">
+                <label><input type="radio" name="feedType" value="freshrss" checked onchange="onPickerTypeChange()"> 📰 FreshRSS</label>
+                <label><input type="radio" name="feedType" value="wallabag_tag" onchange="onPickerTypeChange()"> 📚 Wallabag por tags</label>
+                <label><input type="radio" name="feedType" value="wallabag_words" onchange="onPickerTypeChange()"> 📚 Wallabag por palabras</label>
+            </div>
+
+            <!-- FreshRSS -->
+            <div id="picker-freshrss" class="picker-section">
+                <label>Selecciona un feed:</label>
+                <select id="feedPickerSelect" size="7"></select>
+            </div>
+
+            <!-- Wallabag tags -->
+            <div id="picker-wb-tag" class="picker-section" style="display:none">
+                <label>Tags (Ctrl+clic para seleccionar varios):</label>
+                <select id="wbTagSelect" class="wb-tag-select" multiple></select>
+            </div>
+
+            <!-- Wallabag min words -->
+            <div id="picker-wb-words" class="picker-section" style="display:none">
+                <label>Mínimo de palabras:</label>
+                <input type="number" id="wbMinWords" value="500" min="1" style="width:140px;padding:0.35rem;background:var(--bg-tertiary);border:1px solid var(--border);color:var(--text-primary);border-radius:2px"/>
+            </div>
+
+            <!-- Common: name, voice, limit -->
+            <div class="picker-name-row">
+                <label>Nombre del feed (opcional):</label>
+                <input type="text" id="pickerName" placeholder="Se genera automáticamente si está vacío"/>
+            </div>
+            <div class="picker-common">
+                <div>
+                    <label>Voz TTS:</label>
+                    <select id="pickerVoice">
+                        <option value="es-ES-AlvaroNeural">Álvaro (ES)</option>
+                        <option value="es-ES-ElviraNeural">Elvira (ES)</option>
+                        <option value="es-MX-JorgeNeural">Jorge (MX)</option>
+                        <option value="es-MX-DaliaNeural">Dalia (MX)</option>
+                        <option value="en-US-GuyNeural">Guy (EN)</option>
+                        <option value="en-US-JennyNeural">Jenny (EN)</option>
+                    </select>
+                </div>
+                <div></div>
+                <div>
+                    <label>Límite:</label>
+                    <input type="number" id="pickerLimit" value="10" min="1" max="200"/>
+                </div>
+            </div>
+
+            <div class="feed-picker-btns" style="margin-top:1rem">
+                <button class="btn" onclick="closeFeedPicker()">Cancelar</button>
+                <button class="btn btn-primary" onclick="confirmAddFeed()">Añadir</button>
+            </div>
+        </div>
+
+        <!-- Modal de Configuración -->
+        <div class="config-modal" id="configModal">
+            <div class="config-content">
+                <div class="config-header">
+                    <h2>⚙ CONFIGURACIÓN</h2>
+                    <button class="config-close" onclick="closeConfigModal()">✕</button>
+                </div>
+                <div class="config-tabs">
+                    <button class="config-tab active" data-tab="wallabag" onclick="switchConfigTab('wallabag')">📚 Wallabag</button>
+                    <button class="config-tab" data-tab="freshrss" onclick="switchConfigTab('freshrss')">📰 FreshRSS</button>
+                    <button class="config-tab" data-tab="feeds" onclick="switchConfigTab('feeds')">📡 Feeds</button>
+                </div>
+                <div class="config-body">
+                    <!-- Wallabag -->
+                    <div class="config-section active" id="cfg-wallabag">
+                        <div class="config-field">
+                            <label>URL</label>
+                            <input type="url" id="cfg-wb-url" placeholder="https://wallabag.example.com"/>
+                        </div>
+                        <div class="config-field-row">
+                            <div class="config-field">
+                                <label>Client ID</label>
+                                <input type="text" id="cfg-wb-clientid"/>
+                            </div>
+                            <div class="config-field">
+                                <label>Client Secret</label>
+                                <input type="text" id="cfg-wb-secret"/>
+                            </div>
+                        </div>
+                        <div class="config-field-row">
+                            <div class="config-field">
+                                <label>Usuario</label>
+                                <input type="text" id="cfg-wb-user"/>
+                            </div>
+                            <div class="config-field">
+                                <label>Contraseña</label>
+                                <input type="password" id="cfg-wb-pass"/>
+                            </div>
+                        </div>
+                        <div class="config-field" style="max-width:150px">
+                            <label>Límite de artículos</label>
+                            <input type="number" id="cfg-wb-limit" min="1" max="500"/>
+                        </div>
+                    </div>
+                    <!-- FreshRSS -->
+                    <div class="config-section" id="cfg-freshrss">
+                        <div class="config-field">
+                            <label>URL</label>
+                            <input type="url" id="cfg-fr-url" placeholder="https://freshrss.example.com"/>
+                        </div>
+                        <div class="config-field-row">
+                            <div class="config-field">
+                                <label>Usuario</label>
+                                <input type="text" id="cfg-fr-user"/>
+                            </div>
+                            <div class="config-field">
+                                <label>Contraseña</label>
+                                <input type="password" id="cfg-fr-pass"/>
+                            </div>
+                        </div>
+                        <div class="config-field-row">
+                            <div class="config-field" style="max-width:150px">
+                                <label>Límite por feed</label>
+                                <input type="number" id="cfg-fr-limit" min="1" max="500"/>
+                            </div>
+                        </div>
+                        <div class="config-checkbox-row">
+                            <input type="checkbox" id="cfg-fr-unread" accent-color="var(--accent)"/>
+                            <label for="cfg-fr-unread">Solo artículos no leídos</label>
+                        </div>
+                    </div>
+                    <!-- Feeds -->
+                    <div class="config-section" id="cfg-feeds">
+                        <table class="feeds-table">
+                            <thead>
+                                <tr>
+                                    <th>Tipo</th>
+                                    <th>Nombre</th>
+                                    <th>ID / Filtro</th>
+                                    <th>Voz</th>
+                                    <th>YT</th>
+                                    <th>Límite</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="feeds-tbody"></tbody>
+                        </table>
+                        <button class="btn-add" onclick="addFeed()">+ Añadir feed</button>
+                    </div>
+                </div>
+                <div class="config-footer">
+                    <span class="config-status" id="cfg-status"></span>
+                    <button class="btn btn-primary" onclick="saveConfig()">💾 Guardar config.json</button>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
